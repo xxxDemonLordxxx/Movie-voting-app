@@ -3,7 +3,7 @@
     <div v-if="loading" class="loading">Загрузка...</div>
     <div v-else-if="suggestion" class="detail-content">
       <div class="back-button">
-        <router-link to="/" class="btn btn-secondary">← Назад к списку</router-link>
+        <router-link to="/" class="btn btn-secondary">← BACK TO THE LIST</router-link>
       </div>
       
       <MovieDetailCard :suggestion="suggestion" />

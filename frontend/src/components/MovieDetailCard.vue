@@ -6,23 +6,23 @@
     
     <div class="card-body">
       <div class="description-section">
-        <h3>Описание</h3>
+        <h3>Description</h3>
         <p class="movie-description">{{ movieDescription }}</p>
       </div>
       
       <div class="suggestion-meta">
         <div class="meta-item">
-          <strong>Предложил:</strong>
+          <strong>Suggester:</strong>
           <span>{{ suggesterName }}</span>
         </div>
         
         <div class="meta-item">
-          <strong>Дата предложения:</strong>
+          <strong>Date:</strong>
           <span>{{ formattedDate }}</span>
         </div>
         
         <div class="meta-item">
-          <strong>Статус:</strong>
+          <strong>Status:</strong>
           <span class="status-badge">На рассмотрении</span>
         </div>
       </div>
@@ -41,19 +41,19 @@ export default {
   },
   computed: {
     movieTitle() {
-      return this.suggestion.movie?.title || 'Без названия'
+      return this.suggestion.movie?.title || 'No name'
     },
     movieDescription() {
-      return this.suggestion.movie?.description || 'Описание отсутствует'
+      return this.suggestion.movie?.description || 'No description'
     },
     suggesterName() {
       if (this.suggestion.is_anonymous) {
         return 'Аноним'
       }
-      return this.suggestion.suggester_name || 'Не указано'
+      return this.suggestion.suggester_name || 'Anonymus'
     },
     formattedDate() {
-      if (!this.suggestion.created_at) return 'Дата не указана'
+      if (!this.suggestion.created_at) return 'Date not listed'
       return new Date(this.suggestion.created_at).toLocaleDateString('ru-RU', {
         year: 'numeric',
         month: 'long',
@@ -69,13 +69,12 @@ export default {
 <style scoped>
 .movie-detail-card {
   background: white;
-  border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   overflow: hidden;
 }
 
 .card-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: pink;
   padding: 2rem;
   color: white;
 }
@@ -131,7 +130,6 @@ export default {
   background: #ffeaa7;
   color: #e17055;
   padding: 4px 12px;
-  border-radius: 20px;
   font-size: 0.9rem;
   font-weight: 500;
 }

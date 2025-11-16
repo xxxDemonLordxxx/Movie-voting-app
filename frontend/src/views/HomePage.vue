@@ -1,19 +1,20 @@
 <template>
   <div class="home">
-    <h1>Система предложения фильмов</h1>
+    <h1>MONTHLY OFC VOTING</h1>
+    <p>Thats how we doing it round here. All because we are so fun and democratic.</p>
     <div class="actions">
-      <router-link to="/suggest" class="btn btn-primary">Предложить фильм</router-link>
+      <router-link to="/suggest" class="btn btn-primary">OFFER YOUR OWN PICK</router-link>
     </div>
     
     <div class="suggestions-section">
-      <h2>Предложенные фильмы</h2>
-      <div v-if="loading" class="loading">Загрузка...</div>
+      <h2>submissions</h2>
+      <div v-if="loading" class="loading">LOADING...</div>
       <div v-else-if="error" class="error">
         {{ error }}
-        <button @click="fetchSuggestions" class="btn btn-secondary">Попробовать снова</button>
+        <button @click="fetchSuggestions" class="btn btn-secondary">TRY AGAIN</button>
       </div>
       <div v-else-if="suggestions.length === 0" class="empty">
-        Пока нет предложенных фильмов
+        NO SUBMISSIONS YET
       </div>
       <div v-else class="suggestions-list">
         <MovieSuggestionCard 
@@ -59,7 +60,7 @@ export default {
         }
       } catch (error) {
         console.error('Error loading suggestions:', error)
-        this.error = 'Ошибка при загрузке списка фильмов: ' + error.message
+        this.error = 'Mistake when loading the movie list: ' + error.message
       } finally {
         this.loading = false
       }
@@ -83,10 +84,9 @@ export default {
 .btn {
   display: inline-block;
   padding: 12px 24px;
-  background-color: #3498db;
+  background-color: #065f53;
   color: white;
   text-decoration: none;
-  border-radius: 6px;
   border: none;
   cursor: pointer;
   font-size: 16px;
@@ -95,11 +95,11 @@ export default {
 }
 
 .btn-primary {
-  background-color: #3498db;
+  background-color: #065f53;
 }
 
 .btn-primary:hover {
-  background-color: #2980b9;
+  background-color: #0f7f70;
 }
 
 .btn-secondary {
