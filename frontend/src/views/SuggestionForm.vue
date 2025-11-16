@@ -1,0 +1,288 @@
+<template>
+  <div class="suggestion-form">
+    <h1>Предложить фильм</h1>
+    
+    <form @submit.prevent="submitSuggestion" class="form">
+      <div class="form-group">
+        <label for="suggesterName">Ваше имя:</label>
+        <input
+          id="suggesterName"
+          v-model="form.suggesterName"
+          :disabled="form.isAnonymous"
+          placeholder="Введите ваше имя"
+          class="form-input"
+        />
+      </div>
+      
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            v-model="form.isAnonymous"
+            class="checkbox"
+          />
+          Анонимно
+        </label>
+      </div>
+      
+      <div class="form-group">
+        <label for="movieTitle">Название фильма:</label>
+        <input
+          id="movieTitle"
+          v-model="form.movieTitle"
+          placeholder="Введите название фильма"
+          required
+          class="form-input"
+        />
+      </div>
+      
+      <div class="form-group">
+        <label for="movieDescription">Описание фильма:</label>
+        <textarea
+          id="movieDescription"
+          v-model="form.movieDescription"
+          placeholder="Введите описание фильма"
+          required
+          rows="4"
+          class="form-textarea"
+        ></textarea>
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" :disabled="submitting" class="btn btn-primary">
+          {{ submitting ? 'Отправка...' : 'Отправить предложение' }}
+        </button>
+        <router-link to="/" class="btn btn-secondary">Назад</router-link>
+      </div>
+    </form>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'SuggestionForm',
+  data() {
+    return {
+      form: {
+        suggesterName: '',
+        isAnonymous: false,
+        movieTitle: '',
+        movieDescription: ''
+      },
+      submitting: false
+    }
+  },
+  methods: {
+    async submitSuggestion() {
+      if (!this.form.movieTitle.trim() || !this.form.movieDescription.trim()) {
+        alert('Пожалуйста, заполните все обязательные поля')
+        return
+      }
+
+      this.submitting = true
+      
+      try {
+        const response = await fetch('http://localhost:8000/suggestions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            suggester_name: this.form.isAnonymous ? null : this.form.suggesterName,
+            is_anonymous: this.form.isAnonymous,
+            title: this.form.movieTitle,
+            description: this.form.movieDescription
+          })
+        })
+
+        if (response.ok) {
+          alert('Фильм предложен успешно!')
+          this.resetForm()
+          this.$router.push('/')
+        } else {
+          throw new Error('Ошибка при отправке')
+        }
+      } catch (error) {
+        console.error('Error:', error)
+        alert('Ошибка при отправке предложения')
+      } finally {
+        this.submitting = false
+      }
+    },
+    
+    resetForm() {
+      this.form = {
+        suggesterName: '',
+        isAnonymous: false,
+        movieTitle: '',
+        movieDescription: ''
+      }
+    }
+  }
+}
+</script>
+
+<style scoped>
+.suggestion-form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.suggestion-form h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.form {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.form-input:disabled {
+  background-color: #f5f5f5;
+  color: #999;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.checkbox {
+  width: auto;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.btn-primary {
+  background-color: #27ae60;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #219a52;
+}
+
+.btn-primary:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: #95a5a6;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #7f8c8d;
+}
+
+/* Мобильные стили */
+@media (max-width: 768px) {
+  .suggestion-form h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .form {
+    padding: 1.5rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+  
+  label {
+    font-size: 0.9rem;
+  }
+  
+  .form-input,
+  .form-textarea {
+    padding: 8px;
+    font-size: 14px;
+  }
+  
+  .btn {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+  
+  .form-actions {
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .suggestion-form h1 {
+    font-size: 1.3rem;
+  }
+  
+  .form {
+    padding: 1rem;
+    border-radius: 6px;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .btn {
+    width: 100%;
+    padding: 10px;
+  }
+  
+  .checkbox-label {
+    font-size: 0.9rem;
+  }
+}
+</style>
