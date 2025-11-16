@@ -7,6 +7,7 @@ import time
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@db:5432/moviedb")
 
 # Add connection retry logic
+# I love my cat
 def create_engine_with_retry():
     for i in range(5):
         try:
