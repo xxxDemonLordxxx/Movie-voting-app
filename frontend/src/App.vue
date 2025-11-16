@@ -2,8 +2,9 @@
   <div id="app">
     <header class="header">
       <nav class="nav">
-        <router-link to="/" class="nav-link">Главная</router-link>
-        <router-link to="/suggest" class="nav-link">Предложить фильм</router-link>
+        <router-link to="/" class="nav-link">HOME</router-link>
+        <router-link to="/suggest" class="nav-link">SUBMISSIONS</router-link>
+        <router-link to="/calendar" class="nav-link">CALENDAR</router-link>
       </nav>
     </header>
     <main class="main">
@@ -26,13 +27,13 @@ export default {
 }
 
 #app {
-  font-family: Arial, sans-serif;
+  font-family: "Cascadia Code", cascadia;
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #151519;
 }
 
 .header {
-  background-color: #2c3e50;
+  background-color: rgb(255, 217, 223);
   padding: 1rem 0;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   position: sticky;
@@ -49,19 +50,20 @@ export default {
 }
 
 .nav-link {
-  color: white;
+  color: black;
   text-decoration: none;
   padding: 0.75rem 1rem;
-  border-radius: 6px;
   transition: background-color 0.3s;
-  font-size: 0.9rem;
+  font-size: 3rem;
   text-align: center;
   flex: 1;
+  text-decoration: solid;
+  font-weight: bolder;
 }
 
 .nav-link:hover,
 .nav-link.router-link-active {
-  background-color: #34495e;
+  background-color: pink;
 }
 
 .main {

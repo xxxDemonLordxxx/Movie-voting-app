@@ -1,15 +1,15 @@
 <template>
   <div class="suggestion-form">
-    <h1>Предложить фильм</h1>
-    
+    <h1>HERE YOU CAN OFFER YOUR OWN PICK</h1>
+
     <form @submit.prevent="submitSuggestion" class="form">
       <div class="form-group">
-        <label for="suggesterName">Ваше имя:</label>
+        <label for="suggesterName">YOUR NAME:</label>
         <input
           id="suggesterName"
           v-model="form.suggesterName"
           :disabled="form.isAnonymous"
-          placeholder="Введите ваше имя"
+          placeholder="Write your name"
           class="form-input"
         />
       </div>
@@ -21,27 +21,27 @@
             v-model="form.isAnonymous"
             class="checkbox"
           />
-          Анонимно
+          Anonymus
         </label>
       </div>
       
       <div class="form-group">
-        <label for="movieTitle">Название фильма:</label>
+        <label for="movieTitle">TITLE:</label>
         <input
           id="movieTitle"
           v-model="form.movieTitle"
-          placeholder="Введите название фильма"
+          placeholder="Enter the film title"
           required
           class="form-input"
         />
       </div>
       
       <div class="form-group">
-        <label for="movieDescription">Описание фильма:</label>
+        <label for="movieDescription">FILM DESCRIPTION OR YOUR OWN PITCH:</label>
         <textarea
           id="movieDescription"
           v-model="form.movieDescription"
-          placeholder="Введите описание фильма"
+          placeholder="Enter the text"
           required
           rows="4"
           class="form-textarea"
@@ -50,9 +50,9 @@
       
       <div class="form-actions">
         <button type="submit" :disabled="submitting" class="btn btn-primary">
-          {{ submitting ? 'Отправка...' : 'Отправить предложение' }}
+          {{ submitting ? 'Sending...' : 'DONE' }}
         </button>
-        <router-link to="/" class="btn btn-secondary">Назад</router-link>
+        <router-link to="/" class="btn btn-secondary">BACK</router-link>
       </div>
     </form>
   </div>
@@ -75,7 +75,7 @@ export default {
   methods: {
     async submitSuggestion() {
       if (!this.form.movieTitle.trim() || !this.form.movieDescription.trim()) {
-        alert('Пожалуйста, заполните все обязательные поля')
+        alert('PLEASE, FILL ALL')
         return
       }
 
@@ -96,15 +96,15 @@ export default {
         })
 
         if (response.ok) {
-          alert('Фильм предложен успешно!')
+          alert('FILM SUBMITTED')
           this.resetForm()
           this.$router.push('/')
         } else {
-          throw new Error('Ошибка при отправке')
+          throw new Error('SENDING ERROR')
         }
       } catch (error) {
         console.error('Error:', error)
-        alert('Ошибка при отправке предложения')
+        alert('SENDING ERROR при отправке предложения')
       } finally {
         this.submitting = false
       }
@@ -136,7 +136,6 @@ export default {
 .form {
   background: white;
   padding: 2rem;
-  border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
@@ -156,7 +155,6 @@ label {
   width: 100%;
   padding: 10px;
   border: 1px solid #ddd;
-  border-radius: 4px;
   font-size: 16px;
 }
 
@@ -191,7 +189,6 @@ label {
 .btn {
   padding: 10px 20px;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
   text-decoration: none;
   text-align: center;
@@ -200,12 +197,12 @@ label {
 }
 
 .btn-primary {
-  background-color: #27ae60;
+  background-color: #065f53;
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: #219a52;
+  background-color: #0f6f62;
 }
 
 .btn-primary:disabled {
@@ -264,7 +261,6 @@ label {
   
   .form {
     padding: 1rem;
-    border-radius: 6px;
   }
   
   .form-group {

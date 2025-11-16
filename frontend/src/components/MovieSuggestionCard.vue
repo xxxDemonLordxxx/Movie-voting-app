@@ -5,7 +5,7 @@
       <p class="movie-description">{{ truncatedDescription }}</p>
       <div class="suggestion-info">
         <span class="suggester">
-          Предложил: {{ suggesterName }}
+          Offered by: {{ suggesterName }}
         </span>
         <span class="date">{{ formattedDate }}</span>
       </div>
@@ -24,10 +24,10 @@ export default {
   },
   computed: {
     movieTitle() {
-      return this.suggestion.movie?.title || 'Без названия'
+      return this.suggestion.movie?.title || 'No name'
     },
     movieDescription() {
-      return this.suggestion.movie?.description || 'Описание отсутствует'
+      return this.suggestion.movie?.description || 'No description'
     },
     truncatedDescription() {
       const desc = this.movieDescription
@@ -35,9 +35,9 @@ export default {
     },
     suggesterName() {
       if (this.suggestion.is_anonymous) {
-        return 'Аноним'
+        return 'Anonymus'
       }
-      return this.suggestion.suggester_name || 'Не указано'
+      return this.suggestion.suggester_name || 'Anonymus'
     },
     formattedDate() {
       if (!this.suggestion.created_at) return ''
@@ -50,7 +50,6 @@ export default {
 <style scoped>
 .movie-suggestion-card {
   background: white;
-  border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   cursor: pointer;
@@ -113,7 +112,6 @@ export default {
 @media (max-width: 480px) {
   .movie-suggestion-card {
     padding: 1rem;
-    border-radius: 6px;
   }
   
   .movie-title {
