@@ -1,112 +1,105 @@
 <template>
   <div id="app">
-    <div v-if="currentView === 'home'">
-      <h1>Система предложения фильмов</h1>
-      <button @click="showForm">Предложить фильм</button>
-      <button @click="showSuggestions">Список предложений</button>
-    </div>
-
-    <div v-else-if="currentView === 'form'">
-      <h2>Введите название фильма</h2>
-      <input v-model="movieTitle" placeholder="Название фильма" />
-      <button @click="submitMovie">Отправить</button>
-      <button @click="goHome">Назад</button>
-    </div>
-
-    <div v-else-if="currentView === 'suggestions'">
-      <h2>Список предложенных фильмов</h2>
-      <div v-for="movie in movies" :key="movie.id" class="movie-item">
-        {{ movie.title }}
-      </div>
-      <button @click="goHome">Назад</button>
-    </div>
+    <header class="header">
+      <nav class="nav">
+        <router-link to="/" class="nav-link">Главная</router-link>
+        <router-link to="/suggest" class="nav-link">Предложить фильм</router-link>
+      </nav>
+    </header>
+    <main class="main">
+      <router-view />
+    </main>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App',
-  data() {
-    return {
-      currentView: 'home',
-      movieTitle: '',
-      movies: []
-    }
-  },
-  methods: {
-    showForm() {
-      this.currentView = 'form'
-      this.movieTitle = ''
-    },
-    showSuggestions() {
-      this.currentView = 'suggestions'
-      this.fetchSuggestions()
-    },
-    goHome() {
-      this.currentView = 'home'
-    },
-    async submitMovie() {
-      if (!this.movieTitle.trim()) return
-
-      try {
-        const response = await fetch('http://localhost:8000/input', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ title: this.movieTitle })
-        })
-
-        if (response.ok) {
-          alert('Фильм предложен успешно!')
-          this.movieTitle = ''
-          this.goHome()
-        }
-      } catch (error) {
-        console.error('Error:', error)
-        alert('Ошибка при отправке фильма')
-      }
-    },
-    async fetchSuggestions() {
-      try {
-        const response = await fetch('http://localhost:8000/suggestions')
-        if (response.ok) {
-          this.movies = await response.json()
-        }
-      } catch (error) {
-        console.error('Error:', error)
-        alert('Ошибка при загрузке списка фильмов')
-      }
-    }
-  }
+  name: 'App'
 }
 </script>
 
 <style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 #app {
   font-family: Arial, sans-serif;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.header {
+  background-color: #2c3e50;
+  padding: 1rem 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav {
   max-width: 800px;
   margin: 0 auto;
-  padding: 20px;
+  display: flex;
+  gap: 1rem;
+  padding: 0 1rem;
 }
 
-button {
-  margin: 10px;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
+.nav-link {
+  color: white;
+  text-decoration: none;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  transition: background-color 0.3s;
+  font-size: 0.9rem;
+  text-align: center;
+  flex: 1;
 }
 
-input {
-  padding: 10px;
-  font-size: 16px;
-  margin: 10px;
-  width: 300px;
+.nav-link:hover,
+.nav-link.router-link-active {
+  background-color: #34495e;
 }
 
-.movie-item {
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
-  text-align: left;
+.main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+/* Мобильные стили */
+@media (max-width: 768px) {
+  .header {
+    padding: 0.75rem 0;
+  }
+  
+  .nav {
+    gap: 0.5rem;
+    padding: 0 0.75rem;
+  }
+  
+  .nav-link {
+    padding: 0.6rem 0.5rem;
+    font-size: 0.85rem;
+  }
+  
+  .main {
+    padding: 1rem 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .nav-link {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
 }
 </style>
