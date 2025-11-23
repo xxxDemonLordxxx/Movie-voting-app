@@ -10,7 +10,7 @@
         <p class="movie-description">{{ movieDescription }}</p>
       </div>
       
-      <div class="suggestion-meta">
+        <div class="suggestion-meta">
         <div class="meta-item">
           <strong>Suggester:</strong>
           <span>{{ suggesterName }}</span>
@@ -25,13 +25,30 @@
           <strong>Status:</strong>
           <span class="status-badge">На рассмотрении</span>
         </div>
+
+      
       </div>
+    </div> 
+    <div ref="input" class="hidden-content">
+      Movie: {{ movieTitle }}
+
+      Description: {{ movieDescription }}
+
+      Suggester: {{ suggesterName }}
+      Date: {{ formattedDate }}
     </div>
+
+      <CopyButton />
+
   </div>
 </template>
 
+
+
 <script>
+import CopyButton from './CopyButton.vue'
 export default {
+  components: { CopyButton },
   name: 'MovieDetailCard',
   props: {
     suggestion: {
@@ -42,7 +59,7 @@ export default {
   computed: {
     movieTitle() {
       return this.suggestion.movie?.title || 'No name'
-    },
+  },
     movieDescription() {
       return this.suggestion.movie?.description || 'No description'
     },
@@ -67,6 +84,10 @@ export default {
 </script>
 
 <style scoped>
+.hidden-content {
+  display: none;
+}
+
 .movie-detail-card {
   background: white;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -106,7 +127,7 @@ export default {
 }
 
 .suggestion-meta {
-  border-top: 1px solid #ecf0f1;
+  border-top: 1px solid #ffffff;
   padding-top: 1.5rem;
 }
 
@@ -115,7 +136,8 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 0;
-  border-bottom: 1px solid #f8f9fa;
+  border-bottom: 1px solid #ffffff;
+  color: black
 }
 
 .meta-item:last-child {
@@ -132,6 +154,35 @@ export default {
   padding: 4px 12px;
   font-size: 0.9rem;
   font-weight: 500;
+}
+
+.btn {
+  padding: 4px 12px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.btn-primary {
+  background-color: #065f53;
+  color: white;
+  padding: 4px 12px
+}
+.btn-primary:hover:not(:disabled) {
+  background-color: #0f6f62;
+}
+
+.text {
+  color:#2c3e50;
+  padding: 0.75rem 0;
+  gap: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
 }
 
 /* Мобильные стили */

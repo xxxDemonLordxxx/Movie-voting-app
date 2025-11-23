@@ -4,6 +4,7 @@
     <p>Thats how we doing it round here. All because we are so fun and democratic.</p>
     <div class="actions">
       <router-link to="/suggest" class="btn btn-primary">OFFER YOUR OWN PICK</router-link>
+      <router-link to="/vote" class="btn btn-primary">VOTE</router-link>
     </div>
     
     <div class="suggestions-section">
