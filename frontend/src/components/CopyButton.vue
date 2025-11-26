@@ -1,17 +1,6 @@
-
-<script setup lang="ts">
-import { useClipboard, usePermission } from '@vueuse/core'
-import { ref } from 'vue'
-
-
-const input = ref(null)
-
-const { isSupported, copy, copied} = useClipboard()
-</script>
-
 <template>
   <div v-if="isSupported">
-    <button class="btn btn-primary" @click="copy (input)">
+    <button class="btn btn-primary">
       <!-- by default, `copied` will be reset in 1.5s -->
       <span v-if="!copied">Copy</span>
       <span v-else>Copied!</span>
@@ -21,6 +10,12 @@ const { isSupported, copy, copied} = useClipboard()
     Your browser does not support Clipboard API
   </p>
 </template>
+
+
+<script setup lang="ts">
+
+</script>
+
 
 <style>
 .btn {
