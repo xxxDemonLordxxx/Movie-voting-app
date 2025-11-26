@@ -32,3 +32,16 @@ class SuggestionResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class PollResponse(BaseModel):
+    id: int
+    title: str
+    state: str
+    poll_start: datetime = None
+    poll_end: datetime = None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
