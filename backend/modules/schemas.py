@@ -2,16 +2,12 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 
+# Схемы главной
+
+# Схемы фильмов
 class MovieBase(BaseModel):
     title: str
     description: str
-
-class SuggestionBase(BaseModel):
-    suggester_name: Optional[str] = None
-    is_anonymous: bool = False
-
-class MovieSuggestionCreate(MovieBase, SuggestionBase):
-    pass
 
 class MovieResponse(BaseModel):
     id: int
@@ -21,6 +17,15 @@ class MovieResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+# Схемы заявок
+class SuggestionBase(BaseModel):
+    suggester_name: Optional[str] = None
+    is_anonymous: bool = False
+
+class MovieSuggestionCreate(MovieBase, SuggestionBase):
+    pass
+
 
 class SuggestionResponse(BaseModel):
     id: int
@@ -34,6 +39,7 @@ class SuggestionResponse(BaseModel):
         from_attributes = True
 
 
+# Схемы голосований
 class PollResponse(BaseModel):
     id: int
     title: str
@@ -45,3 +51,7 @@ class PollResponse(BaseModel):
     class Config:
         from_attributes = True
 
+# Схемы результатов голосований
+
+
+# Схемы ивентов
