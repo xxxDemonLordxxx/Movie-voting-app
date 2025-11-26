@@ -2,9 +2,14 @@
   <div id="app">
     <header class="header">
       <nav class="nav">
-        <router-link to="/" class="nav-link">HOME</router-link>
-        <router-link to="/suggest" class="nav-link">SUBMISSIONS</router-link>
-        <router-link to="/calendar" class="nav-link">CALENDAR</router-link>
+        <router-link to="/" class="nav-link">
+          <img class="nav-image" src='/public/navigationicons/home.ico'/>HOME</router-link>
+        <router-link to="/calendar" class="nav-link">
+          <img class="nav-image" src='/public/navigationicons/calendar.ico'/>CALENDAR</router-link>
+        <router-link to="/about_us" class="nav-link">
+          <img class="nav-image" src='/public/navigationicons/us.ico'/>ABOUT US
+            </router-link>
+          
       </nav>
     </header>
     <main class="main">
@@ -34,7 +39,7 @@ export default {
 
 .header {
   background-color: rgb(255, 217, 223);
-  padding: 1rem 0;
+  padding: 50px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   position: sticky;
   top: 0;
@@ -47,6 +52,8 @@ export default {
   display: flex;
   gap: 1rem;
   padding: 0 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .nav-link {
@@ -56,9 +63,12 @@ export default {
   transition: background-color 0.3s;
   font-size: 3rem;
   text-align: center;
-  flex: 1;
+  flex: 0.5;
   text-decoration: solid;
   font-weight: bolder;
+  display: flex;
+  flex-direction: column;
+ 
 }
 
 .nav-link:hover,
@@ -72,10 +82,21 @@ export default {
   padding: 1.5rem 1rem;
 }
 
+.nav-image {
+  vertical-align: middle;
+  max-width: 60%;
+  max-height: 60%;
+  display: inline-block;
+  align-self: center;
+}
+
+
 /* Мобильные стили */
 @media (max-width: 768px) {
   .header {
     padding: 0.75rem 0;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
   
   .nav {
@@ -102,6 +123,7 @@ export default {
   .nav-link {
     padding: 0.5rem;
     font-size: 0.8rem;
+    flex-direction: column;
   }
 }
 </style>
