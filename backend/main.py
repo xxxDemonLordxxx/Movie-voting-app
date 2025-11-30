@@ -124,32 +124,36 @@ def create_new_poll(poll: schemas.PollCreate, db: Session = Depends(get_db)):
 
 @app.patch( # !!!!!!!!!!!!!!!!!!!!!!
     path="/polls/start/{poll_id}",
-    response_model=str,
+    response_model=schemas.PollResponse,
     status_code=status.HTTP_200_OK,
     summary="Start voting",
     responses={},
     tags=["Polls"]
 )
-def start_poll(poll_name: str, db: Session = Depends(get_db)):
+def start_poll(poll_id: int, db: Session = Depends(get_db)):
     try:
-        polls = db.query(models.Poll).all()
-        return ""
+        poll = crud.start_poll(db=db, poll_id=poll_id)
+        if not poll:
+            raise HTTPException(status_code=404, detail="Poll not found")
+        return crud.get_poll_data(db=db, poll_id=poll.id)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.patch( # !!!!!!!!!!!!!!!!!!!!!!
     path="/polls/stop/{poll_id}",
-    response_model=str,
+    response_model=schemas.PollResponse,
     status_code=status.HTTP_200_OK,
     summary="Stop voting",
     responses={},
     tags=["Polls"]
 )
-def stop_poll(poll_name: str, db: Session = Depends(get_db)):
+def stop_poll(poll_id: int, db: Session = Depends(get_db)):
     try:
-        polls = db.query(models.Poll).all()
-        return ""
+        poll = crud.stop_poll(db=db, poll_id=poll_id)
+        if not poll:
+            raise HTTPException(status_code=404, detail="Poll not found")
+        return poll
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -189,26 +193,6 @@ def add_votes(ballot: list[schemas.VoteCreate], db: Session = Depends(get_db)):
 
 
 
-
-
-
-
-# Результаты голосований
-
-@app.get( # !!!!!!!!!!!!!!!!!!!!!!
-    path="/polls/results/{poll_id}",
-    response_model=str,
-    status_code=status.HTTP_200_OK,
-    summary="See poll results",
-    responses={},
-    tags=["Poll results"]
-)
-def get_poll_results(db: Session = Depends(get_db)):
-    try:
-        polls = db.query(models.Poll).all()
-        return ""
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post( # !!!!!!!!!!!!!!!!!!!!!!
     path="/polls/confirm/{poll_id}",
