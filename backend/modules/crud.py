@@ -61,8 +61,31 @@ def get_all_polls(db: Session) -> List[models.Poll]:
 def get_poll_data(db: Session, poll_id: int) -> models.Poll:
     return db.query(models.Poll).filter(models.Poll.id == poll_id).first()
 
-# Результаты голосования
 
+
+def add_new_vote(db: Session, vote: schemas.VoteCreate, points: int) -> models.Vote:
+    db_vote = models.Vote(
+        poll_id = vote.poll_id,
+        points = points,
+        submission_id = vote.submission_id,
+        rank = vote.rank,
+        created_at = datetime.now()
+    )
+    db.add(db_vote)
+    db.commit()
+    db.refresh(db_vote)
+    return db_vote
+
+def update_vote(db: Session, submission_id: int, points: int):
+    submission = db.query(models.Submission).filter(models.Submission.id == submission_id).first()
+    if not submission:
+        return None
+
+    submission.current_votes = submission.current_votes + points
+
+    db.commit()
+    db.refresh(submission)
+    return submission
 
 # Submissions
 
@@ -104,8 +127,13 @@ def get_submission_data_by_id(db: Session, submission_id: int) -> models.Submiss
     return db.query(models.Submission).filter(models.Submission.id == submission_id).first()
 
 
-# Фильмы
 
+
+
+
+# Фильмы
+def get_movie_data_by_id(db: Session, movie_id: int) -> models.Movie:
+    return db.query(models.Movie).filter(models.Movie.id == movie_id).first()
 
 # Календарь
 

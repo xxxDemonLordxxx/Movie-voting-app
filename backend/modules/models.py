@@ -49,13 +49,14 @@ class PollState(Base):
     name = Column(String, index=True)
     
 
-class Ballot(Base):
-    __tablename__ = "ballots"
+class Vote(Base):
+    __tablename__ = "votes"
     
     id = Column(Integer, primary_key=True, index=True)
-    voter_id = Column(Integer, index=True)
+    poll_id = Column(Integer, ForeignKey("polls.id"), index=True)
     submission_id = Column(Integer, ForeignKey("submissions.id"))
     rank = Column(Integer)
+    points = Column(Integer)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 class Event(Base):

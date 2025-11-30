@@ -103,12 +103,24 @@ class PollStateResponse(PollStateBase):
 
 
 
+# Схемы голосования (от юзера) - ballots
+  
+class VoteBase(BaseModel):
+    poll_id: int
+    submission_id: int
+    rank: int
 
+class VoteCreate(VoteBase):
+    pass
 
+class VoteResponse(BaseModel):
+    id: int
+    poll_id: int
+    submission_id: int
+    rank: int
+    points: int = 0
+    created_at: datetime
 
-
-
-# Схемы результатов голосований
-
+    model_config = ConfigDict(from_attributes=True)
 
 # Схемы ивентов
