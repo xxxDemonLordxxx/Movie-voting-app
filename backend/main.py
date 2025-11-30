@@ -122,7 +122,7 @@ def create_new_poll(poll: schemas.PollCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.patch(
+@app.patch( # !!!!!!!!!!!!!!!!!!!!!!
     path="/polls/start/{poll_id}",
     response_model=str,
     status_code=status.HTTP_200_OK,
@@ -138,7 +138,7 @@ def start_poll(poll_name: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.patch(
+@app.patch( # !!!!!!!!!!!!!!!!!!!!!!
     path="/polls/stop/{poll_id}",
     response_model=str,
     status_code=status.HTTP_200_OK,
@@ -155,7 +155,37 @@ def stop_poll(poll_name: str, db: Session = Depends(get_db)):
 
 
 
+ # Голосование
 
+
+@app.post(
+    path="/polls/vote",
+    response_model=List[schemas.SubmissionResponse],
+    status_code=status.HTTP_201_CREATED,
+    summary="Cast votes",
+    responses={},
+    tags=["Polls"]
+)
+def add_votes(ballot: list[schemas.VoteCreate], db: Session = Depends(get_db)):
+    try:
+        poll_id = ballot[0].poll_id if ballot else None
+
+        if not ballot:
+            raise HTTPException(status_code=400, detail="No votes provided")
+        submissions_count = len(ballot)
+        points = {rank: submissions_count - rank + 1 for rank in range(1, submissions_count + 1)}
+
+        vote_responses = []
+        for vote in ballot:
+            point = points[vote.rank]
+            vote_response = crud.add_new_vote(db=db, vote=vote, points = point)
+            vote_responses.append(vote_response)
+            crud.update_vote(db=db, submission_id=vote.submission_id, points = point) 
+ 
+        return crud.get_all_submissions_by_poll(db=db, poll_id=poll_id)
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 
@@ -165,7 +195,7 @@ def stop_poll(poll_name: str, db: Session = Depends(get_db)):
 
 # Результаты голосований
 
-@app.get(
+@app.get( # !!!!!!!!!!!!!!!!!!!!!!
     path="/polls/results/{poll_id}",
     response_model=str,
     status_code=status.HTTP_200_OK,
@@ -180,7 +210,7 @@ def get_poll_results(db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post(
+@app.post( # !!!!!!!!!!!!!!!!!!!!!!
     path="/polls/confirm/{poll_id}",
     response_model=str,
     status_code=status.HTTP_200_OK,
@@ -212,7 +242,7 @@ def confirm_poll_results(db: Session = Depends(get_db)):
 # Предложения
 
 
-@app.get(
+@app.get( 
     path="/submissions/{submission_id}",
     response_model=schemas.SubmissionResponse,
     status_code=status.HTTP_200_OK,
@@ -259,28 +289,32 @@ def create_new_submission(submission: schemas.SubmissionCreate, db: Session = De
 
 # Фильмы + TMDB API 
 
-@app.get(
-    path="/films/{film_id}",
-    response_model=str,
+@app.get( # !!!!!!!!!!!!!!!!!!!!!! - for TMDB integration
+    path="/films/{movie_id}",
+    response_model=schemas.MovieResponse,
     status_code=status.HTTP_200_OK,
     summary="See movie data by id",
     responses={},
-    tags=["Films"]
+    tags=["Movies"]
 )
-def get_film_data(film_id: int, db: Session = Depends(get_db)):
+def get_film_data(movie_id: int, db: Session = Depends(get_db)):
     try:
-        submissions = db.query(models.Submission).all()
-        return "data"
+        movie = crud.get_movie_data_by_id(db=db, movie_id=movie_id)
+        if not movie:
+            raise HTTPException(status_code=404, detail="Movie not found")
+        return movie
+    except HTTPException:
+        return
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get(
-    path="/films/search/{film_name_query}",
+@app.get( # !!!!!!!!!!!!!!!!!!!!!! - for TMDB integration
+    path="/films/search/{movie_name_query}",
     response_model=str,
     status_code=status.HTTP_200_OK,
     summary="Find movie by word query",
     responses={},
-    tags=["Films"]
+    tags=["Movies"]
 )
 def find_film_via_query(film_name_query: int, db: Session = Depends(get_db)):
     try:
@@ -297,7 +331,7 @@ def find_film_via_query(film_name_query: int, db: Session = Depends(get_db)):
 # Календарь
 
 
-@app.get(
+@app.get( # !!!!!!!!!!!!!!!!!!!!!!
     path="/events",
     response_model=str,
     status_code=status.HTTP_200_OK,
@@ -313,7 +347,7 @@ def get_all_events(db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
     
 
-@app.get(
+@app.get( # !!!!!!!!!!!!!!!!!!!!!!
     path="/events/current",
     response_model=str,
     status_code=status.HTTP_200_OK,
@@ -329,7 +363,7 @@ def get_current_events(db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
     
 
-@app.get(
+@app.get( # !!!!!!!!!!!!!!!!!!!!!!
     path="/events/{event_id}",
     response_model=str,
     status_code=status.HTTP_200_OK,
@@ -345,7 +379,7 @@ def get_event_data(db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
     
 
-@app.post(
+@app.post( # !!!!!!!!!!!!!!!!!!!!!!
     path="/events/new",
     response_model=str,
     status_code=status.HTTP_200_OK,
@@ -361,7 +395,7 @@ def create_event(db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.delete(
+@app.delete( # !!!!!!!!!!!!!!!!!!!!!!
     path="/events/delete/{event_id}",
     response_model=str,
     status_code=status.HTTP_200_OK,
@@ -376,7 +410,7 @@ def delete_event(db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.patch(
+@app.patch( # !!!!!!!!!!!!!!!!!!!!!!
     path="/events/edit/{event_id}",
     response_model=str,
     status_code=status.HTTP_200_OK,
@@ -410,85 +444,6 @@ def get_admin_rights(password, db: Session = Depends(get_db)):
             return "Nope try again or ask your club head"
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-""" 
-
-@app.post("/suggestions")
-def add_suggestion(suggestion: MovieSuggestionCreate, db: Session = Depends(get_db)):
-    try:
-        # Создаем фильм
-        db_movie = models.Movie(
-            title=suggestion.title,
-            description=suggestion.description
-        )
-        db.add(db_movie)
-        db.commit()
-        db.refresh(db_movie)
-        
-        # Создаем предложение
-        db_suggestion = models.Suggestion(
-            movie_id=db_movie.id,
-            suggester_name=None if suggestion.is_anonymous else suggestion.suggester_name,
-            is_anonymous=suggestion.is_anonymous
-        )
-        db.add(db_suggestion)
-        db.commit()
-        db.refresh(db_suggestion)
-        
-        return {"message": "Movie suggestion added", "id": db_suggestion.id}
-    except Exception as e:
-        db.rollback()
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/suggestions")
-def get_suggestions(db: Session = Depends(get_db)):
-    try:
-        suggestions = db.query(models.Suggestion).join(models.Movie).all()
-        return [SuggestionResponse.from_orm(suggestion) for suggestion in suggestions]
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/suggestions/{suggestion_id}")
-def get_suggestion_detail(suggestion_id: int, db: Session = Depends(get_db)):
-    try:
-        suggestion = db.query(models.Suggestion)\
-            .join(models.Movie)\
-            .filter(models.Suggestion.id == suggestion_id)\
-            .first()
-        if not suggestion:
-            raise HTTPException(status_code=404, detail="Suggestion not found")
-        return SuggestionResponse.from_orm(suggestion)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e)) """
-
-
-
 
 
 
