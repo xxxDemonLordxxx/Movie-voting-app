@@ -87,6 +87,31 @@ def update_vote(db: Session, submission_id: int, points: int):
     db.refresh(submission)
     return submission
 
+
+def start_poll(db: Session, poll_id: int) -> models.Poll:
+    poll = db.query(models.Poll).filter(models.Poll.id == poll_id).first()
+    if not poll:
+        return None
+
+    if poll.state_id == 1:
+        poll.state_id = 2
+        db.commit()
+        db.refresh(poll)
+    return db.query(models.Poll).filter(models.Poll.id == poll_id).options(selectinload(models.Poll.state)).first()
+
+def stop_poll(db: Session, poll_id: int) -> models.Poll: 
+    poll = db.query(models.Poll).filter(models.Poll.id == poll_id).first()
+    if not poll:
+        return None
+
+    if poll.state_id == 2:
+        poll.state_id = 3
+        db.commit()
+        db.refresh(poll)
+
+    return db.query(models.Poll).filter(models.Poll.id == poll_id).options(selectinload(models.Poll.state)).first()
+
+
 # Submissions
 
 def add_new_submission(db: Session, submission: schemas.SubmissionCreate) -> models.Submission:
