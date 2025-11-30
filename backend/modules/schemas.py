@@ -1,55 +1,112 @@
-from pydantic import BaseModel
-from typing import Optional
+from pydantic import BaseModel, ConfigDict
+from typing import Optional, List
 from datetime import datetime
 
 # Схемы главной
 
 # Схемы фильмов
 class MovieBase(BaseModel):
+    tmdb_id: Optional[int] = None
     title: str
-    description: str
+    language: Optional[str] = 'en-US'
 
-class MovieResponse(BaseModel):
-    id: int
-    title: str
-    description: str
-    created_at: datetime
 
-    class Config:
-        from_attributes = True
-
-# Схемы заявок
-class SuggestionBase(BaseModel):
-    suggester_name: Optional[str] = None
-    is_anonymous: bool = False
-
-class MovieSuggestionCreate(MovieBase, SuggestionBase):
+class MovieCreate(BaseModel):
     pass
 
 
-class SuggestionResponse(BaseModel):
+class MovieResponse(BaseModel):
     id: int
-    movie_id: int
-    suggester_name: Optional[str]
-    is_anonymous: bool
+    tmdb_id: Optional[int] = None
+    title: str
+    language: Optional[str] = 'en-US'
+    # дописать инфу из tmdb
+
+    class Config:
+        from_attributes = True
+
+
+
+
+
+# Схемы заявок
+class SubmissionBase(BaseModel):
+    poll_id: int
+    author: Optional[str] = None
+    comment: str
+    image_url: Optional[str] = None
+
+
+class SubmissionCreate(SubmissionBase):
+    movie: MovieBase
+
+
+class SubmissionResponse(BaseModel):
+    id: int
+    poll_id: int
+    author: Optional[str] = None
+    comment: str
+    image_url: Optional[str] = None
+    current_votes: int = 0
     created_at: datetime
     movie: MovieResponse
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
+
+
+
+
+
 
 
 # Схемы голосований
+class PollBase(BaseModel):
+    title: str
+    start: datetime
+    end: datetime
+    state_id: int
+
+class PollCreate(PollBase):
+    pass
+
 class PollResponse(BaseModel):
     id: int
     title: str
-    state: str
-    poll_start: datetime = None
-    poll_end: datetime = None
+    start: datetime
+    end: datetime
+    state_id: int
     created_at: datetime
+    state_name: str
+    
+    model_config = ConfigDict(from_attributes=True)
 
-    class Config:
-        from_attributes = True
+
+
+
+
+
+
+
+# Состояния голосований
+class PollStateBase(BaseModel):
+    name: str
+
+class PollStateCreate(PollStateBase):
+    pass
+
+class PollStateResponse(PollStateBase):
+    id: int
+    
+    model_config = ConfigDict(from_attributes=True)
+
+
+
+
+
+
+
+
+
 
 # Схемы результатов голосований
 

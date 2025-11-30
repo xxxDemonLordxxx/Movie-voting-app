@@ -8,10 +8,11 @@ class Submission(Base):
     __tablename__ = "submissions"
     
     id = Column(Integer, primary_key=True, index=True)
+    poll_id = Column(Integer, ForeignKey("polls.id"))
     movie_id = Column(Integer, ForeignKey("movies.id"))
-    suggester_name = Column(String, nullable=True)
+    author = Column(String, nullable=True)
     comment = Column(Text)
-    image_id = Column(Integer, nullable=True)
+    image_url = Column(String, nullable=True)
     current_votes = Column(Integer, nullable=True, default=0)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
@@ -30,18 +31,23 @@ class Poll(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
-    state = Column(Integer, ForeignKey("poll_states.id"))
-    poll_start = Column(DateTime(timezone=True))
-    poll_end = Column(DateTime(timezone=True))
+    state_id = Column(Integer, ForeignKey("poll_states.id"))
+    start = Column(DateTime(timezone=True))
+    end = Column(DateTime(timezone=True))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    state = relationship("PollState", backref="polls", lazy="joined")
+    
+    @property
+    def state_name(self):
+        return self.state.name if self.state else None
 
-
-class Poll_state(Base):
+class PollState(Base):
     __tablename__ = "poll_states"
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
-
+    
 
 class Ballot(Base):
     __tablename__ = "ballots"
@@ -65,7 +71,7 @@ class Event(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
-class Event_type(Base):
+class EventType(Base):
     __tablename__ = "event_types"
     
     id = Column(Integer, primary_key=True, index=True)

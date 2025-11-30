@@ -1,9 +1,11 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from typing import Optional, List
 import modules.models as models
-from modules.database import engine, get_db
+from modules.database import engine, get_db, SessionLocal
 from modules.minio_db import minio_client
-from modules.schemas import MovieSuggestionCreate, SuggestionResponse, PollResponse
+import modules.schemas as schemas
+import modules.crud as crud
 from fastapi.middleware.cors import CORSMiddleware
 
 models.Base.metadata.create_all(bind=engine)
@@ -18,6 +20,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+@app.on_event("startup")
+def startup_event():
+    """
+    Initialize database with default data on application startup
+    """
+    db = SessionLocal()
+    try:
+        crud.init_poll_states(db)
+    finally:
+        db.close()
+
+
+# ---------------------------------------------------- Endpoints ------------------------------------------------------------- #
 @app.get("/")
 def read_root():
     return {"message": "Movie Suggestion API"}
@@ -42,11 +58,18 @@ def get_posters(db: Session = Depends(get_db)):
 
 
 
+
+
+
+
+
+
+
 # Голосования
 
 @app.get(
     path="/polls",
-    response_model=PollResponse,
+    response_model=List[schemas.PollResponse],
     status_code=status.HTTP_200_OK,
     summary="See all polls",
     responses={},
@@ -54,23 +77,47 @@ def get_posters(db: Session = Depends(get_db)):
 )
 def get_polls(db: Session = Depends(get_db)):
     try:
-        polls = db.query(models.Poll).all()
-        return [PollResponse.from_orm(poll) for poll in polls]
+        polls = crud.get_all_polls(db=db)
+        if not polls:
+            raise HTTPException(status_code=404, detail="polls not found")
+        return polls
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get(
+    path="/polls/{poll_id}",
+    response_model=list[schemas.SubmissionResponse],
+    status_code=status.HTTP_200_OK,
+    summary="See all submissions for a poll",
+    responses={},
+    tags=["Polls"]
+)
+def get_submissions_by_poll(poll_id: int, db: Session = Depends(get_db)):
+    try:
+        submissions = crud.get_all_submissions_by_poll(db=db, poll_id=poll_id)
+        return submissions
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post(
     path="/polls/new",
-    response_model=str,
-    status_code=status.HTTP_200_OK,
+    response_model=schemas.PollResponse,
+    status_code=status.HTTP_201_CREATED,
     summary="Create new poll",
     responses={},
     tags=["Polls"]
 )
-def create_new_poll(poll_name: str, db: Session = Depends(get_db)):
+def create_new_poll(poll: schemas.PollCreate, db: Session = Depends(get_db)):
     try:
-        polls = db.query(models.Poll).all()
-        return ""
+        new_poll = crud.add_new_poll(db=db, poll=poll)
+
+        db.refresh(new_poll, ['state'])      
+
+        return new_poll
+    
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -111,6 +158,11 @@ def stop_poll(poll_name: str, db: Session = Depends(get_db)):
 
 
 
+
+
+
+
+
 # Результаты голосований
 
 @app.get(
@@ -143,27 +195,26 @@ def confirm_poll_results(db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# Заявки
 
-@app.get(
-    path="/submissions/{poll_id}",
-    response_model=list,
-    status_code=status.HTTP_200_OK,
-    summary="See all submissions for a poll",
-    responses={},
-    tags=["Submissions"]
-)
-def get_submissions(poll_id: int, db: Session = Depends(get_db)):
-    try:
-        submissions = db.query(models.Submission).all()
-        return submissions
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Предложения
 
 
 @app.get(
     path="/submissions/{submission_id}",
-    response_model=str,
+    response_model=schemas.SubmissionResponse,
     status_code=status.HTTP_200_OK,
     summary="See submission data",
     responses={},
@@ -171,26 +222,37 @@ def get_submissions(poll_id: int, db: Session = Depends(get_db)):
 )
 def get_submission(submission_id: int, db: Session = Depends(get_db)):
     try:
-        submissions = db.query(models.Submission).all()
-        return "data"
+        submission = crud.get_submission_data_by_id(db=db, submission_id=submission_id)
+        if not submission:
+            raise HTTPException(status_code=404, detail="Submission not found")
+        return submission
+       
+    except HTTPException:
+        raise
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post(
     path="/submissions/new",
-    response_model=str,
-    status_code=status.HTTP_200_OK,
+    response_model=schemas.SubmissionResponse,
+    status_code=status.HTTP_201_CREATED,
     summary="Create a new submission",
     responses={},
     tags=["Submissions"]
 )
-def create_new_submission(db: Session = Depends(get_db)):
+def create_new_submission(submission: schemas.SubmissionCreate, db: Session = Depends(get_db)):
     try:
-        submissions = db.query(models.Submission).all()
-        return "sss"
+        new_submission = crud.add_new_submission(db=db, submission=submission)   
+        return new_submission
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+
+
+
+
 
 
 
@@ -205,7 +267,7 @@ def create_new_submission(db: Session = Depends(get_db)):
     responses={},
     tags=["Films"]
 )
-def get_film_by_id(film_id: int, db: Session = Depends(get_db)):
+def get_film_data(film_id: int, db: Session = Depends(get_db)):
     try:
         submissions = db.query(models.Submission).all()
         return "data"
@@ -349,8 +411,6 @@ def get_admin_rights(password, db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
    
-
-
 
 
 
