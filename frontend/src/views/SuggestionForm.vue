@@ -1,7 +1,13 @@
 <template>
   <div class="suggestion-form">
-    <h1>HERE YOU CAN OFFER YOUR OWN PICK</h1>
-
+    <div class="page-header">
+      <router-link to="/" class="back-button">← BACK</router-link>
+      <div class="title">
+        <span class="poll-title">DECEMBER</span> 
+        <span class="page-title">POLL</span>
+      </div>
+    </div>
+    <p class="page-title">HERE YOU CAN OFFER YR OWN PICK</p>
     <form @submit.prevent="submitSuggestion" class="form">
       <div class="form-group">
         <label for="suggesterName">YOUR NAME:</label>
@@ -120,6 +126,7 @@ export default {
     }
   }
 }
+
 </script>
 
 <style scoped>
@@ -153,7 +160,7 @@ label {
 .form-input,
 .form-textarea {
   width: 100%;
-  padding: 10px;
+  padding: 5px;
   border: 1px solid #ddd;
   font-size: 16px;
 }
@@ -218,6 +225,36 @@ label {
 .btn-secondary:hover {
   background-color: #7f8c8d;
 }
+
+.back-button {
+  padding-bottom: 30px;
+  color:#0f6f62;
+}
+
+.page-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-top: 2cap;
+}
+.poll-title {
+  color: rgba(149, 91, 153, 1);
+}
+
+.page-title {
+  color: aliceblue;
+  padding-bottom: 1cap;
+}
+.title {
+  inset-inline: auto;
+  
+}
+
+span {
+  display: inline-block;
+  padding: 5px;
+}
+
 
 /* Мобильные стили */
 @media (max-width: 768px) {

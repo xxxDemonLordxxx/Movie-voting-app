@@ -56,8 +56,9 @@ export default {
   margin: 0 auto;
 }
 
-.back-button {
+.btn-secondary {
   margin-bottom: 2rem;
+  color:#0f7f70;
 }
 
 .loading, .error {

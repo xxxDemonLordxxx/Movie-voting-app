@@ -8,8 +8,7 @@
           <img class="nav-image" src='/public/navigationicons/calendar.ico'/>CALENDAR</router-link>
         <router-link to="/about_us" class="nav-link">
           <img class="nav-image" src='/public/navigationicons/us.ico'/>ABOUT US
-            </router-link>
-          
+            </router-link>          
       </nav>
     </header>
     <main class="main">
@@ -39,7 +38,7 @@ export default {
 
 .header {
   background-color: rgb(255, 217, 223);
-  padding: 50px;
+  padding: 25px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   position: sticky;
   top: 0;
@@ -84,8 +83,6 @@ export default {
 
 .nav-image {
   vertical-align: middle;
-  max-width: 60%;
-  max-height: 60%;
   display: inline-block;
   align-self: center;
 }
@@ -95,8 +92,8 @@ export default {
 @media (max-width: 768px) {
   .header {
     padding: 0.75rem 0;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    padding-left: 1.rem;
+    padding-right: 1.rem;
   }
   
   .nav {
@@ -116,14 +113,14 @@ export default {
 
 @media (max-width: 480px) {
   .nav {
-    flex-direction: column;
+    
     gap: 0.25rem;
   }
   
   .nav-link {
     padding: 0.5rem;
     font-size: 0.8rem;
-    flex-direction: column;
+
   }
 }
 </style>
