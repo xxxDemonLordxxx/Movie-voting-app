@@ -1,10 +1,9 @@
 <template>
   <div class="home">
-    <h1>MONTHLY OFC VOTING</h1>
+    <h1>CURATORIAL OFC VOTING</h1>
     <p>Thats how we doing it round here. All because we are so fun and democratic.</p>
     <div class="actions">
-      <router-link to="/suggest" class="btn btn-primary">OFFER YOUR OWN PICK</router-link>
-      <router-link to="/vote" class="btn btn-primary">VOTE</router-link>
+      <router-link to="/polls" class="btn btn-primary">TO THE POLLS</router-link>
     </div>
     
     <div class="suggestions-section">
@@ -71,6 +70,7 @@ export default {
     }
   }
 }
+
 </script>
 
 <style scoped>
