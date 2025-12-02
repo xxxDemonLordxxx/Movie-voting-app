@@ -9,7 +9,7 @@ import Polls from '@/views/Polls.vue'
 
 const routes = [
   { path: '/', name: 'home', component: HomePage },
-  { path: '/suggest', name: 'suggest', component: SuggestionForm },
+  { path: '/submissions/new', name: 'submit', component: SuggestionForm },
   { path: '/suggestion/:id', name: 'suggestion-detail', component: SuggestionDetail },
   { path: '/calendar', name: 'calendar', component: Calendar},
   { path: '/about_us', name: 'about-us', component: AboutUs},

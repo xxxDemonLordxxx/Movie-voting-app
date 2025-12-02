@@ -7,17 +7,102 @@
           <span class="header-text2">TO VOTE</span>
         </div>  
         <p1 class="info-text">Pick an active poll or look through previous ones</p1>
-        <router-link to="/voting" class="poll-box">
-            <div class="title">
-                <span class="poll-title">DECEMBER</span> 
-                <span class="poll-status">VOTE</span>
-            </div>
-            <p class="text">DATE - DATE</p>
-        </router-link>
+        
+        <button id="showDialog">New event</button>
+        <dialog id="CreatePoll">
+          <form>
+            <button 
+              type="submit" 
+              aria-label="close"
+              formmethod="dialog"
+              formnovalidate>X
+            </button>
+            <h2 id="CreatePollid">Create new poll</h2>
+            <input
+              id="pollTitle"
+              v-model="form.pollTitle"
+              placeholder="Write the title of the poll"
+              class="form-input"
+              required
+            />
+            <button type="submit" formmethod="post">Submit</button>
+          </form>
+        </dialog>
+
+
+
+
+        <div class="suggestions-section">
+      <h2>submissions</h2>
+      <div v-if="loading" class="loading">LOADING...</div>
+      <div v-else-if="error" class="error">
+        {{ error }}
+        <button @click="fetchPolls" class="btn btn-secondary">TRY AGAIN</button>
+      </div>
+      <div v-else-if="polls.length === 0" class="empty">NO POLLS</div>
+      <div v-else class="poll-list">
+        <PollUnit 
+          v-for="poll in polls" 
+          :key="poll.id"
+          :poll="polls"
+          @click="viewPolls(poll.id)"
+        />
+      </div>
+    </div>
+      
     </div>
 </div>   
 </template>
 
+<script>
+import PollUnit from '@/components/PollUnit.vue';
+const showButton = document.getElementById("showDialog");
+const CreatePoll = document.getElementById("CreatePoll");
+
+showButton.addEventListener("click", () => {
+    CreatePoll.showModal(); });
+
+export default {
+  name: 'Polls',
+  components: {
+    PollUnit
+  },
+  data() {
+    return {
+      polls: [],
+      loading: false,
+      error: null,
+      form: {
+        pollTitle: '',}
+    }
+  },
+  async mounted() {
+    await this.fetchPolls()
+  },
+  methods: {
+    async fetchPolls() {
+      this.loading = true
+      this.error = null
+      try {
+        const response = await fetch('http://localhost:8000/polls')
+        if (response.ok) {
+          this.polls = await response.json()
+          console.log('Loaded polls:', this.polls) // Для отладки
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+      } catch (error) {
+        console.error('Error loading polls:', error)
+        this.error = 'Mistake when loading the movie list: ' + error.message
+      } finally {
+        this.loading = false
+      }
+    },
+    viewPolls(id) {
+      this.$router.push(`/polls/${poll_id}`)
+    }
+  },
+</script>
 
 <style>
 .text{
