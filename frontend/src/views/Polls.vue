@@ -6,28 +6,12 @@
           <span class="header-text">PICK A POLL</span>
           <span class="header-text2">TO VOTE</span>
         </div>  
-        <p1 class="info-text">Pick an active poll or look through previous ones</p1>
+        <p class="info-text">Pick an active poll or look through previous ones</p>
         
-        <button id="showDialog">New event</button>
-        <dialog id="CreatePoll">
-          <form>
-            <button 
-              type="submit" 
-              aria-label="close"
-              formmethod="dialog"
-              formnovalidate>X
-            </button>
-            <h2 id="CreatePollid">Create new poll</h2>
-            <input
-              id="pollTitle"
-              v-model="form.pollTitle"
-              placeholder="Write the title of the poll"
-              class="form-input"
-              required
-            />
-            <button type="submit" formmethod="post">Submit</button>
-          </form>
-        </dialog>
+        
+        
+
+        <NewPollButton />
 
 
 
@@ -56,24 +40,18 @@
 
 <script>
 import PollUnit from '@/components/PollUnit.vue';
-const showButton = document.getElementById("showDialog");
-const CreatePoll = document.getElementById("CreatePoll");
-
-showButton.addEventListener("click", () => {
-    CreatePoll.showModal(); });
-
+import NewPollButton from '@/components/NewPollButton.vue';
 export default {
   name: 'Polls',
   components: {
-    PollUnit
+    PollUnit,
+    NewPollButton
   },
   data() {
     return {
       polls: [],
       loading: false,
       error: null,
-      form: {
-        pollTitle: '',}
     }
   },
   async mounted() {
@@ -102,9 +80,11 @@ export default {
       this.$router.push(`/polls/${poll_id}`)
     }
   },
+}
 </script>
 
 <style>
+
 .text{
 color: gray;
 font-size: 12px;
