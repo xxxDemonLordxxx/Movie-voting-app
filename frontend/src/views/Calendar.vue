@@ -1,9 +1,9 @@
 <template> 
    <div class="text">
-        <p class="text">OUR SEXY (VISUALLY) EVENT SCALENDAR (CONTENTS MAY VARY)</p>
+        <h1 class="calendar-title">EVENT CALENDAR</h1>
    </div> 
    <div class="events-list"><Events></Events></div>
-
+    <div class="events-list"><Events></Events></div>
 </template>
 
 <script>
@@ -22,10 +22,9 @@ html, body {
     width: 100%;
 }
 
-.text{
-color: white;
-font-size: 16px;
-position: center;
+.calendar-title {
+  color: white;
+  position: center;
 }
 
 .events-list {
@@ -34,7 +33,4 @@ position: center;
   flex-direction: row;
 }
 
-p {
-  word-break: break-all;
-}
 </style>

@@ -37,12 +37,13 @@ export default {
 }
 
 .header {
-  background-color: rgb(255, 217, 223);
+  background-color: hsl(330, 100%, 88%);
   padding: 25px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   position: sticky;
   top: 0;
   z-index: 100;
+  filter: drop-shadow(0.05rem 0.1rem 0.2rem  violet)
 }
 
 .nav {
@@ -51,8 +52,7 @@ export default {
   display: flex;
   gap: 1rem;
   padding: 0 1rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
+
 }
 
 .nav-link {
@@ -67,12 +67,11 @@ export default {
   font-weight: bolder;
   display: flex;
   flex-direction: column;
- 
 }
 
 .nav-link:hover,
 .nav-link.router-link-active {
-  background-color: pink;
+  background-color: hsl(346, 100%, 83%);
 }
 
 .main {
@@ -85,6 +84,7 @@ export default {
   vertical-align: middle;
   display: inline-block;
   align-self: center;
+  filter: drop-shadow(0.7rem 0.7rem 0.7rem  violet)
 }
 
 
@@ -92,18 +92,19 @@ export default {
 @media (max-width: 768px) {
   .header {
     padding: 0.75rem 0;
-    padding-left: 1.rem;
-    padding-right: 1.rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
   
   .nav {
-    gap: 0.5rem;
+    gap: 0.3rem;
     padding: 0 0.75rem;
   }
   
   .nav-link {
-    padding: 0.6rem 0.5rem;
+    padding: 0.6rem 0.2rem;
     font-size: 0.85rem;
+    
   }
   
   .main {
@@ -118,7 +119,7 @@ export default {
   }
   
   .nav-link {
-    padding: 0.5rem;
+    padding: 0.2rem;
     font-size: 0.8rem;
 
   }

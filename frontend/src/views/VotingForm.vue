@@ -1,6 +1,6 @@
 <template>
   <div class="page-header">
-      <router-link to="/" class="back-button">← BACK</router-link>
+      <router-link to="/polls" class="back-button">← BACK</router-link>
       <div class="title">
         <span class="poll-title">DECEMBER</span> 
         <span class="page-title">POLL</span>
@@ -10,6 +10,7 @@
     <form>
       <div class="input-group">
         <p class="number">1</p>
+        <p class="search-pretty">(</p>
         <textarea
           id="movieDescription"
           placeholder="Search"
@@ -17,10 +18,12 @@
           rows="1"
           class="form-textarea"
         ></textarea>
+        <p class="search-pretty">)</p>
       </div>
 
       <div class="input-group">
         <p class="number">2</p>
+        <p class="search-pretty">(</p>
         <textarea
           id="movieDescription"
           placeholder="Search"
@@ -28,10 +31,12 @@
           rows="1"
           class="form-textarea"
         ></textarea>
+        <p class="search-pretty">)</p>
       </div>
 
       <div class="input-group">
         <p class="number">3</p>
+        <p class="search-pretty">(</p>
         <textarea
           id="movieDescription"
           placeholder="Search"
@@ -39,10 +44,12 @@
           rows="1"
           class="form-textarea"
         ></textarea>
+        <p class="search-pretty">)</p>
       </div>
 
       <div class="input-group">
         <p class="number">4</p>
+        <p class="search-pretty">(</p>
         <textarea
           id="movieDescription"
           placeholder="Search"
@@ -50,6 +57,7 @@
           rows="1"
           class="form-textarea"
         ></textarea>
+        <p class="search-pretty">)</p>
       </div>
 
     </form>
@@ -108,18 +116,29 @@ span {
   justify-content: space-between;
   background-color: white;
   align-items: center;
+  line-height: 1.2
 }
 
 .form-input,
 .form-textarea {
   width: 100%;
-  padding: 10px;
-  border: 2.5px solid gray;
+  border: 0;
   font-size: 16px;
+  font-weight: 600;
+  color: rgb(82, 39, 85);
 }
 
 .number {
   color: black;
-  padding: 5px;
+  padding: 0.3rem;
+}
+
+.search-pretty {
+  color: rgba(149, 91, 153, 1);
+  font-size: 1.50rem;
+  font-weight: 350;
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
 }
 </style>

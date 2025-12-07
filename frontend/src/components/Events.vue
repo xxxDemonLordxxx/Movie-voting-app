@@ -1,20 +1,16 @@
 <template>
-    <div class="container">
-        <p class="header-block">
-            <p>DATE</p>
-            <p>CAT</p>
-        </p>
+    <div class="event-container">
+        <div class="header-block">
+            <p>31/06 17:20</p>
+            <p>MAIN CAMPUS</p>
+        </div>
         <div class="event-block">
-           <div class="event-contents"> 
-                <h1>TITLISSE</h1>
-                <p>descritpion
-                    adsasdadsdddddddddd
-                    sdfsdfsdfsdfvs s s s s s s  s s s s 
-                    sdfsdfsdfsdfsdfsssssssssssssssssss
-                 fsdfsdf
-                </p>
-            </div>
-            <div class="more-button">more burron</div>
+            <h3 class="event-title">LONG ASSASASASSASSASS TITLISSE</h3>
+            <p class="description">desc riD ED DE D A SSSD ASD ASD Asd ASSDSD SSSSSS SSSS SSSSSSSS SSS SSSS tpio fsdfsdf</p>
+
+        </div>
+        <div class="event-block">
+            <div class="more-button">MORE</div>
         </div>
     </div>
 </template>
@@ -26,67 +22,74 @@ html, body {
     width: 100%;
 }
 
-.container{
+.event-container{
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    box-sizing:border-box;
+    height: 10rem;
     width: 100vw;
-    margin-left: 0;
-    position: absolute;
-    left: 0;
-
+    margin-left: -50vw;
+    position: relative;
+    left: 50%;
+    gap: 0.5rem;
 }
 
 .header-block{
-    background: rgba(6, 95, 83, 1);
+    background: rgb(78, 32, 82);
     color:black;
-    left: 0px;
-    height: 10.5rem;
-    inline-size: 25%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     text-align: right;
-    font-size: 23px;
-    color: rgba(244, 233, 172, 1);
+    font-size: 13spx;
+    color: white;
+    border-color: rgb(199, 107, 208);;
+    border-width: 0rem;
+    border-style: dotted;
     
 }
 
 .event-block{
-    background: white;
-    inline-size: 72.5%;
-    display: flex;
-    flex-direction: column;
-    overflow-wrap: break-word;
 
-}
-
-.event-contents{
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    gap: 6%;
-    color: black
+    color: white;
+    border-color: gray;
+    border-width: 0.1rem;
+    border-style: dotted;
+    
+
 }
 
 .more-button{
-    position: absolute;
-    bottom: 0;
-    right: auto;
-    left: auto;
-    width: 72.5%;
-    border-color: rgba(149, 91, 153, 1);
-    border-width: 3.5px;
-    background-color: aliceblue;
-    color: rgba(149, 91, 153, 1);
-    border-style: solid;
+    color: white;
     text-align: center;
-    height: 2rem;
+    font-size: 0.75rem;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    margin: 0.2rem;
+    padding: 0.3rem;
+    background-color: #023730;
 }
 
 h1{
-    font-size: 23px
+    font-size: 23px;
 }
 
+.description{
+    overflow-wrap: break-word;
+    overflow:hidden;
+    padding-left: 0.5rem;
+    text-overflow: ellipsis;
+    font-size: 0.72rem;
+}
 
+.event-title {
+    font-family: "Blackout Two AM";
+    overflow-wrap: break-word;
+    flex-grow: 2;
+    text-overflow: ellipsis;
+    overflow:hidden
+
+}
 </style>

@@ -2,10 +2,10 @@
   <div class="movie-suggestion-card" @click="$emit('click')">
     <div class="card-content">
       <h3 class="movie-title">{{ movieTitle }}</h3>
-      <p class="movie-description">{{ truncatedDescription }}</p>
+      <p class="movie-description">{{ truncatedComment }}</p>
       <div class="suggestion-info">
         <span class="suggester">
-          Offered by: {{ suggesterName }}
+          Offered by: {{ author }}
         </span>
         <span class="date">{{ formattedDate }}</span>
       </div>
@@ -15,37 +15,37 @@
 
 <script>
 export default {
-  name: 'MovieSuggestionCard',
+  name: 'MovieSubmissionCard',
   props: {
-    suggestion: {
+    submission: {
       type: Object,
       required: true
     }
   },
   computed: {
     movieTitle() {
-      return this.suggestion.movie?.title || 'No name'
+      return this.submission?.movie.title || 'No name'
     },
-    movieDescription() {
-      return this.suggestion.movie?.description || 'No description'
+    comment() {
+      return this.submission?.comment || 'No description'
     },
-    truncatedDescription() {
-      const desc = this.movieDescription
+    truncatedComment() {
+      const desc = this.comment
       return desc.length > 150 ? desc.substring(0, 150) + '...' : desc
     },
-    suggesterName() {
-      if (this.suggestion.is_anonymous) {
+    author() {
+      if (this.submission?.is_anonymous) {
         return 'Anonymus'
       }
-      return this.suggestion.suggester_name || 'Anonymus'
+      return this.submission?.author || 'Anonymus'
     },
     formattedDate() {
-      if (!this.suggestion.created_at) return ''
-      return new Date(this.suggestion.created_at).toLocaleDateString('ru-RU')
+      if (!this.submission?.created_at) return ''
+      return new Date(this.submission.created_at).toLocaleDateString('ru-RU')
     }
   }
 }
-</script>
+</script>>
 
 <style scoped>
 .movie-suggestion-card {
