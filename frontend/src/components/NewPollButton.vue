@@ -1,25 +1,33 @@
 <template>
+   <div class="container"> 
     <dialog ref="dialogRef">
-        <form @submit.prevent="handleSubmit">
-            <button 
-                type="button" 
-                aria-label="close"
-                @click="closeDialog"
-                formnovalidate>X
-            </button>
-            <h2 id="CreatePollid">Create new poll</h2>
-            <input
-                id="pollTitle"
-                v-model="form.pollTitle"
-                placeholder="Write the title of the poll"
-                class="form-input"
-                required
-            />
-            <button type="submit">Submit</button>
-        </form>
-    </dialog>
+          <form @submit.prevent="SubmitPoll">
+              <button  
+                  type="button" 
+                  aria-label="close"
+                  @click="closeDialog"
+                  formnovalidate>X
+              </button>
+              <h2 class="text" id="CreatePollid">Create new poll</h2>
+              <input
+                  id="pollTitle"
+                  v-model="form.pollTitle"
+                  placeholder="Write the title of the poll"
+                  class="form-input"
+                  required
+              />
+              <input
+                  type="datetime-local"
+                  id="pollEnd"
+                  name="meeting-time"
+                  value="2018-06-12T19:30"
+                />
+              <button class="btn" @click="SubmitPoll">Submit</button>
+          </form>
+      </dialog>
+    </div>
     <p>
-        <button @click="showDialog">New poll</button>
+        <button class="btn" @click="showDialog">New poll</button>
     </p>
 </template>
 
@@ -33,6 +41,7 @@ export default {
             error: null,
             form: {
                 pollTitle: '',
+                pollEnd: '',
             },
             dialogRef: null
         }
@@ -53,12 +62,8 @@ export default {
                 this.form.pollTitle = ''; // Clear form on close
             }
         },
-        handleSubmit() {
-            this.closeDialog();
-        },
 
-        
-        async submitPoll() {
+        async SubmitPoll() {
           
           this.submitting = true
         
@@ -70,13 +75,14 @@ export default {
             },
             body: JSON.stringify({
               title: this.form.pollTitle,
+              end: this.form.pollEnd,
+              state_id: 0
             })
           })
 
           if (response.ok) {
             alert('Poll Submitted')
-            this.resetForm()
-            this.$router.push('/')
+            this.$router.push('/polls')
           } else {
             throw new Error('SENDING ERROR')
           }
@@ -90,3 +96,40 @@ export default {
     }
 }
 </script>
+
+<style>
+.btn {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: rgba(244, 233, 172, 1);
+  color: rgb(45, 35, 35);
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+  margin: 0.5rem;
+}
+
+.text{
+  margin: 10px;
+  font-size: 22px;
+}
+
+.dialog-box{
+  display: block;
+  margin: auto;
+  width: 60vw;
+}
+
+.form-input{
+  margin: 10px;
+  width: 40vw;
+  
+}
+
+.container{
+  position: auto;
+  max-width: 55vw
+}
+</style>

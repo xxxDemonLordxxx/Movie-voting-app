@@ -6,6 +6,7 @@ import Calendar from '@/views/Calendar.vue'
 import AboutUs from '@/views/AboutUs.vue'
 import VotingForm from '@/views/VotingForm.vue'
 import Polls from '@/views/Polls.vue'
+import SubmissionsList from '@/views/SubmissionsList.vue'
 
 const routes = [
   { path: '/', name: 'home', component: HomePage },
@@ -15,6 +16,7 @@ const routes = [
   { path: '/about_us', name: 'about-us', component: AboutUs},
   { path: '/voting', name: 'voting', component: VotingForm},
   { path: '/polls', name: 'polls', component: Polls},
+  { path: '/polls/:poll_id', name: 'SubmissionsList', component: SubmissionsList},
 ]
 
 const router = createRouter({

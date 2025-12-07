@@ -6,72 +6,11 @@
       <router-link to="/polls" class="btn btn-primary">TO THE POLLS</router-link>
     </div>
     
-    <div class="suggestions-section">
-      <h2>submissions</h2>
-      <div v-if="loading" class="loading">LOADING...</div>
-      <div v-else-if="error" class="error">
-        {{ error }}
-        <button @click="fetchSuggestions" class="btn btn-secondary">TRY AGAIN</button>
-      </div>
-      <div v-else-if="suggestions.length === 0" class="empty">
-        NO SUBMISSIONS YET
-      </div>
-      <div v-else class="suggestions-list">
-        <MovieSuggestionCard 
-          v-for="suggestion in suggestions" 
-          :key="suggestion.id"
-          :suggestion="suggestion"
-          @click="viewSuggestion(suggestion.id)"
-        />
-      </div>
-    </div>
+  
   </div>
 </template>
 
-<script>
-import MovieSuggestionCard from '@/components/MovieSuggestionCard.vue'
 
-export default {
-  name: 'HomePage',
-  components: {
-    MovieSuggestionCard
-  },
-  data() {
-    return {
-      suggestions: [],
-      loading: false,
-      error: null
-    }
-  },
-  async mounted() {
-    await this.fetchSuggestions()
-  },
-  methods: {
-    async fetchSuggestions() {
-      this.loading = true
-      this.error = null
-      try {
-        const response = await fetch('http://localhost:8000/suggestions')
-        if (response.ok) {
-          this.suggestions = await response.json()
-          console.log('Loaded suggestions:', this.suggestions) // Для отладки
-        } else {
-          throw new Error(`HTTP error! status: ${response.status}`)
-        }
-      } catch (error) {
-        console.error('Error loading suggestions:', error)
-        this.error = 'Mistake when loading the movie list: ' + error.message
-      } finally {
-        this.loading = false
-      }
-    },
-    viewSuggestion(id) {
-      this.$router.push(`/suggestion/${id}`)
-    }
-  }
-}
-
-</script>
 
 <style scoped>
 .home {
@@ -132,6 +71,15 @@ export default {
   color: #e74c3c;
 }
 
+h1 {
+  padding-top: 2rem;
+      color: rgba(244, 233, 172, 1);
+
+}
+
+p {
+  color:white;
+}
 /* Мобильные стили */
 @media (max-width: 768px) {
   .home h1 {

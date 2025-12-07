@@ -1,18 +1,22 @@
 <template>
-        <router-link to="/voting" class="poll-box">
+        <div class="poll-box">
             <div class="title">
-                <span class="poll-title">{{pollTitle}}</span> 
-                <span class="poll-status">{{state_name}}</span>
+                <p class="poll-title">{{pollTitle}}</p> 
+                <p class="poll-status">{{state_name}}</p>
             </div>
-            <p class="text">DATE - DATE</p>
-        </router-link>
+            <div class="title date">
+                <p class="text">13 JAN 2025</p> 
+                <p class="text">---</p>
+                <p class="text">13 JAN 2025</p>
+            </div>
+          </div>
 </template>
 
 <script>
 export default {
-  name: 'PollsUnit',
+  name: 'PollUnit',
   props: {
-    polls: {
+    poll: {
       type: Object,
       required: true
     }
@@ -24,7 +28,7 @@ export default {
     state_name() {
       return this.poll?.state_name || 'No description'
     },
-}
+  }
 }
 </script>
 
@@ -35,24 +39,12 @@ export default {
 
 .poll-status {
   color: rgb(0, 0, 0);
-  padding-bottom: 1cap;
 }
 .title {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-}
 
-.layout {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-span {
-  display: inline-block;
-  padding: 5px;
 }
 
 .poll-box {
@@ -60,28 +52,15 @@ span {
     flex-direction: column;
     background-color: azure;
     padding: 1rem;
+    padding-bottom: 0rem;
 }
 
-.header-text {
-    color:rgba(244, 233, 172, 1) ;
-    inset-inline: auto;
-    font-size: 23px
+.date {
+  border-top: dotted 1px;
+  border-color: gray;
+    line-height: 1
 }
 
-.header-text2 {
-    color:rgba(149, 91, 153, 1);
-    inset-inline: auto;
-    font-size: 24px
-}
 
-.info-text {
-    color:rgba(244, 233, 172, 1) ;
-    text-align: center;
-    
-}
-
-.page-signal{
-  margin: auto;
-}
 </style>
 

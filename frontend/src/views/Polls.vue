@@ -1,23 +1,23 @@
 <template>
   <div class="page-header">
-    <router-link to="/" class="back-button">← BACK</router-link>
-    <div class="layout">
-        <div class="page-signal">
-          <span class="header-text">PICK A POLL</span>
-          <span class="header-text2">TO VOTE</span>
-        </div>  
-        <p class="info-text">Pick an active poll or look through previous ones</p>
-        
-        
-        
-
+    <div class="adminheader">
+      <router-link to="/" class="back-button">← BACK</router-link>
+      <div class="NewPollButton">
         <NewPollButton />
-
-
-
-
+      </div>
+    </div>
+    <div class="layout">
+        <div class="view-header">
+            <div class="page-signal">
+              <span class="header-text">PICK A POLL TO</span>
+              <span class="header-text special">VOTE</span>
+            </div>  
+            <p class="info-text">or look through previous ones</p>
+        </div>
+        
+        
+        
         <div class="suggestions-section">
-      <h2>submissions</h2>
       <div v-if="loading" class="loading">LOADING...</div>
       <div v-else-if="error" class="error">
         {{ error }}
@@ -28,8 +28,8 @@
         <PollUnit 
           v-for="poll in polls" 
           :key="poll.id"
-          :poll="polls"
-          @click="viewPolls(poll.id)"
+          :poll="poll"
+          @click="viewSubmissionList(poll.id)"
         />
       </div>
     </div>
@@ -52,6 +52,10 @@ export default {
       polls: [],
       loading: false,
       error: null,
+      form: {
+        pollTitle: '',
+        pollEnd: '',
+      },
     }
   },
   async mounted() {
@@ -65,7 +69,7 @@ export default {
         const response = await fetch('http://localhost:8000/polls')
         if (response.ok) {
           this.polls = await response.json()
-          console.log('Loaded polls:', this.polls) // Для отладки
+          console.log('Loaded polls:', this.poll) // Для отладки
         } else {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
@@ -76,8 +80,8 @@ export default {
         this.loading = false
       }
     },
-    viewPolls(id) {
-      this.$router.push(`/polls/${poll_id}`)
+    viewSubmissionList(id) {
+      this.$router.push(`/polls/${poll.id}`)
     }
   },
 }
@@ -91,8 +95,14 @@ font-size: 12px;
 position: center;
 }
 .back-button {
-  padding-bottom: 30px;
+  padding-bottom: 0px;
   color:#0f6f62;
+}
+
+.view-header {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 1rem;
 }
 
 .page-header {
@@ -108,6 +118,12 @@ position: center;
 .poll-status {
   color: rgb(0, 0, 0);
   padding-bottom: 1cap;
+}
+
+.poll-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 .title {
   display: flex;
@@ -127,32 +143,32 @@ span {
   padding: 5px;
 }
 
-.poll-box {
-    display: flex;
-    flex-direction: column;
-    background-color: azure;
-    padding: 1rem;
-}
-
 .header-text {
     color:rgba(244, 233, 172, 1) ;
     inset-inline: auto;
-    font-size: 23px
+    font-size: 23px;
+
 }
 
-.header-text2 {
-    color:rgba(149, 91, 153, 1);
-    inset-inline: auto;
-    font-size: 24px
+.special {
+    color:#61b0a8;
+    font-family: "Blackout Two AM";
 }
 
 .info-text {
     color:rgba(244, 233, 172, 1) ;
     text-align: center;
-    
 }
 
-.page-signal{
-  margin: auto;
+
+.adminheader{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
+
+.poll-box:hover {
+    background-color: hwb(160 58% 25%);
+    transition: 0.4s;
+    }
 </style>
