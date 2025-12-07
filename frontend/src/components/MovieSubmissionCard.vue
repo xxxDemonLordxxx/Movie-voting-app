@@ -24,23 +24,23 @@ export default {
   },
   computed: {
     movieTitle() {
-      return this.submission?.movie.title || 'No name'
+      return this.submission.movie?.title || 'No name'
     },
     comment() {
-      return this.submission?.comment || 'No description'
+      return this.submission.comment || 'No description'
     },
     truncatedComment() {
       const desc = this.comment
       return desc.length > 150 ? desc.substring(0, 150) + '...' : desc
     },
     author() {
-      if (this.submission?.is_anonymous) {
+      if (this.submission.is_anonymous) {
         return 'Anonymus'
       }
-      return this.submission?.author || 'Anonymus'
+      return this.submission.author || 'Anonymus'
     },
     formattedDate() {
-      if (!this.submission?.created_at) return ''
+      if (!this.submission.created_at) return ''
       return new Date(this.submission.created_at).toLocaleDateString('ru-RU')
     }
   }
