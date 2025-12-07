@@ -81,7 +81,7 @@ export default {
       }
     },
     viewSubmissionList(id) {
-      this.$router.push(`/polls/${poll.id}`)
+      this.$router.push(`/polls/${id}`)
     }
   },
 }
