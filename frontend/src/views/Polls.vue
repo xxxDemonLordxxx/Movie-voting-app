@@ -69,7 +69,7 @@ export default {
         const response = await fetch('http://localhost:8000/polls')
         if (response.ok) {
           this.polls = await response.json()
-          console.log('Loaded polls:', this.poll) // Для отладки
+          console.log('Loaded polls:', this.polls) // Для отладки
         } else {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
