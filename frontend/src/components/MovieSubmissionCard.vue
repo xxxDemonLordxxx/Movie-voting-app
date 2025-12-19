@@ -1,5 +1,5 @@
 <template>
-  <div class="movie-suggestion-card" @click="$emit('click')">
+  <div class="movie-suggestion-card" >
     <div class="card-content">
       <h3 class="movie-title">{{ movieTitle }}</h3>
       <p class="movie-description">{{ truncatedComment }}</p>
@@ -10,6 +10,7 @@
         <span class="date">{{ formattedDate }}</span>
       </div>
     </div>
+    <div class="more-button" @click="$emit('click')">MORE</div>
   </div>
 </template>
 
@@ -24,7 +25,7 @@ export default {
   },
   computed: {
     movieTitle() {
-      return this.submission.movie?.title || 'No name'
+      return this.submission?.movie?.title || 'No name'
     },
     comment() {
       return this.submission.comment || 'No description'
@@ -49,7 +50,6 @@ export default {
 
 <style scoped>
 .movie-suggestion-card {
-  background: white;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   cursor: pointer;
@@ -61,16 +61,30 @@ export default {
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
+.card-content{
+  display: flex;
+  flex-direction: column;
+  color: white;
+  border-color: gray;
+  border-width: 0.1rem;
+  border-style: dotted;
+  width: 82vw;
+  height: fit-content;
+  padding: 0.1rem;
+}
+
 .movie-title {
-  color: #2c3e50;
-  margin-bottom: 0.5rem;
-  font-size: 1.2rem;
+  font-family: "Blackout Two AM";
+  overflow-wrap: break-word;
+  flex-grow: 2;
+  text-overflow: ellipsis;
+  font-size: 1.3rem;
 }
 
 .movie-description {
-  color: #666;
-  line-height: 1.5;
-  margin-bottom: 1rem;
+  padding: 0.2rem;
+  overflow-wrap: break-word;
+  text-overflow: ellipsis;
 }
 
 .suggestion-info {
@@ -92,11 +106,18 @@ export default {
 /* Мобильные стили */
 @media (max-width: 768px) {
   .movie-suggestion-card {
-    padding: 1.25rem;
+    display: flex;
+    flex-direction: row;
+    box-sizing:border-box;
+    width: 100vw;
+    margin-left: -50vw;
+    position: relative;
+    left: 50%;
+    gap: 0.5rem;
   }
   
   .movie-title {
-    font-size: 1.1rem;
+    font-size: 1.3rem;
   }
   
   .movie-description {
@@ -115,7 +136,7 @@ export default {
   }
   
   .movie-title {
-    font-size: 1rem;
+    font-size: 1.3rem;
     margin-bottom: 0.4rem;
   }
   

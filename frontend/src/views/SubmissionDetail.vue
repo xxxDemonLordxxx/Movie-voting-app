@@ -1,12 +1,12 @@
 <template>
-  <div class="suggestion-detail">
+  <div class="submission-detail">
     <div v-if="loading" class="loading">Загрузка...</div>
-    <div v-else-if="suggestion" class="detail-content">
+    <div v-else-if="submission" class="detail-content">
       <div class="back-button">
-        <router-link to="/" class="btn btn-secondary">← BACK TO THE LIST</router-link>
+        <router-link to="$router.go(-1)" class="btn btn-secondary">← BACK TO THE LIST</router-link>
       </div>
       
-      <MovieDetailCard :suggestion="suggestion" />
+      <MovieDetailCard :submission="submission" />
     </div>
     <div v-else class="error">Предложение не найдено</div>
   </div>
@@ -16,28 +16,28 @@
 import MovieDetailCard from '@/components/MovieDetailCard.vue'
 
 export default {
-  name: 'SuggestionDetail',
+  name: 'SubmissionDetail',
   components: {
     MovieDetailCard
   },
   data() {
     return {
-      suggestion: null,
+      submission: null,
       loading: false
     }
   },
   async mounted() {
-    await this.fetchSuggestionDetail()
+    await this.fetchSubmissionDetail()
   },
   methods: {
-    async fetchSuggestionDetail() {
+    async fetchSubmissionDetail() {
       this.loading = true
       try {
-        const response = await fetch(`http://localhost:8000/suggestions/${this.$route.params.id}`)
+        const response = await fetch(`http://localhost:8000/submissions/${this.$route.params.id}`)
         if (response.ok) {
-          this.suggestion = await response.json()
+          this.submission = await response.json()
         } else if (response.status === 404) {
-          this.suggestion = null
+          this.submission = null
         }
       } catch (error) {
         console.error('Error:', error)
@@ -51,7 +51,7 @@ export default {
 </script>
 
 <style scoped>
-.suggestion-detail {
+.submission-detail {
   max-width: 600px;
   margin: 0 auto;
 }

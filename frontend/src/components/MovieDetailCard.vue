@@ -6,41 +6,53 @@
     
     <div class="card-body">
       <div class="description-section">
-        <h3>Description</h3>
-        <p class="movie-description">{{ movieDescription }}</p>
+        <h3>pitch</h3>
+        <p class="movie-description">{{ truncatedComment }}</p>
       </div>
       
-        <div class="suggestion-meta">
+        <div class="submission-meta">
         <div class="meta-item">
-          <strong>Suggester:</strong>
-          <span>{{ suggesterName }}</span>
+          <strong>offered by:</strong>
+          <span>{{ author }}</span>
         </div>
         
         <div class="meta-item">
-          <strong>Date:</strong>
+          <strong>date:</strong>
           <span>{{ formattedDate }}</span>
         </div>
-        
-        <div class="meta-item">
-          <strong>Status:</strong>
-          <span class="status-badge">На рассмотрении</span>
+
+        <div>
+          <img 
+          v-if="imageUrl && imageUrl.trim()" 
+          :src="imageUrl"/>
+        </div>
+
+              <div style=" padding: 10px; margin: 10px 0;">
+            <strong>Debug image_url:</strong> "{{ imageUrl }}"
+            <br>
+            <strong>Type:</strong> {{ typeof imageUrl }}
+            <br>
+            <strong>Length:</strong> {{ imageUrl?.length || 0 }}
+          </div>
+          
+          <!-- Conditional image -->
+          <img 
+            v-if="isRealImageUrl"
+            :src="imageUrl" 
+            :alt="submission.title"
+            @error="console.error('Image failed to load:', imageUrl)"
+          />
+          <div v-else></div>
+
+          <pre>{{ JSON.stringify(submission, null, 2) }}</pre>
+          <p><strong>submission.image_url:</strong> "{{ submission.image_url }}"</p>
+           <p><strong>Truthy?</strong> {{ !!submission.image_url }}</p>
         </div>
 
       
       </div>
     </div> 
-    <div ref="input" class="hidden-content">
-      Movie: {{ movieTitle }}
-
-      Description: {{ movieDescription }}
-
-      Suggester: {{ suggesterName }}
-      Date: {{ formattedDate }}
-    </div>
-
       <CopyButton />
-
-  </div>
 </template>
 
 
@@ -51,33 +63,43 @@ export default {
   components: { CopyButton },
   name: 'MovieDetailCard',
   props: {
-    suggestion: {
+    submission: {
       type: Object,
       required: true
     }
   },
   computed: {
     movieTitle() {
-      return this.suggestion.movie?.title || 'No name'
-  },
-    movieDescription() {
-      return this.suggestion.movie?.description || 'No description'
+      return this.submission?.movie?.title || 'No name'
     },
-    suggesterName() {
-      if (this.suggestion.is_anonymous) {
-        return 'Аноним'
+    comment() {
+      return this.submission.comment || 'No description'
+    },
+    imageUrl() {
+      return this.submission.image_url
+    },
+    isRealImageUrl() {
+      // Only show if it ends with image file extension
+      if (!this.imageUrl) return false;
+      
+      const imgExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+      const url = this.imageUrl.toLowerCase();
+      
+      return imgExtensions.some(ext => url.endsWith(ext));
+    },
+    truncatedComment() {
+      const desc = this.comment
+      return desc.length > 150 ? desc.substring(0, 150) + '...' : desc
+    },
+    author() {
+      if (this.submission.is_anonymous) {
+        return 'Anonymus'
       }
-      return this.suggestion.suggester_name || 'Anonymus'
+      return this.submission.author || 'Anonymus'
     },
     formattedDate() {
-      if (!this.suggestion.created_at) return 'Date not listed'
-      return new Date(this.suggestion.created_at).toLocaleDateString('ru-RU', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      })
+      if (!this.submission.created_at) return ''
+      return new Date(this.submission.created_at).toLocaleDateString('ru-RU')
     }
   }
 }
@@ -89,25 +111,28 @@ export default {
 }
 
 .movie-detail-card {
-  background: white;
-  box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+  border-color: gray;
+  border-width: 0.1rem;
+  border-style: dotted;
   overflow: hidden;
+  color: white;
 }
 
 .card-header {
-  background: pink;
   padding: 2rem;
-  color: white;
+  font-family: "Blackout Two AM";
 }
 
 .movie-title {
   margin: 0;
   font-size: 2rem;
   text-align: center;
+  color: white;
 }
 
 .card-body {
   padding: 2rem;
+  color: white;
 }
 
 .description-section {
@@ -115,18 +140,17 @@ export default {
 }
 
 .description-section h3 {
-  color: #2c3e50;
+  color: white;
   margin-bottom: 1rem;
   font-size: 1.3rem;
 }
 
 .movie-description {
   line-height: 1.6;
-  color: #555;
   font-size: 1.1rem;
 }
 
-.suggestion-meta {
+.submission-meta {
   border-top: 1px solid #ffffff;
   padding-top: 1.5rem;
 }
@@ -137,16 +161,12 @@ export default {
   align-items: center;
   padding: 0.75rem 0;
   border-bottom: 1px solid #ffffff;
-  color: black
 }
 
 .meta-item:last-child {
   border-bottom: none;
 }
 
-.meta-item strong {
-  color: #2c3e50;
-}
 
 .status-badge {
   background: #ffeaa7;
@@ -176,7 +196,6 @@ export default {
 }
 
 .text {
-  color:#2c3e50;
   padding: 0.75rem 0;
   gap: 0.25rem;
   display: flex;
@@ -208,7 +227,7 @@ export default {
     line-height: 1.5;
   }
   
-  .suggestion-meta {
+  .submission-meta {
     padding-top: 1.25rem;
   }
   

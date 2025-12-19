@@ -1,5 +1,6 @@
 <template> 
   <div class="submissions-section">
+    <router-link to="/polls" class="btn btn-secondary">← BACK TO THE LIST</router-link>
       <div v-if="loading" class="loading">LOADING...</div>
       <div v-else-if="error" class="error">
         {{ error }}
@@ -10,10 +11,11 @@
       </div>
       <div v-else class="submissions-list">
         <MovieSubmissionCard 
-          v-for="submission in submissions" 
-          :key="submission.id"
+          v-for="(submission,index) in submissions" 
+          :key="submission.id || index "
           :submission="submission"
           @click="viewSubmission(submission.id)"
+          class="submission"
         />
       </div>
     </div>
@@ -32,23 +34,31 @@ export default {
       submissions: [],
       loading: false,
       error: null,
-      form: {
-        movieTitle: '',
-        truncatedComment: '',
-        author: '',
-        formattedDate: '',
-      },
+    }
+  },
+
+  computed: {
+    pollId() {
+      const id = this.$route.params.id;
+      console.log('Computed pollId from route:', id);
+      return parseInt(id) || null;
     }
   },
   async mounted() {
-    await this.fetchSubmissions()
+    console.log('Mounted - pollId computed:', this.pollId);
+    if (this.pollId) {
+      await this.fetchSubmissions();
+    } else {
+      this.error = 'No valid poll ID found';
+    }
   },
+
   methods: {
     async fetchSubmissions() {
       this.loading = true
       this.error = null
       try {
-        const response = await fetch('http://localhost:8000/polls/')
+        const response = await fetch(`http://localhost:8000/polls/${this.pollId}`)
         if (response.ok) {
           this.submissions = await response.json()
           console.log('Loaded submissions:', this.submissions) // Для отладки
@@ -56,7 +66,7 @@ export default {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
       } catch (error) {
-        console.error('Error loading suggestions:', error)
+        console.error('Error loading submissions:', error)
         this.error = 'Mistake when loading the movie list: ' + error.message
       } finally {
         this.loading = false
@@ -83,7 +93,7 @@ html, body {
 }
 
 .submission {
-  padding-top: 2cap;
+  padding-top: 2rem;
   display: flex;
   flex-direction: row;
 }
