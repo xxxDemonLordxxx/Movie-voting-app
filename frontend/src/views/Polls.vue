@@ -2,15 +2,17 @@
   <div class="page-header">
     <div class="adminheader">
       <router-link to="/" class="back-button">← BACK</router-link>
-      <div class="NewPollButton">
+      <!-- <div class="NewPollButton">
         <NewPollButton />
-      </div>
+      </div> -->
     </div>
     <div class="layout">
         <div class="view-header">
             <div class="page-signal">
               <span class="header-text">PICK A POLL TO</span>
               <span class="header-text special">VOTE</span>
+              <span class="header-text">OR</span>
+              <span class="header-text special">OFFER</span>
             </div>  
             <p class="info-text">or look through previous ones</p>
         </div>
@@ -29,7 +31,7 @@
           v-for="poll in polls" 
           :key="poll.id"
           :poll="poll"
-          @click="viewSubmissionList(poll.id)"
+          @click="viewSubmissionList(poll.id, poll.state_name)"
         />
       </div>
     </div>
@@ -80,8 +82,16 @@ export default {
         this.loading = false
       }
     },
-    viewSubmissionList(id) {
-      this.$router.push(`/polls/${id}`)
+        viewSubmissionList(id, stateName) {
+      console.log('stateName parameter:', stateName)
+      
+      if (stateName === 'offer') {
+        this.$router.push(`/submissions/new/${id}`)
+      } else if (stateName === 'vote') {
+        this.$router.push(`/voting`)
+      } else if (stateName === 'previous') {
+        this.$router.push(`/polls/${id}`)
+      } 
     }
   },
 }
@@ -95,7 +105,7 @@ font-size: 12px;
 position: center;
 }
 .back-button {
-  padding-bottom: 0px;
+  padding-bottom: 1rem;
   color:#0f6f62;
 }
 
@@ -143,16 +153,21 @@ span {
   padding: 5px;
 }
 
+.page-signal{
+  text-align: center;
+}
 .header-text {
     color:rgba(244, 233, 172, 1) ;
     inset-inline: auto;
-    font-size: 23px;
+    font-size: 1.2rem;
 
 }
 
 .special {
-    color:#61b0a8;
+    color:#1a584a;
     font-family: "Blackout Two AM";
+    background-color: rgba(244, 233, 172, 1);
+    padding: 0;
 }
 
 .info-text {

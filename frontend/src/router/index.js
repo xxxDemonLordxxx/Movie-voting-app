@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from '@/views/HomePage.vue'
-import SuggestionForm from '@/views/SuggestionForm.vue'
+import SubmissionForm from '@/views/SubmissionForm.vue'
 import SubmissionDetail from '@/views/SubmissionDetail.vue'
 import Calendar from '@/views/Calendar.vue'
 import AboutUs from '@/views/AboutUs.vue'
@@ -11,8 +11,8 @@ import AdminLogin from '@/views/AdminLogin.vue'
 
 const routes = [
   { path: '/', name: 'home', component: HomePage },
-  { path: '/submissions/new', name: 'submit', component: SuggestionForm },
-  { path: '/submissions/:id', name: 'suggestion-detail', component: SubmissionDetail },
+  { path: '/submissions/new/:id', name: 'submit', component: SubmissionForm },
+  { path: '/submissions/:id', name: 'submission', component: SubmissionDetail },
   { path: '/calendar', name: 'calendar', component: Calendar},
   { path: '/about_us', name: 'about-us', component: AboutUs},
   { path: '/voting', name: 'voting', component: VotingForm},
