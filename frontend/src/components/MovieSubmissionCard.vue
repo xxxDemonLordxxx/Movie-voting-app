@@ -10,7 +10,7 @@
         <span class="date">{{ formattedDate }}</span>
       </div>
     </div>
-    <div class="more-button" @click="$emit('click')">MORE</div>
+     <button @click="viewSubmission(submission.id)" class="more-button">MORE</button>
   </div>
 </template>
 
@@ -42,10 +42,16 @@ export default {
     },
     formattedDate() {
       if (!this.submission.created_at) return ''
-      return new Date(this.submission.created_at).toLocaleDateString('ru-RU')
+      return new Date(this.submission.created_at).toLocaleDateString('en-EN')
+    }
+  },
+    methods: {
+    viewSubmission(id) {
+      this.$router.push(`/submissions/${id}`)
     }
   }
 }
+
 </script>>
 
 <style scoped>

@@ -1,5 +1,5 @@
 <template>
-  <div class="suggestion-form">
+  <div class="submission-form">
     <div class="page-header">
       <router-link to="/" class="back-button">← BACK</router-link>
       <div class="title">
@@ -8,12 +8,12 @@
       </div>
     </div>
     <p class="page-title">HERE YOU CAN OFFER YR OWN PICK</p>
-    <form @submit.prevent="submitSuggestion" class="form">
+    <form @submit.prevent="submitSubmission" class="form">
       <div class="form-group">
-        <label for="suggesterName">YOUR NAME:</label>
+        <label for="author">YOUR NAME:</label>
         <input
-          id="suggesterName"
-          v-model="form.suggesterName"
+          id="author"
+          v-model="form.author"
           :disabled="form.isAnonymous"
           placeholder="Write your name"
           class="form-input"
@@ -66,11 +66,11 @@
 
 <script>
 export default {
-  name: 'SuggestionForm',
+  name: 'SubmissionForm',
   data() {
     return {
       form: {
-        suggesterName: '',
+        author: '',
         isAnonymous: false,
         movieTitle: '',
         movieDescription: ''
@@ -79,7 +79,7 @@ export default {
     }
   },
   methods: {
-    async submitSuggestion() {
+    async submitSubmission() {
       if (!this.form.movieTitle.trim() || !this.form.movieDescription.trim()) {
         alert('PLEASE, FILL ALL')
         return
@@ -88,16 +88,21 @@ export default {
       this.submitting = true
       
       try {
-        const response = await fetch('http://localhost:8000/suggestions', {
+        const response = await fetch('http://localhost:8000/submissions/new', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            suggester_name: this.form.isAnonymous ? null : this.form.suggesterName,
-            is_anonymous: this.form.isAnonymous,
-            title: this.form.movieTitle,
-            description: this.form.movieDescription
+            poll_id: parseInt(this.$route.params.id),
+            author: this.form.isAnonymous ? null : this.form.author,
+            comment: this.form.movieDescription,
+            image_Url: null,
+            movie: {
+              tmdb_id: null,
+              title: this.form.movieTitle,
+              language: "en-US"            
+            }
           })
         })
 
@@ -118,7 +123,7 @@ export default {
     
     resetForm() {
       this.form = {
-        suggesterName: '',
+        author: '',
         isAnonymous: false,
         movieTitle: '',
         movieDescription: ''
@@ -130,12 +135,12 @@ export default {
 </script>
 
 <style scoped>
-.suggestion-form {
+.submission-form {
   max-width: 600px;
   margin: 0 auto;
 }
 
-.suggestion-form h1 {
+.submission-form h1 {
   text-align: center;
   margin-bottom: 1.5rem;
 }
@@ -193,43 +198,7 @@ label {
   justify-content: flex-end;
 }
 
-.btn {
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-  text-align: center;
-  font-size: 16px;
-  transition: background-color 0.3s;
-}
 
-.btn-primary {
-  background-color: #065f53;
-  color: white;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background-color: #0f6f62;
-}
-
-.btn-primary:disabled {
-  background-color: #95a5a6;
-  cursor: not-allowed;
-}
-
-.btn-secondary {
-  background-color: #95a5a6;
-  color: white;
-}
-
-.btn-secondary:hover {
-  background-color: #7f8c8d;
-}
-
-.back-button {
-  padding-bottom: 30px;
-  color:#0f6f62;
-}
 
 .page-header {
   display: flex;
@@ -258,7 +227,7 @@ span {
 
 /* Мобильные стили */
 @media (max-width: 768px) {
-  .suggestion-form h1 {
+  .submission-form h1 {
     font-size: 1.5rem;
     margin-bottom: 1rem;
   }
@@ -292,7 +261,7 @@ span {
 }
 
 @media (max-width: 480px) {
-  .suggestion-form h1 {
+  .submission-form h1 {
     font-size: 1.3rem;
   }
   

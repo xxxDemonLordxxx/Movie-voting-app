@@ -1,6 +1,6 @@
 <template> 
   <div class="submissions-section">
-    <router-link to="/polls" class="btn btn-secondary">← BACK TO THE LIST</router-link>
+    <router-link to="/polls" class="back-button">← BACK TO THE LIST</router-link>
       <div v-if="loading" class="loading">LOADING...</div>
       <div v-else-if="error" class="error">
         {{ error }}
@@ -14,7 +14,6 @@
           v-for="(submission,index) in submissions" 
           :key="submission.id || index "
           :submission="submission"
-          @click="viewSubmission(submission.id)"
           class="submission"
         />
       </div>
@@ -81,12 +80,6 @@ export default {
 </script>
 
 <style>
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-}
-
 .calendar-title {
   color: white;
   position: center;
