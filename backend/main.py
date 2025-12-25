@@ -29,6 +29,7 @@ def startup_event():
     db = SessionLocal()
     try:
         crud.init_poll_states(db)
+        crud.init_event_types(db)
     finally:
         db.close()
 
@@ -315,32 +316,84 @@ def find_film_via_query(film_name_query: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
     
 
-
-
-
-
 # Календарь
 
 
-@app.get( # !!!!!!!!!!!!!!!!!!!!!!
-    path="/events",
-    response_model=str,
+
+@app.get(
+    path="/events/types",
+    response_model=List[schemas.EventTypeResponse],
     status_code=status.HTTP_200_OK,
-    summary="Get all events list",
+    summary="Get all event types list",
+    responses={},
+    tags=["Event types"]
+)
+def get_all_events(db: Session = Depends(get_db)):
+    try:
+        event_types = crud.get_all_event_types(db=db)
+        if not event_types:
+            raise HTTPException(status_code=404, detail="event typess not found")
+        return event_types
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get(
+    path="/events/types/{event_type_id}",
+    response_model=schemas.EventTypeResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Get event type data",
+    responses={},
+    tags=["Event types"]
+)
+def get_event_data(event_type_id: int, db: Session = Depends(get_db)):
+    try:
+        event_type = crud.get_event_type_data(db=db, event_type_id=event_type_id)
+        if not event_type:
+            raise HTTPException(status_code=404, detail="event type not found")
+        return event_type
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+
+@app.post(
+    path="/events/types/new",
+    response_model=schemas.EventTypeResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Create a new event type",
+    responses={},
+    tags=["Event types"]
+)
+def create_event(event_type: schemas.EventTypeCreate, db: Session = Depends(get_db)):
+    try:
+        new_event = crud.add_new_event_type(db=db, event_type=event_type)   
+        return new_event
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+
+@app.get(
+    path="/events",
+    response_model=List[schemas.EventResponse],
+    status_code=status.HTTP_200_OK,
+    summary="Get all events list (with previous)",
     responses={},
     tags=["Events"]
 )
 def get_all_events(db: Session = Depends(get_db)):
     try:
-        submissions = db.query(models.Submission).all()
-        return "data"
+        events = crud.get_all_events(db=db)
+        if not events:
+            raise HTTPException(status_code=404, detail="events not found")
+        return events
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
 
-@app.get( # !!!!!!!!!!!!!!!!!!!!!!
+
+@app.get(
     path="/events/current",
-    response_model=str,
+    response_model=List[schemas.EventResponse],
     status_code=status.HTTP_200_OK,
     summary="Get current events list (today and future)",
     responses={},
@@ -348,45 +401,50 @@ def get_all_events(db: Session = Depends(get_db)):
 )
 def get_current_events(db: Session = Depends(get_db)):
     try:
-        submissions = db.query(models.Submission).all()
-        return "data"
+        current_events = crud.get_all_events(db=db)
+        if not current_events:
+            raise HTTPException(status_code=404, detail="current_events not found")
+        return current_events
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
 
-@app.get( # !!!!!!!!!!!!!!!!!!!!!!
+
+
+@app.get(
     path="/events/{event_id}",
-    response_model=str,
+    response_model=schemas.EventResponse,
     status_code=status.HTTP_200_OK,
     summary="Get event data",
     responses={},
     tags=["Events"]
 )
-def get_event_data(db: Session = Depends(get_db)):
+def get_event_data(event_id: int, db: Session = Depends(get_db)):
     try:
-        submissions = db.query(models.Submission).all()
-        return "data"
+        event = crud.get_event_data(db=db, event_id=event_id)
+        if not event:
+            raise HTTPException(status_code=404, detail="event not found")
+        return event
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
 
-@app.post( # !!!!!!!!!!!!!!!!!!!!!!
+@app.post(
     path="/events/new",
-    response_model=str,
+    response_model=schemas.EventResponse,
     status_code=status.HTTP_200_OK,
     summary="Create a new event",
     responses={},
     tags=["Events"]
 )
-def create_event(db: Session = Depends(get_db)):
+def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)):
     try:
-        submissions = db.query(models.Submission).all()
-        return "data"
+        new_event = crud.add_new_event(db=db, event=event)   
+        return new_event
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.delete( # !!!!!!!!!!!!!!!!!!!!!!
+""" @app.delete( # !!!!!!!!!!!!!!!!!!!!!!
     path="/events/delete/{event_id}",
     response_model=str,
     status_code=status.HTTP_200_OK,
@@ -399,9 +457,9 @@ def delete_event(db: Session = Depends(get_db)):
         submissions = db.query(models.Submission).all()
         return "data"
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e)) """
 
-@app.patch( # !!!!!!!!!!!!!!!!!!!!!!
+""" @app.patch( # !!!!!!!!!!!!!!!!!!!!!!
     path="/events/edit/{event_id}",
     response_model=str,
     status_code=status.HTTP_200_OK,
@@ -414,7 +472,7 @@ def edit_event(db: Session = Depends(get_db)):
         submissions = db.query(models.Submission).all()
         return "data"
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e)) """
 
 
 # Получение прав админа

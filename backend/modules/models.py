@@ -31,6 +31,7 @@ class Poll(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
+    description = Column(String, index=True)
     state_id = Column(Integer, ForeignKey("poll_states.id"))
     start = Column(DateTime(timezone=True))
     end = Column(DateTime(timezone=True))
@@ -65,11 +66,12 @@ class Event(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
-    image_id = Column(Integer, nullable=True)
+    image_url = Column(String, nullable=True)
     date = Column(DateTime(timezone=True))
-    event_type = Column(Integer, ForeignKey("event_types.id"))
-    description = Column(Text)
-    submission_id = Column(Integer, ForeignKey("submissions.id"))
+    event_type_id = Column(Integer, ForeignKey("event_types.id"))
+    description = Column(Text, nullable=True)
+    location = Column(String, nullable=True)
+    submission_id = Column(Integer, ForeignKey("submissions.id"), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
