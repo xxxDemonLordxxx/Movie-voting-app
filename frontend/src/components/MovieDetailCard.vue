@@ -87,6 +87,9 @@ export default {
       
       return imgExtensions.some(ext => url.endsWith(ext));
     },
+    truncatedComment() {
+      const desc = this.comment
+      return desc.length > 150 ? desc.substring(0, 150) + '...' : desc
     },
     author() {
       if (this.submission.is_anonymous) {
