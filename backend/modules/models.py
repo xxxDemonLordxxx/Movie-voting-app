@@ -34,6 +34,7 @@ class Poll(Base):
     state_id = Column(Integer, ForeignKey("poll_states.id"))
     start = Column(DateTime(timezone=True))
     end = Column(DateTime(timezone=True))
+    winners = Column(Integer, nullable=True, index=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     state = relationship("PollState", backref="polls", lazy="joined")

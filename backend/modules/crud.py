@@ -47,6 +47,7 @@ def add_new_poll(db: Session, poll: schemas.PollCreate) -> models.Poll:
         state_id = 1,
         start = poll.start,
         end = poll.end,
+        winners = poll.winners,
         created_at = datetime.now()
     )
     db.add(db_poll)

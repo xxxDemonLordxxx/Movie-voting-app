@@ -88,16 +88,23 @@ def get_polls(db: Session = Depends(get_db)):
 
 @app.get(
     path="/polls/{poll_id}",
-    response_model=list[schemas.SubmissionResponse],
+    response_model=schemas.PollInfoResponse,
     status_code=status.HTTP_200_OK,
-    summary="See all submissions for a poll",
+    summary="See poll info and all submissions for a poll",
     responses={},
     tags=["Polls"]
 )
 def get_submissions_by_poll(poll_id: int, db: Session = Depends(get_db)):
     try:
+        poll = crud.get_poll_data(db=db, poll_id=poll_id)
         submissions = crud.get_all_submissions_by_poll(db=db, poll_id=poll_id)
-        return submissions
+
+        poll_info = schemas.PollInfoResponse(
+            poll_info = poll,
+            submissions = submissions
+        )
+
+        return poll_info
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

@@ -64,6 +64,7 @@ class PollBase(BaseModel):
     title: str
     start: datetime
     end: datetime
+    winners: int
     state_id: int
 
 class PollCreate(PollBase):
@@ -75,13 +76,18 @@ class PollResponse(BaseModel):
     start: datetime
     end: datetime
     state_id: int
+    winners: int
     created_at: datetime
     state_name: str
     
     model_config = ConfigDict(from_attributes=True)
 
 
-
+class PollInfoResponse(BaseModel):
+    poll_info: PollResponse
+    submissions: List[SubmissionResponse]
+    
+    model_config = ConfigDict(from_attributes=True)
 
 
 
