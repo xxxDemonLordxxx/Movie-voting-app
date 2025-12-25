@@ -10,17 +10,12 @@
 
         </div>
         <div class="event-block">
-            <div class="more-button">MORE</div>
+            <button @click="viewSubmission(submission.id)" class="more-button">MORE</button>
         </div>
     </div>
 </template>
 
 <style>
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-}
 
 .event-container{
     display: flex;
@@ -46,7 +41,7 @@ html, body {
     border-color: rgb(199, 107, 208);;
     border-width: 0rem;
     border-style: dotted;
-    
+
 }
 
 .event-block{
@@ -92,4 +87,16 @@ h1{
     overflow:hidden
 
 }
+
+@media (min-width: 784px) {
+    .event-container {
+        right:50%;
+        margin-left:-31rem;
+    }
+    .header-block{
+        padding-left: 5rem;
+    }
+}
+
+    
 </style>
