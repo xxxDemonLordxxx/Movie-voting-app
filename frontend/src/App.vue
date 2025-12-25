@@ -60,7 +60,7 @@ export default {
   text-decoration: none;
   padding: 0.75rem 1rem;
   transition: background-color 0.3s;
-  font-size: 3rem;
+  font-size: 1rem;
   text-align: center;
   flex: 0.5;
   text-decoration: solid;
@@ -122,6 +122,13 @@ export default {
     padding: 0.2rem;
     font-size: 0.8rem;
 
+  }
+}
+
+@media (min-width: 768px) {
+  .header{
+    margin-left: 3rem;
+    margin-right: 3rem;
   }
 }
 </style>

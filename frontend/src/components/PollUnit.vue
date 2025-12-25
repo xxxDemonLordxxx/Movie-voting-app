@@ -1,10 +1,10 @@
 <template>
         <div class="poll-box">
-            <div class="title">
+            <div class="unit-title">
                 <p class="poll-title">{{pollTitle}}</p> 
                 <p class="poll-status">{{state_name}}</p>
             </div>
-            <div class="title date">
+            <div class="unit-title date">
                 <p class="text">13 JAN 2025</p> 
                 <p class="text">---</p>
                 <p class="text">13 JAN 2025</p>
@@ -40,7 +40,7 @@ export default {
 .poll-status {
   color: rgb(0, 0, 0);
 }
-.title {
+.unit-title {
   display: flex;
   flex-direction: row;
   justify-content: space-between;

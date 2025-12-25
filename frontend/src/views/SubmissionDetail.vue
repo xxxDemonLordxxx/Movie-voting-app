@@ -3,7 +3,7 @@
     <div v-if="loading" class="loading">Загрузка...</div>
     <div v-else-if="submission" class="detail-content">
       <div class="back-button">
-        <router-link to="$router.go(-1)" class="btn btn-secondary">← BACK TO THE LIST</router-link>
+        <button @click="$router.go(-1)" class="btn btn-secondary">← BACK TO THE LIST</button>
       </div>
       
       <MovieDetailCard :submission="submission" />

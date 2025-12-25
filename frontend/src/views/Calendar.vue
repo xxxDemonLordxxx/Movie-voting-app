@@ -16,21 +16,17 @@ export default {
 </script>
 
 <style>
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-}
-
 .calendar-title {
   color: white;
   position: center;
 }
 
 .events-list {
-  padding-top: 2cap;
+  padding-top: 1rem;
   display: flex;
   flex-direction: row;
 }
+
+
 
 </style>

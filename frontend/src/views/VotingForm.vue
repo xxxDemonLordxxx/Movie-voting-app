@@ -5,8 +5,11 @@
         <span class="poll-title">DECEMBER</span> 
         <span class="page-title">POLL</span>
       </div>
+      <p class="info-text">Choose your selection of films in order of preference</p>
     </div>
     
+    <OfferPopup/>
+
     <form>
       <div class="input-group">
         <p class="number">1</p>
@@ -65,15 +68,19 @@
 
 </template>
 
-<style>
 
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
+<script>
+import OfferPopup from '@/components/OfferPopup.vue';
+export default {
+  name: 'SubmissionForm',
+  components: {
+    OfferPopup
+  }
 }
+</script>
 
 
+<style>
 .text{
 color: white;
 font-size: 16px;
@@ -89,10 +96,11 @@ position: center;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding-top: 2cap;
+  padding-top: 2rem;
 }
 .poll-title {
   color: rgba(149, 91, 153, 1);
+  text-align: center;
 }
 
 .page-title {
@@ -100,8 +108,7 @@ position: center;
   padding-bottom: 1cap;
 }
 .title {
-  inset-inline: auto;
-  
+  text-align: center;
 }
 
 span {
@@ -123,7 +130,7 @@ span {
 .form-textarea {
   width: 100%;
   border: 0;
-  font-size: 16px;
+  font-size: 0.9rem;
   font-weight: 600;
   color: rgb(82, 39, 85);
 }

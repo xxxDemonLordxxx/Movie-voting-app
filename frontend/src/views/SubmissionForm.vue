@@ -1,72 +1,93 @@
 <template>
-  <div class="submission-form">
-    <div class="page-header">
-      <router-link to="/" class="back-button">← BACK</router-link>
+  <div class="page-header">
+      <router-link to="/polls" class="back-button">← BACK</router-link>
       <div class="title">
         <span class="poll-title">DECEMBER</span> 
         <span class="page-title">POLL</span>
       </div>
+      <p class="info-text">information text please come up with something fun and cool and would be nice if you know something bout the movie</p>
     </div>
-    <p class="page-title">HERE YOU CAN OFFER YR OWN PICK</p>
+
+    <OfferPopup/>
+    
     <form @submit.prevent="submitSubmission" class="form">
-      <div class="form-group">
+      <div class="name-group">
         <label for="author">YOUR NAME:</label>
-        <input
-          id="author"
-          v-model="form.author"
-          :disabled="form.isAnonymous"
-          placeholder="Write your name"
-          class="form-input"
-        />
+        <div class="checkbox">
+          <label class="checkbox-label">   
+            <input
+              type="checkbox"
+              v-model="form.isAnonymous"
+              class="checkbox"
+            />ANONYMUS</label>
+        </div>
       </div>
-      
-      <div class="form-group">
-        <label class="checkbox-label">
+        <div class="form-group" 
+        :class="{ 'disabled-style': form.isAnonymous }"
+        >
+          <p class="search-pretty" 
+          :class="{ 'disabled-style': form.isAnonymous }"
+          >(</p>
+
           <input
-            type="checkbox"
-            v-model="form.isAnonymous"
-            class="checkbox"
+            id="author"
+            v-model="form.author"
+            :disabled="form.isAnonymous"
+            placeholder="write your name"
+            class="form-input"
           />
-          Anonymus
-        </label>
-      </div>
-      
+          <p class="search-pretty" 
+          :class="{ 'disabled-style': form.isAnonymous }"
+          >)</p>
+        </div>
+
+
+      <label for="movieTitle">TITLE:</label>
       <div class="form-group">
-        <label for="movieTitle">TITLE:</label>
-        <input
+        <p class="search-pretty">(</p>
+        <TMDB
           id="movieTitle"
           v-model="form.movieTitle"
-          placeholder="Enter the film title"
+          placeholder="enter the film title"
           required
           class="form-input"
         />
+        <p class="search-pretty">)</p>
       </div>
-      
-      <div class="form-group">
-        <label for="movieDescription">FILM DESCRIPTION OR YOUR OWN PITCH:</label>
+
+      <label for="movieDescription">COMMENT:</label>
+      <div class="form-group long-input">
+        
+        <p class="search-pretty prcomment">(</p>
         <textarea
           id="movieDescription"
           v-model="form.movieDescription"
-          placeholder="Enter the text"
+          placeholder="enter your own pitch or film description"
           required
           rows="4"
           class="form-textarea"
         ></textarea>
+        <p class="search-pretty prcomment">)</p>
       </div>
       
       <div class="form-actions">
         <button type="submit" :disabled="submitting" class="btn btn-primary">
           {{ submitting ? 'Sending...' : 'DONE' }}
         </button>
-        <router-link to="/" class="btn btn-secondary">BACK</router-link>
       </div>
     </form>
-  </div>
 </template>
 
 <script>
+import TMDB from '@/components/TMDBsearch.vue'
+import OfferPopup from '@/components/OfferPopup.vue';
 export default {
   name: 'SubmissionForm',
+  components: {
+    TMDB,
+    OfferPopup
+  },
+  
   data() {
     return {
       form: {
@@ -109,7 +130,7 @@ export default {
         if (response.ok) {
           alert('FILM SUBMITTED')
           this.resetForm()
-          this.$router.push('/')
+          this.$router.push(`/polls/${this.$route.params.id}`)
         } else {
           throw new Error('SENDING ERROR')
         }
@@ -135,39 +156,56 @@ export default {
 </script>
 
 <style scoped>
-.submission-form {
-  max-width: 600px;
-  margin: 0 auto;
-}
+
 
 .submission-form h1 {
   text-align: center;
   margin-bottom: 1.5rem;
 }
 
-.form {
-  background: white;
-  padding: 2rem;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+.submission-form  {
+  min-width: 324px;
+  align-self: center;
 }
 
+
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: white;
+  align-items: center;
+  line-height: 1.2;
+  padding: 0rem;
+}
+
+.name-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 0.2rem;
+}
+
+.long-input {
+  align-items: baseline;
 }
 
 label {
   display: block;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-  color: #333;
+  color: #ffffff;
+  background-color: none;
 }
 
 .form-input,
 .form-textarea {
+  
   width: 100%;
-  padding: 5px;
-  border: 1px solid #ddd;
-  font-size: 16px;
+  border: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgb(82, 39, 85);
+
 }
 
 .form-input:focus,
@@ -176,8 +214,9 @@ label {
   border-color: #3498db;
 }
 
-.form-input:disabled {
-  background-color: #f5f5f5;
+.form-input:disabled,
+.disabled-style {
+  background-color: #645757;
   color: #999;
 }
 
@@ -190,39 +229,40 @@ label {
 
 .checkbox {
   width: auto;
+  padding-right: 1rem;
 }
 
 .form-actions {
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
+  margin-top: 1.5rem;
 }
 
 
 
-.page-header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding-top: 2cap;
-}
+
 .poll-title {
-  color: rgba(149, 91, 153, 1);
+  color: rgb(166, 111, 170);
+
 }
 
 .page-title {
-  color: aliceblue;
-  padding-bottom: 1cap;
+  color:rgb(255, 255, 255);
+  text-align: center;
 }
-.title {
-  inset-inline: auto;
-  
-}
+
+
 
 span {
   display: inline-block;
   padding: 5px;
 }
+
+.prcomment{
+  align-self: end;
+}
+
 
 
 /* Мобильные стили */
@@ -231,11 +271,6 @@ span {
     font-size: 1.5rem;
     margin-bottom: 1rem;
   }
-  
-  .form {
-    padding: 1.5rem;
-  }
-  
   .form-group {
     margin-bottom: 1.25rem;
   }
@@ -246,7 +281,7 @@ span {
   
   .form-input,
   .form-textarea {
-    padding: 8px;
+    padding: 0.2rem;
     font-size: 14px;
   }
   
@@ -264,13 +299,10 @@ span {
   .submission-form h1 {
     font-size: 1.3rem;
   }
-  
-  .form {
-    padding: 1rem;
-  }
+
   
   .form-group {
-    margin-bottom: 1rem;
+    margin-bottom: 0.3rem;
   }
   
   .form-actions {
