@@ -10,9 +10,10 @@
 
         </div>
         <div class="event-block">
-            <button @click="viewSubmission(submission.id)" class="more-button">MORE</button>
+            <img src='@/assets/more_button.png' @click="viewSubmission(submission.id)" class="more-button" />
         </div>
     </div>
+
 </template>
 
 <style>
@@ -57,14 +58,15 @@
 }
 
 .more-button{
-    color: white;
+    color: #023730;
     text-align: center;
-    font-size: 0.75rem;
+    font-size: 1rem;
     writing-mode: vertical-rl;
     text-orientation: upright;
     margin: 0.2rem;
-    padding: 0.3rem;
-    background-color: #023730;
+    padding: 0;
+    background-color: #02373000;
+    border: none;
 }
 
 h1{

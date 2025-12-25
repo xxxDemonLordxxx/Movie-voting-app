@@ -7,7 +7,7 @@
     <div class="card-body">
       <div class="description-section">
         <h3>pitch</h3>
-        <p class="movie-description">{{ truncatedComment }}</p>
+        <p class="movie-description">{{ comment }}</p>
       </div>
       
         <div class="submission-meta">
@@ -87,9 +87,6 @@ export default {
       
       return imgExtensions.some(ext => url.endsWith(ext));
     },
-    truncatedComment() {
-      const desc = this.comment
-      return desc.length > 150 ? desc.substring(0, 150) + '...' : desc
     },
     author() {
       if (this.submission.is_anonymous) {
@@ -128,6 +125,7 @@ export default {
   font-size: 2rem;
   text-align: center;
   color: white;
+  word-break: break-word;
 }
 
 .card-body {
@@ -148,6 +146,7 @@ export default {
 .movie-description {
   line-height: 1.6;
   font-size: 1.1rem;
+  word-break: break-word;
 }
 
 .submission-meta {
