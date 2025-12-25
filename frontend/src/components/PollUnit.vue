@@ -55,11 +55,7 @@ export default {
     padding-bottom: 0rem;
 }
 
-.date {
-  border-top: dotted 1px;
-  border-color: gray;
-    line-height: 1
-}
+
 
 
 </style>

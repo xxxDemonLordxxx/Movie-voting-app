@@ -18,7 +18,7 @@ export default {
 <style>
 .calendar-title {
   color: white;
-  position: center;
+  text-align: center;
 }
 
 .events-list {

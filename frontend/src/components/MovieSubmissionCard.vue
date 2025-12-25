@@ -10,7 +10,10 @@
         <span class="date">{{ formattedDate }}</span>
       </div>
     </div>
-     <button @click="viewSubmission(submission.id)" class="more-button">MORE</button>
+
+    <div class="btn-block">
+     <img src='@/assets/more_button.png' @click="viewSubmission(submission.id)" class="more-button" />
+    </div>
   </div>
 </template>
 
@@ -56,10 +59,14 @@ export default {
 
 <style scoped>
 .movie-suggestion-card {
+  display: flex;
+  flex-direction: row;
+  box-sizing:border-box;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  height: 13rem;
+  margin:1rem
 }
 
 .movie-suggestion-card:hover {
@@ -74,31 +81,43 @@ export default {
   border-color: gray;
   border-width: 0.1rem;
   border-style: dotted;
-  width: 82vw;
-  height: fit-content;
+  width: 200%;
   padding: 0.1rem;
+  box-sizing:border-box;
+  overflow:hidden;
 }
 
 .movie-title {
   font-family: "Blackout Two AM";
-  overflow-wrap: break-word;
-  flex-grow: 2;
-  text-overflow: ellipsis;
+  flex-grow: 1;
   font-size: 1.3rem;
+  overflow-wrap: break-word;
+  text-overflow:ellipsis;
+  overflow: clip;
+  box-sizing:border-box;
+  white-space: nowrap;
 }
 
 .movie-description {
   padding: 0.2rem;
-  overflow-wrap: break-word;
-  text-overflow: ellipsis;
+  overflow-wrap: break-all;
+  text-overflow:ellipsis;
+  overflow: clip;
+  box-sizing:border-box;
+  flex-grow: 2;
+  
 }
 
 .suggestion-info {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   font-size: 0.9rem;
   color: #7f8c8d;
+  border-top: dotted 1px;
+  border-color: gray;
+  line-height: 1
 }
 
 .suggester {
@@ -109,6 +128,15 @@ export default {
   color: #95a5a6;
 }
 
+.btn-block{
+  display: flex;
+  flex-direction: row;
+  color: white;
+  border-color: gray;
+  border-width: 0.1rem;
+  border-style: dotted;
+  flex-shrink:2;
+}
 /* Мобильные стили */
 @media (max-width: 768px) {
   .movie-suggestion-card {
@@ -123,7 +151,7 @@ export default {
   }
   
   .movie-title {
-    font-size: 1.3rem;
+    font-size: 1rem;
   }
   
   .movie-description {
@@ -142,8 +170,7 @@ export default {
   }
   
   .movie-title {
-    font-size: 1.3rem;
-    margin-bottom: 0.4rem;
+    font-size: 1rem;
   }
   
   .movie-description {
@@ -152,7 +179,6 @@ export default {
   }
   
   .suggestion-info {
-    flex-direction: column;
     align-items: flex-start;
     gap: 0.25rem;
     font-size: 0.8rem;
