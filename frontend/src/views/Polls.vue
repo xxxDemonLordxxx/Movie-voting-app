@@ -2,9 +2,9 @@
   <div class="page-header">
     <div class="adminheader">
       <router-link to="/" class="back-button">← BACK</router-link>
-      <!-- <div class="NewPollButton">
+      <div class="NewPollButton">
         <NewPollButton />
-      </div> -->
+      </div>
     </div>
     <div class="layout">
         <div class="view-header">
@@ -54,10 +54,7 @@ export default {
       polls: [],
       loading: false,
       error: null,
-      form: {
-        pollTitle: '',
-        pollEnd: '',
-      },
+    
     }
   },
   async mounted() {
@@ -135,11 +132,7 @@ position: center;
   flex-direction: column;
   gap: 1rem;
 }
-.title {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
+
 
 .layout {
   display: flex;
@@ -167,12 +160,14 @@ span {
     color:#1a584a;
     font-family: "Blackout Two AM";
     background-color: rgba(244, 233, 172, 1);
-    padding: 0;
+    padding: 2px;
 }
 
 .info-text {
     color:rgba(244, 233, 172, 1) ;
     text-align: center;
+    font-size: 0.8rem;
+    margin: 0 1.5rem 2rem 1.5rem
 }
 
 

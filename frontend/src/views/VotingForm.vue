@@ -72,7 +72,7 @@
 <script>
 import OfferPopup from '@/components/OfferPopup.vue';
 export default {
-  name: 'SubmissionForm',
+  name: 'VotingForm',
   components: {
     OfferPopup
   }
