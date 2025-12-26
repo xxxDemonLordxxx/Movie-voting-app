@@ -62,8 +62,10 @@ class SubmissionResponse(BaseModel):
 # Схемы голосований
 class PollBase(BaseModel):
     title: str
+    description: Optional[str]
     start: datetime
     end: datetime
+    winners: int
     state_id: int
 
 class PollCreate(PollBase):
@@ -72,16 +74,22 @@ class PollCreate(PollBase):
 class PollResponse(BaseModel):
     id: int
     title: str
+    description: Optional[str]
     start: datetime
     end: datetime
     state_id: int
+    winners: int
     created_at: datetime
     state_name: str
     
     model_config = ConfigDict(from_attributes=True)
 
 
-
+class PollInfoResponse(BaseModel):
+    poll_info: PollResponse
+    submissions: List[SubmissionResponse]
+    
+    model_config = ConfigDict(from_attributes=True)
 
 
 
@@ -123,4 +131,45 @@ class VoteResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+
+# Схемы видов ивентов
+
+class EventTypeBase(BaseModel):
+    name: str
+    description: str
+
+class EventTypeCreate(EventTypeBase):
+    pass
+
+class EventTypeResponse(BaseModel):
+    id: int
+    name: str
+    description: str
+    
+    model_config = ConfigDict(from_attributes=True)
+
 # Схемы ивентов
+
+class EventBase(BaseModel):
+    title: str
+    image_url: str
+    date: datetime
+    event_type_id: int
+    description: Optional[str]
+    submission_id: Optional[int]
+
+class EventCreate(EventBase):
+    pass
+
+class EventResponse(BaseModel):
+    id: int
+    title: str
+    image_url: str
+    date: datetime
+    event_type_id: int
+    description: Optional[str]
+    submission_id: Optional[int]
+    created_at: datetime
+    
+    model_config = ConfigDict(from_attributes=True)
+
