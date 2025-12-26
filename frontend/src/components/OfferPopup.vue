@@ -4,13 +4,9 @@ vue
   <div v-if="showPopup" class="popup-overlay">
     <div class="popup-content">
       <p class="info-text">
-        in da club, we appreciate enthusiasm, 
-        so so that you can vote and mayhaps 
-        get your movie in da club. its not that deep but please do consider and try to pick 
-        something that is really really cool
-        and get a pitch to  really really
-        <button @click="closePopup" class="close-link">haha</button> 
-        sell it. click haha if ya ready for democratic experience
+        {{ psa }}
+        <button @click="closePopup" class="close-link">{{haha}}</button> 
+        {{ psa2}}
       </p>
     </div>
   </div>
@@ -20,9 +16,15 @@ vue
 <script>
 export default {
   name: 'PopupWindow',
+  props: {
+    psa: String,
+    haha: String,
+    psa2: String
+  },
   data() {
     return {
-      showPopup: true
+      showPopup: true,
+      
     }
   },
   methods: {

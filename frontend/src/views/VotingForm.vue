@@ -8,7 +8,17 @@
       <p class="info-text">Choose your selection of films in order of preference</p>
     </div>
     
-    <OfferPopup/>
+    <OfferPopup 
+    psa="it takes great balance between 
+    democracy and leadership to carry the
+    boat forward. This site is not made to stop
+    you from voting more than once. However, we,"
+    haha="humble servants"
+    psa2="do these poll
+    to make sure most people will be interested
+    in coming to the screening. So please, abstain
+    from cheating. Click humble servants to continue to polls"
+    />
 
     <form>
       <div class="input-group">
@@ -75,7 +85,7 @@ export default {
   name: 'VotingForm',
   components: {
     OfferPopup
-  }
+  },
 }
 </script>
 

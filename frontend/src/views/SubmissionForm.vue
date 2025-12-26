@@ -8,7 +8,15 @@
       <p class="info-text">information text please come up with something fun and cool and would be nice if you know something bout the movie</p>
     </div>
 
-    <OfferPopup/>
+    <OfferPopup 
+    psa="in da club, we appreciate enthusiasm, 
+    so so that you can vote and mayhaps get your movie 
+    in da club. its not that deep but please do 
+    consider and try to pick something that is 
+    really really cool and get a pitch to really really"
+    haha="haha"
+    psa2="sell it. click haha if ya ready for democratic experience"
+    />
     
     <form @submit.prevent="submitSubmission" class="form">
       <div class="name-group">
