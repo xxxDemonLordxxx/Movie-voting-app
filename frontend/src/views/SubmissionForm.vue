@@ -1,12 +1,5 @@
 <template>
-  <div class="page-header">
-      <router-link to="/polls" class="back-button">← BACK</router-link>
-      <div class="title">
-        <span class="poll-title">DECEMBER</span> 
-        <span class="page-title">POLL</span>
-      </div>
-      <p class="info-text">information text please come up with something fun and cool and would be nice if you know something bout the movie</p>
-    </div>
+  <FringeHeader v-if="pollInfo" :pollInfo="pollInfo" />
 
     <OfferPopup 
     psa="in da club, we appreciate enthusiasm, 
@@ -89,15 +82,21 @@
 <script>
 import TMDB from '@/components/TMDBsearch.vue'
 import OfferPopup from '@/components/OfferPopup.vue';
+import FringeHeader from '@/components/FringeHeader.vue';
 export default {
   name: 'SubmissionForm',
   components: {
     TMDB,
-    OfferPopup
+    OfferPopup,
+    FringeHeader
   },
   
   data() {
     return {
+      submissions: [],
+      pollInfo: null,
+      loading: false,
+      error: null,
       form: {
         author: '',
         isAnonymous: false,
@@ -107,7 +106,47 @@ export default {
       submitting: false
     }
   },
+  computed: {
+    pollId() {
+      const id = this.$route.params.id;
+      console.log('Computed pollId from route:', id);
+      return parseInt(id) || null;
+    }
+  },
+  async mounted() {
+    console.log('Mounted - pollId computed:', this.pollId);
+    if (this.pollId) {
+      await this.fetchSubmissions();
+    } else {
+      this.error = 'No valid poll ID found';
+    }
+  },
+
   methods: {
+    async fetchSubmissions() {
+      this.loading = true
+      this.error = null
+      try {
+        const response = await fetch(`http://localhost:8000/polls/${this.pollId}`)
+        if (response.ok) {
+          const data = await response.json()  // Get the full response
+          
+            // Extract both poll info and submissions
+            this.pollInfo = data.poll_info      // This was missing!
+            this.submissions = data.submissions // This needs to be from data.submissions
+            
+            console.log('Loaded poll info:', this.pollInfo)
+            console.log('Loaded submissions:', this.submissions)
+          } else {
+            throw new Error(`HTTP error! status: ${response.status}`)
+          }
+        } catch (error) {
+          console.error('Error loading submissions:', error)
+          this.error = 'Mistake when loading the movie list: ' + error.message
+        } finally {
+          this.loading = false
+        }
+      },
     async submitSubmission() {
       if (!this.form.movieTitle.trim() || !this.form.movieDescription.trim()) {
         alert('PLEASE, FILL ALL')

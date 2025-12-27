@@ -1,6 +1,7 @@
 <template> 
+    
+  <FringeHeader v-if="pollInfo" :pollInfo="pollInfo" />
   <div class="submissions-section">
-    <router-link to="/polls" class="back-button">← BACK TO THE LIST</router-link>
       <div v-if="loading" class="loading">LOADING...</div>
       <div v-else-if="error" class="error">
         {{ error }}
@@ -17,20 +18,25 @@
           class="submission"
         />
       </div>
+      
     </div>
+
+ 
 </template>
 
 <script>
+import FringeHeader from '@/components/FringeHeader.vue';
 import MovieSubmissionCard from '@/components/MovieSubmissionCard.vue'
-
 export default {
   name: 'SubmissionsList',
   components: {
-    MovieSubmissionCard
+    MovieSubmissionCard,
+    FringeHeader
   },
   data() {
     return {
       submissions: [],
+      pollInfo: null,
       loading: false,
       error: null,
     }
@@ -59,18 +65,24 @@ export default {
       try {
         const response = await fetch(`http://localhost:8000/polls/${this.pollId}`)
         if (response.ok) {
-          this.submissions = await response.json()
-          console.log('Loaded submissions:', this.submissions) // Для отладки
-        } else {
-          throw new Error(`HTTP error! status: ${response.status}`)
+          const data = await response.json()  // Get the full response
+          
+            // Extract both poll info and submissions
+            this.pollInfo = data.poll_info      // This was missing!
+            this.submissions = data.submissions // This needs to be from data.submissions
+            
+            console.log('Loaded poll info:', this.pollInfo)
+            console.log('Loaded submissions:', this.submissions)
+          } else {
+            throw new Error(`HTTP error! status: ${response.status}`)
+          }
+        } catch (error) {
+          console.error('Error loading submissions:', error)
+          this.error = 'Mistake when loading the movie list: ' + error.message
+        } finally {
+          this.loading = false
         }
-      } catch (error) {
-        console.error('Error loading submissions:', error)
-        this.error = 'Mistake when loading the movie list: ' + error.message
-      } finally {
-        this.loading = false
-      }
-    },
+      },
     viewSubmission(id) {
       this.$router.push(`/submissions/${id}`)
     }

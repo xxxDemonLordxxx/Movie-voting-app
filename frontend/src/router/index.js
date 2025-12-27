@@ -15,7 +15,7 @@ const routes = [
   { path: '/submissions/:id', name: 'submission', component: SubmissionDetail },
   { path: '/calendar', name: 'calendar', component: Calendar},
   { path: '/about_us', name: 'about-us', component: AboutUs},
-  { path: '/voting', name: 'voting', component: VotingForm},
+  { path: '/voting/:id', name: 'voting', component: VotingForm},
   { path: '/polls', name: 'polls', component: Polls},
   { path: '/polls/:id', name: 'submissions-list', component: SubmissionsList},
   { path: '/login', name: 'admin-login', component: AdminLogin} 
