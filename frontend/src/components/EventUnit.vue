@@ -5,8 +5,8 @@
             <p>MAIN CAMPUS</p>
         </div>
         <div class="event-block">
-            <h3 class="event-title">LONG ASSASASASSASSASS TITLISSE</h3>
-            <p class="description">desc riD ED DE D A SSSD ASD ASD Asd ASSDSD SSSSSS SSSS SSSSSSSS SSS SSSS tpio fsdfsdf</p>
+            <h3 class="event-title">{{ eventTitle }}</h3>
+            <p class="description">{{ eventDescription }}</p>
 
         </div>
         <div class="event-block">
@@ -15,6 +15,26 @@
     </div>
 
 </template>
+
+<script>
+export default {
+  name: 'EventUnit',
+  props: {
+    event: {
+      type: Object,
+      required: true
+    }
+  },
+  computed: {
+    eventTitle() {
+      return this.event?.title || 'No name'
+    },
+    eventDescription() {
+      return this.event?.description || 'No description'
+    },
+  }
+}
+</script>
 
 <style>
 
