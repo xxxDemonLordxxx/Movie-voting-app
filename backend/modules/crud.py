@@ -85,29 +85,20 @@ def get_poll_data(db: Session, poll_id: int) -> models.Poll:
 
 
 
-def add_new_vote(db: Session, vote: schemas.VoteCreate, points: int) -> models.Vote:
-    db_vote = models.Vote(
-        poll_id = vote.poll_id,
-        points = points,
-        submission_id = vote.submission_id,
-        rank = vote.rank,
+def add_new_ballot(db: Session, ballot: schemas.BallotCreate) -> models.Ballot:
+    db_ballot = models.Ballot(
+        poll_id = ballot.poll_id,
+        rankings = ballot.rankings,
         created_at = datetime.now()
     )
-    db.add(db_vote)
+    db.add(db_ballot)
     db.commit()
-    db.refresh(db_vote)
-    return db_vote
+    db.refresh(db_ballot)
+    return db_ballot
 
-def update_vote(db: Session, submission_id: int, points: int):
-    submission = db.query(models.Submission).filter(models.Submission.id == submission_id).first()
-    if not submission:
-        return None
 
-    submission.current_votes = submission.current_votes + points
 
-    db.commit()
-    db.refresh(submission)
-    return submission
+
 
 
 def start_poll(db: Session, poll_id: int) -> models.Poll:
@@ -121,17 +112,66 @@ def start_poll(db: Session, poll_id: int) -> models.Poll:
         db.refresh(poll)
     return db.query(models.Poll).filter(models.Poll.id == poll_id).options(selectinload(models.Poll.state)).first()
 
-def stop_poll(db: Session, poll_id: int) -> models.Poll: 
+
+def stop_poll(db: Session, poll_id: int) -> list[schemas.VotingStats]: 
     poll = db.query(models.Poll).filter(models.Poll.id == poll_id).first()
     if not poll:
-        return None
+        raise ValueError("Poll not found")
 
-    if poll.state_id == 2:
+    if poll.state_id != 2:
+        raise ValueError(f"Poll is not in votable state. Current state_id: {poll.state_id}")
+
+    try:
+
+        ballots = db.query(models.Ballot).filter(models.Ballot.poll_id == poll_id).all()
+        ballots_list = [ballot.rankings for ballot in ballots]
+        # !!!!!!!!! Сделать проверку, что все айдишки есть в таблице submissions
+
+        if not ballots_list:
+            raise ValueError("No ballots found for this poll")
+        
+        if poll.winners <= 0:
+            raise ValueError(f"Invalid winners count: {poll.winners}")
+        
+        election_results = utils.commit_voting(
+            ballots_list=ballots_list,
+            winners_count=poll.winners
+            )
+        
+        if not election_results:
+            raise ValueError("Vote counting failed - no results returned")
+        
+        sorted_election_results = sorted(election_results, key=lambda x: x['number_of_votes'], reverse=True)
+
+        submissions = db.query(models.Submission).filter(models.Submission.poll_id == poll_id).all()
+        submission_dict = {submission.id: submission for submission in submissions}
+
+
+        full_election_results = []
+
+        for index, result in enumerate(sorted_election_results):
+            full_election_results.append(
+                schemas.VotingStats(
+                    rank = index + 1,
+                    submission = submission_dict[result['submission_id']],
+                    number_of_votes = result['number_of_votes'],
+                    status = result['status']
+                )
+            )
+
         poll.state_id = 3
         db.commit()
         db.refresh(poll)
 
-    return db.query(models.Poll).filter(models.Poll.id == poll_id).options(selectinload(models.Poll.state)).first()
+        return full_election_results
+    
+    except ValueError as e:
+        db.rollback()
+        raise e
+        
+    except Exception as e:
+        db.rollback()
+        raise ValueError(f"Error processing poll results: {str(e)}")
 
 
 # Submissions
@@ -154,7 +194,6 @@ def add_new_submission(db: Session, submission: schemas.SubmissionCreate) -> mod
         author = submission.author,
         comment = submission.comment,
         image_url = "", # доделать сохранение изображений
-        current_votes = 0,
         created_at = datetime.now()
     )
     db.add(db_submission)

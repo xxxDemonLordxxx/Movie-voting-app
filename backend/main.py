@@ -130,6 +130,25 @@ def create_new_poll(poll: schemas.PollCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ # Голосование
+
 @app.patch( # !!!!!!!!!!!!!!!!!!!!!!
     path="/polls/start/{poll_id}",
     response_model=schemas.PollResponse,
@@ -148,58 +167,44 @@ def start_poll(poll_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.patch( # !!!!!!!!!!!!!!!!!!!!!!
-    path="/polls/stop/{poll_id}",
-    response_model=schemas.PollResponse,
-    status_code=status.HTTP_200_OK,
-    summary="Stop voting",
-    responses={},
-    tags=["Polls"]
-)
-def stop_poll(poll_id: int, db: Session = Depends(get_db)):
-    try:
-        poll = crud.stop_poll(db=db, poll_id=poll_id)
-        if not poll:
-            raise HTTPException(status_code=404, detail="Poll not found")
-        return poll
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-
- # Голосование
-
 
 @app.post(
     path="/polls/vote",
-    response_model=List[schemas.SubmissionResponse],
+    response_model=schemas.BallotResponse,
     status_code=status.HTTP_201_CREATED,
-    summary="Cast votes",
+    summary="Cast a ballot",
     responses={},
     tags=["Polls"]
 )
-def add_votes(ballot: list[schemas.VoteCreate], db: Session = Depends(get_db)):
+def add_ballot(ballot: schemas.BallotCreate, db: Session = Depends(get_db)):
     try:
-        poll_id = ballot[0].poll_id if ballot else None
-
-        if not ballot:
-            raise HTTPException(status_code=400, detail="No votes provided")
-        submissions_count = len(ballot)
-        points = {rank: submissions_count - rank + 1 for rank in range(1, submissions_count + 1)}
-
-        vote_responses = []
-        for vote in ballot:
-            point = points[vote.rank]
-            vote_response = crud.add_new_vote(db=db, vote=vote, points = point)
-            vote_responses.append(vote_response)
-            crud.update_vote(db=db, submission_id=vote.submission_id, points = point) 
- 
-        return crud.get_all_submissions_by_poll(db=db, poll_id=poll_id)
+        new_ballot = crud.add_new_ballot(db=db, ballot=ballot)
+        return new_ballot
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.patch( # !!!!!!!!!!!!!!!!!!!!!!
+    path="/polls/stop/{poll_id}",
+    response_model=list,
+    status_code=status.HTTP_200_OK,
+    summary="Stop voting",
+    responses={
+        404: {"description": "Poll not found"},
+        400: {"description": "Bad request - poll is not in votable state"},
+        500: {"description": "Internal server error"}
+    },
+    tags=["Polls"]
+)
+def stop_poll(poll_id: int, db: Session = Depends(get_db)):
+    try:
+        poll = crud.stop_poll(db=db, poll_id=poll_id)
+        return poll
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post( # !!!!!!!!!!!!!!!!!!!!!!
@@ -315,6 +320,15 @@ def find_film_via_query(film_name_query: int, db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
+
+
+
+
+
+
+
+
+
 
 # Календарь
 

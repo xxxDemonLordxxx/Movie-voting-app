@@ -1,4 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, Text, ForeignKey
+from sqlalchemy.dialects.postgresql import ARRAY
+
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from .database import Base
@@ -13,7 +15,6 @@ class Submission(Base):
     author = Column(String, nullable=True)
     comment = Column(Text)
     image_url = Column(String, nullable=True)
-    current_votes = Column(Integer, nullable=True, default=0)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     movie = relationship("Movie")
@@ -51,14 +52,12 @@ class PollState(Base):
     name = Column(String, index=True)
     
 
-class Vote(Base):
-    __tablename__ = "votes"
+class Ballot(Base):
+    __tablename__ = "ballots"
     
     id = Column(Integer, primary_key=True, index=True)
     poll_id = Column(Integer, ForeignKey("polls.id"), index=True)
-    submission_id = Column(Integer, ForeignKey("submissions.id"))
-    rank = Column(Integer)
-    points = Column(Integer)
+    rankings = Column(ARRAY(Integer), index=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 class Event(Base):

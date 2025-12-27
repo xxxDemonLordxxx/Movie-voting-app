@@ -6,3 +6,4 @@ pydantic==2.5.0
 minio==7.1.15
 python-multipart
 python-magic
+pyrankvote
