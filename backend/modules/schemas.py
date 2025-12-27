@@ -47,7 +47,6 @@ class SubmissionResponse(BaseModel):
     author: Optional[str] = None
     comment: str
     image_url: Optional[str] = None
-    current_votes: int = 0
     created_at: datetime
     movie: MovieResponse
 
@@ -66,7 +65,6 @@ class PollBase(BaseModel):
     start: datetime
     end: datetime
     winners: int
-    state_id: int
 
 class PollCreate(PollBase):
     pass
@@ -109,25 +107,31 @@ class PollStateResponse(PollStateBase):
 
 
 
-
-
 # Схемы голосования (от юзера) - ballots
   
-class VoteBase(BaseModel):
+class BallotBase(BaseModel):
     poll_id: int
-    submission_id: int
-    rank: int
+    rankings: list[int]
 
-class VoteCreate(VoteBase):
+class BallotCreate(BallotBase):
     pass
 
-class VoteResponse(BaseModel):
+class BallotResponse(BaseModel):
     id: int
     poll_id: int
-    submission_id: int
-    rank: int
-    points: int = 0
+    rankings: list
     created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# Схемы проведенного голосования
+
+class VotingStats(BaseModel):
+    rank: int
+    submission: SubmissionResponse
+    number_of_votes: float
+    status: str
 
     model_config = ConfigDict(from_attributes=True)
 
