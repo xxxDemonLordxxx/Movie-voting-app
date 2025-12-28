@@ -8,23 +8,41 @@
                   @click="closeDialog"
                   formnovalidate>XXX
               </button>
-              <h1 class="title admin" id="CreatePollid">Create new poll</h1>
+              <h1 class="title">Create new poll</h1>
               <label for="PollTitle" class="input">title:</label>
               <input
                   id="pollTitle"
                   v-model="form.pollTitle"
                   placeholder="write the title of the poll"
-                  class="input form-input"
+                  class="input form-input admin-input"
                   required
                   name="pollTitle"
               />
-              <label for="pollEnd" class="input">end date (1 week preset):</label>
+              <label for="pollDescription" class="input">description:</label>
+              <input
+                  id="pollDescription"
+                  v-model="form.pollDescription"
+                  placeholder="write the description of the poll"
+                  class="input form-input admin-input"
+                  required
+                  name="pollDescription"
+              />
+              <label for="winners" class="input">winners:</label>
+              <input
+                  id="winners"
+                  v-model="form.winners"
+                  placeholder="write the number of winners"
+                  class="input form-input admin-input"
+                  required
+                  name="winners"
+              />
+              <label for="pollEnd" class="input">end date:</label>
               <input
                   type="datetime-local"
                   id="pollEnd"
                   name="meeting-time"
-                  value="2018-06-12T19:30"
-                  class="input"
+                  class="input admin-input"
+                  v-model="form.pollEnd"
                 />
               <button class="btn admin" @click="submitPoll">Submit</button>
           </form>
@@ -45,6 +63,8 @@ export default {
                 pollTitle: '',
                 pollStart: '',
                 pollEnd: '',
+                pollDescription: '',
+                winners: ''
             },
             submitting: false
         }
@@ -56,6 +76,7 @@ export default {
           if (this.dialogRef && this.dialogRef.open) {
         this.dialogRef.close();
       }
+      
     },
 
 methods: {
@@ -70,7 +91,6 @@ methods: {
                 this.form.pollTitle = ''; // Clear form on close
             }
         },
-   
     async submitPoll() {
       if (!this.form.pollTitle.trim()) {
         alert('PLEASE, FILL')
@@ -86,7 +106,9 @@ methods: {
           body: JSON.stringify({
             title: this.form.pollTitle,
             start: new Date().toISOString(), // Current date in API format
-            end: "2025-12-24T21:22:43.383Z",
+            end: new Date(this.form.pollEnd).toISOString(),
+            description: this.form.pollDescription,
+            winners: this.form.winners
           })
         })
 
@@ -132,6 +154,11 @@ methods: {
 
 .admin:hover{
   background-color: rgb(216, 205, 141);
+}
+
+.admin-input{
+  background-color: rgb(209, 209, 209); 
+  margin: 0.2rem;
 }
 
 .text{

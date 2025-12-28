@@ -85,7 +85,7 @@ export default {
       if (stateName === 'offer') {
         this.$router.push(`/submissions/new/${id}`)
       } else if (stateName === 'vote') {
-        this.$router.push(`/voting`)
+        this.$router.push(`/voting/${id}`)
       } else if (stateName === 'previous') {
         this.$router.push(`/polls/${id}`)
       } 

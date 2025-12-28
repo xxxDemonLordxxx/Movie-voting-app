@@ -1,5 +1,5 @@
 <template>
-  <FringeHeader v-if="pollInfo" :pollInfo="pollInfo" />
+  <FringeHeader v-if="pollInfo" :pollInfo="pollInfo" :submissions="submissions" />
 
     <OfferPopup 
     psa="in da club, we appreciate enthusiasm, 
@@ -8,7 +8,9 @@
     consider and try to pick something that is 
     really really cool and get a pitch to really really"
     haha="haha"
-    psa2="sell it. click haha if ya ready for democratic experience"
+    psa2="sell it. click haha if ya ready for democratic experience. TIP -
+    if you want to add something to someone else's pitch just offer the same movie again
+    with your own addition comment"
     />
     
     <form @submit.prevent="submitSubmission" class="form">
@@ -77,18 +79,24 @@
         </button>
       </div>
     </form>
+
+    <VoteStatusbtn
+    statusChange="start"
+    >start voting</VoteStatusbtn>
 </template>
 
 <script>
 import TMDB from '@/components/TMDBsearch.vue'
 import OfferPopup from '@/components/OfferPopup.vue';
 import FringeHeader from '@/components/FringeHeader.vue';
+import VoteStatusbtn from '@/components/VoteStatusbtn.vue';
 export default {
   name: 'SubmissionForm',
   components: {
     TMDB,
     OfferPopup,
-    FringeHeader
+    FringeHeader,
+    VoteStatusbtn
   },
   
   data() {
