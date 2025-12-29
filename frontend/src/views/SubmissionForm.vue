@@ -82,6 +82,7 @@
 
     <VoteStatusbtn
     statusChange="start"
+    v-if="isAdmin"
     >start voting</VoteStatusbtn>
 </template>
 
@@ -111,7 +112,8 @@ export default {
         movieTitle: '',
         movieDescription: ''
       },
-      submitting: false
+      submitting: false,
+      isAdmin: false
     }
   },
   computed: {
@@ -122,13 +124,8 @@ export default {
     }
   },
   async mounted() {
-    console.log('Mounted - pollId computed:', this.pollId);
-    if (this.pollId) {
-      await this.fetchSubmissions();
-    } else {
-      this.error = 'No valid poll ID found';
-    }
-  },
+      await this.fetchSubmissions(), this.checkAdmin();
+    } ,
 
   methods: {
     async fetchSubmissions() {
@@ -155,6 +152,10 @@ export default {
           this.loading = false
         }
       },
+      checkAdmin() {
+      const storedAdmin = localStorage.getItem('isAdmin')
+      this.isAdmin = storedAdmin === 'true'
+    },
     async submitSubmission() {
       if (!this.form.movieTitle.trim() || !this.form.movieDescription.trim()) {
         alert('PLEASE, FILL ALL')

@@ -35,9 +35,12 @@
           Clear All
         </button>
       </div>
-<VoteStatusbtn
-    statusChange="stop"
-    ></VoteStatusbtn>
+    
+    <div v-if="isAdmin">
+      <VoteStatusbtn
+      statusChange="stop"
+      ></VoteStatusbtn>
+    </div>
 </template>
 
 
@@ -61,6 +64,7 @@ export default {
       loading: false,
       error: null,
       voteData: '', // Comma-separated string of IDs
+      isAdmin: false
     }
   },
 
@@ -106,12 +110,7 @@ export default {
 
 
   async mounted() {
-    console.log('Mounted - pollId computed:', this.pollId);
-    if (this.pollId) {
-      await this.fetchSubmissions();
-    } else {
-      this.error = 'No valid poll ID found';
-    }
+    await this.fetchSubmissions(), this.checkAdmin();
   },
 
   methods: {
@@ -139,6 +138,11 @@ export default {
           this.loading = false
         }
       },
+      
+    async checkAdmin() {
+      const storedAdmin = localStorage.getItem('isAdmin')
+      this.isAdmin = storedAdmin === 'true'
+    },
 
     async submitVote() {
   // Get data directly from VotingInput component
@@ -213,7 +217,7 @@ export default {
     viewSubmission(id) {
       this.$router.push(`/submissions/${id}`)
     }
-  }
+  },
 }
 </script>
 
