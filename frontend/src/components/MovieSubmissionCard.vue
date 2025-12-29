@@ -55,7 +55,7 @@ export default {
   }
 }
 
-</script>>
+</script>
 
 <style scoped>
 .movie-suggestion-card {

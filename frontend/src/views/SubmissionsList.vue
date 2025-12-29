@@ -1,6 +1,6 @@
 <template> 
     
-  <FringeHeader v-if="pollInfo" :pollInfo="pollInfo" />
+  <FringeHeader v-if="pollInfo" :pollInfo="pollInfo" :submissions="submissions"/>
   <div class="submissions-section">
       <div v-if="loading" class="loading">LOADING...</div>
       <div v-else-if="error" class="error">

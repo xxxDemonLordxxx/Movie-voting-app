@@ -2,7 +2,7 @@
   <div class="page-header">
     <div class="adminheader">
       <router-link to="/" class="back-button">← BACK</router-link>
-      <div class="NewPollButton">
+      <div v-if="isAdmin" class="NewPollButton">
         <NewPollButton />
       </div>
     </div>
@@ -43,6 +43,7 @@
 <script>
 import PollUnit from '@/components/PollUnit.vue';
 import NewPollButton from '@/components/NewPollButton.vue';
+
 export default {
   name: 'Polls',
   components: {
@@ -54,11 +55,13 @@ export default {
       polls: [],
       loading: false,
       error: null,
+      isAdmin: false
     
     }
   },
+
   async mounted() {
-    await this.fetchPolls()
+    await this.fetchPolls(), this.checkAdmin();
   },
   methods: {
     async fetchPolls() {
@@ -79,13 +82,17 @@ export default {
         this.loading = false
       }
     },
+    checkAdmin() {
+      const storedAdmin = localStorage.getItem('isAdmin')
+      this.isAdmin = storedAdmin === 'true'
+    },
         viewSubmissionList(id, stateName) {
       console.log('stateName parameter:', stateName)
       
       if (stateName === 'offer') {
         this.$router.push(`/submissions/new/${id}`)
       } else if (stateName === 'vote') {
-        this.$router.push(`/voting`)
+        this.$router.push(`/voting/${id}`)
       } else if (stateName === 'previous') {
         this.$router.push(`/polls/${id}`)
       } 

@@ -1,13 +1,13 @@
 <template>
         <div class="poll-box">
             <div class="unit-title">
-                <p class="poll-title">{{pollTitle}}</p> 
+                <p class="poll-title fringe">{{pollTitle}}</p> 
                 <p class="poll-status">{{state_name}}</p>
             </div>
             <div class="unit-title date">
-                <p class="text">13 JAN 2025</p> 
+                <p class="text">{{pollStart}}</p> 
                 <p class="text">---</p>
-                <p class="text">13 JAN 2025</p>
+                <p class="text">{{pollEnd}}</p>
             </div>
           </div>
 </template>
@@ -22,19 +22,29 @@ export default {
     }
   },
   computed: {
+    
     pollTitle() {
       return this.poll?.title || 'No name'
     },
     state_name() {
       return this.poll?.state_name || 'No description'
     },
+    pollEnd() {
+      return this.poll?.end|| 'no end date'
+    },
+    pollStart() {
+      return this.poll?.start || 'no end date'
+    }
   }
 }
 </script>
 
 <style>
-.poll-title {
+.fringe{
   color: rgba(149, 91, 153, 1);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding-right: 1rem;
 }
 
 .poll-status {
