@@ -57,53 +57,74 @@
           <p class="search-pretty">)</p>
         </div>
 
+        <div>
+          <MovieSubmissionCard
+          v-for="submission in filteredSubmissions"
+          :key="submission.id"
+          :submission="submission" 
+          @click="setTempSelection(submission)"
+          :temp-selected="isTempSelected(submission)"
+          :unavailable="isAlreadySelected(submission)"
+          @show-dialog="$emit('show-dialog', $event)"
+          />
+        </div>
+
         <!-- Submissions List as Cards -->
         <!-- Submissions List as Cards -->
-        <div class="popup-content-cards">
+        <!-- <div class="popup-content-cards">
             <div
             v-for="submission in filteredSubmissions"
             :key="submission.id"
-            @click="setTempSelection(submission)"
-            :class="['submission-card', { 
+            > 
+            <div  @click="setTempSelection(submission)"
+                  :class="['movie-suggestion-card', { 
                 'temp-selected': isTempSelected(submission),
                 'unavailable': isAlreadySelected(submission) 
-            }]"
-            > 
-            <!-- Card Content -->
-      <div class="card-content">
-        <div class="card-header">
-          <h3 class="movie-title">{{ getSubmissionTitle(submission) }}</h3>
-          <div v-if="isAlreadySelected(submission)" class="unavailable-badge">
-            {{ getPositionOfSubmission(submission) + 1 }}
-          </div>
-        </div>
-        
-        <p class="movie-description">
-          {{ truncateComment(submission.comment) }}
-        </p>
-        
-        <div class="submission-info">
-          <span class="suggester">
-            {{ getSubmissionAuthor(submission) }}
-          </span>
-          <span class="date">{{ formatDate(submission.created_at) }}</span>
-        </div>
-      </div>
+                }]">
+              <div class="card-content">
+                <div class="card-header">
+                  <h3 class="movie-title">{{ getSubmissionTitle(submission) }}</h3>
+                  <div v-if="isAlreadySelected(submission)" class="unavailable-badge">
+                    {{ getPositionOfSubmission(submission) + 1 }}
+                  </div>
+                </div>
+                
+                <p class="movie-description">
+                  {{ truncateComment(submission.comment) }}
+                </p>
+                
+                <div class="submission-info">
+                  <span class="suggester">
+                    {{ getSubmissionAuthor(submission) }}
+                  </span>
+                  <span class="date">{{ formatDate(submission.created_at) }}</span>
+                </div>
+              </div>
+            <div class="btn-block">
+            <img src='@/assets/more_button.png' @click="viewSubmission(submission.id)" class="more-button" />
+            </div>
+      </div> -->
           
           <div v-if="availableSubmissions.length === 0" class="no-results">
             No movies available for this position
           </div>
         </div>
       </div>
-      </div>
-    </div>
+      <!-- </div> -->
+    <!-- </div> -->
   </div>
 </template>
 
 <script>
+import MovieDetailCard from './MovieDetailCard.vue';
+import MovieSubmissionCard from './MovieSubmissionCard.vue';
+
 export default {
   name: 'VotingInput',
-  
+  components: {
+    MovieSubmissionCard,
+    MovieDetailCard
+  },
   props: {
     // Array of submission objects
     submissions: {
@@ -160,7 +181,7 @@ export default {
       
       const query = this.searchQuery.toLowerCase();
       return this.submissions.filter(submission => {
-        const title = this.getSubmissionTitle(submission).toLowerCase();
+        const title = this.movieTitle(submission).toLowerCase();
         const comment = submission.comment?.toLowerCase() || '';
         
         return title.includes(query) || comment.includes(query);
@@ -248,7 +269,7 @@ export default {
     // Get display value for a specific position
     getDisplayValue(index) {
         const submission = this.selectedSubmissions[index];
-        return submission ? this.getSubmissionTitle(submission) : '';
+        return submission ? this.movieTitle(submission) : '';
     },
     
     // Open popup for specific position
@@ -314,33 +335,26 @@ export default {
     },
     
     // Helper methods for submission data
-    getSubmissionTitle(submission) {
+    movieTitle(submission) {
         return submission?.movie?.title || submission?.title || 'Unknown Movie';
     },
-    
-    getSubmissionAuthor(submission) {
-        if (submission?.is_anonymous) {
-        return 'Anonymous';
-        }
-        return submission?.author || 'Anonymous';
-    },
-    
-    truncateComment(comment) {
+
+    truncatedComment(comment) {
         if (!comment) return 'No description provided';
         const maxLength = 120;
         return comment.length > maxLength 
         ? comment.substring(0, maxLength) + '...' 
         : comment;
     },
-    
-    formatDate(dateString) {
-        if (!dateString) return '';
-        return new Date(dateString).toLocaleDateString('en-EN');
+
+    author(submission) {
+        return submission?.author || 'Anonymous';
     },
-    
-    viewSubmission(id) {
-        this.$emit('view-submission', id);
-    }
+
+    formattedDate() {
+      if (submission?.created_at) return ''
+      return new Date(submission?.created_at).toLocaleDateString('en-EN')
+    },
     },
 };
 </script>
@@ -462,6 +476,12 @@ export default {
   animation: popup-fade-in 0.2s ease-out; /* Add animation */
 }
 
+  .movie-suggestion-card {
+    margin-left: -50vw;
+    position: relative;
+    left: 50%;
+}
+
 @keyframes popup-fade-in {
   from {
     opacity: 0;
@@ -490,6 +510,16 @@ export default {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.btn-block{
+  display: flex;
+  flex-direction: row;
+  color: white;
+  border-color: gray;
+  border-width: 0.1rem;
+  border-style: dotted;
+  flex-shrink:2;
 }
 
 .close-btn {
@@ -575,6 +605,7 @@ export default {
   cursor: pointer;
   transition: background-color 0.2s;
   gap: 16px;
+
 }
 
 .submission-card:hover:not(.unavailable) {
@@ -587,13 +618,10 @@ export default {
   border: dotted rgb(228, 204, 131) 3px
 }
 
-.temp-selected {
-  border: dotted rgb(52, 89, 78) 3px
-}
 
 .card-content {
-  flex: 1;
-  width:min-content
+  width: 80vw;
+  flex-grow: 3;
 }
 
 .card-header {
@@ -605,7 +633,7 @@ export default {
 }
 
 .movie-title {
-  font-size: 10px;
+  font-size: 1rem;
   font-weight: 600;
   color: #ffffff;
   margin: 0;
@@ -625,7 +653,7 @@ export default {
 .movie-description {
   margin: 0 0 12px 0;
   color: #ffffff;
-  font-size: 14px;
+  font-size: 0.8rem;
   line-height: 1.5;
 }
 
