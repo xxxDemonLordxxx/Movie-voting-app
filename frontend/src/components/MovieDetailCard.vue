@@ -1,8 +1,18 @@
 <template>
-  <div class="movie-detail-card">
-    <div class="card-header">
-      <h1 class="movie-title">{{ movieTitle }}</h1>
-    </div>
+  <div class="container">
+
+    <dialog class="dialog" ref="dialog">
+    <button  
+      type="button" 
+      aria-label="close"
+      @click="closeDialog"
+    >XXX</button>
+
+    
+      <div class="movie-detail-card">
+        <div class="card-header">
+          <h1 class="movie-title">{{ movieTitle }}</h1>
+        </div>
     
     <div class="card-body">
       <div class="description-section">
@@ -21,46 +31,20 @@
           <span>{{ formattedDate }}</span>
         </div>
 
-        <div>
-          <img 
-          v-if="imageUrl && imageUrl.trim()" 
-          :src="imageUrl"/>
-        </div>
-
-              <div style=" padding: 10px; margin: 10px 0;">
-            <strong>Debug image_url:</strong> "{{ imageUrl }}"
-            <br>
-            <strong>Type:</strong> {{ typeof imageUrl }}
-            <br>
-            <strong>Length:</strong> {{ imageUrl?.length || 0 }}
-          </div>
-          
-          <!-- Conditional image -->
-          <img 
-            v-if="isRealImageUrl"
-            :src="imageUrl" 
-            :alt="submission.title"
-            @error="console.error('Image failed to load:', imageUrl)"
-          />
-          <div v-else></div>
-
           <pre>{{ JSON.stringify(submission, null, 2) }}</pre>
-          <p><strong>submission.image_url:</strong> "{{ submission.image_url }}"</p>
-           <p><strong>Truthy?</strong> {{ !!submission.image_url }}</p>
         </div>
 
       
+        </div>
       </div>
-    </div> 
-      <CopyButton />
+    </dialog>
+  </div>
 </template>
 
 
 
 <script>
-import CopyButton from './CopyButton.vue'
 export default {
-  components: { CopyButton },
   name: 'MovieDetailCard',
   props: {
     submission: {
@@ -68,46 +52,56 @@ export default {
       required: true
     }
   },
+  data(){
+    return {
+      dialogElement: null
+    }
+  },
+  mounted() {
+    this.dialog = this.$refs.dialog  // Get reference
+  },
+  methods: {
+    showModal() {
+      this.$refs.dialog?.showModal() 
+    },
+    closeDialog() {
+            if (this.dialog) {
+                this.dialog?.close();
+            }
+        },
+      },
   computed: {
-    movieTitle() {
-      return this.submission?.movie?.title || 'No name'
-    },
-    comment() {
-      return this.submission.comment || 'No description'
-    },
-    imageUrl() {
-      return this.submission.image_url
-    },
-    isRealImageUrl() {
-      // Only show if it ends with image file extension
-      if (!this.imageUrl) return false;
-      
-      const imgExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
-      const url = this.imageUrl.toLowerCase();
-      
-      return imgExtensions.some(ext => url.endsWith(ext));
-    },
-    truncatedComment() {
-      const desc = this.comment
-      return desc.length > 150 ? desc.substring(0, 150) + '...' : desc
-    },
-    author() {
-      if (this.submission.is_anonymous) {
-        return 'Anonymus'
+      movieTitle() {
+        return this.submission?.movie.title || 'No name'
+      },
+      comment() {
+        return this.submission?.comment || 'No description'
+      },
+      truncatedComment() {
+        const desc = this.comment
+        return desc.length > 150 ? desc.substring(0, 150) + '...' : desc
+      },
+      author() {
+        if (this.submission?.is_anonymous) {
+          return 'Anonymus'
+        }
+        return this.submission?.author || 'Anonymus'
+      },
+      formattedDate() {
+        if (!this.submission?.created_at) return ''
+        return new Date(this.submission?.created_at).toLocaleDateString('ru-RU')
       }
-      return this.submission.author || 'Anonymus'
-    },
-    formattedDate() {
-      if (!this.submission.created_at) return ''
-      return new Date(this.submission.created_at).toLocaleDateString('ru-RU')
     }
   }
-}
 </script>
 
 <style scoped>
 .hidden-content {
   display: none;
+}
+
+.dialog {
+  background-color: rgb(24, 23, 25);;
 }
 
 .movie-detail-card {

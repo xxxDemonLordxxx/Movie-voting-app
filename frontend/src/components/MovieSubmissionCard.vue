@@ -1,6 +1,11 @@
 <template>
   <div class="movie-suggestion-card" >
-    <div class="card-content">
+    <div class="card-content" 
+    :class="['internal-div', { 
+      'highlighted': tempSelected,
+      'unavailable': unavailable
+      }]" 
+    >
       <h3 class="movie-title">{{ movieTitle }}</h3>
       <p class="movie-description">{{ truncatedComment }}</p>
       <div class="suggestion-info">
@@ -12,7 +17,10 @@
     </div>
 
     <div class="btn-block">
-     <img src='@/assets/more_button.png' @click="viewSubmission(submission.id)" class="more-button" />
+     <img 
+     src='@/assets/more_button.png' 
+     @click="$emit('show-dialog', submission), console.log('clicked')"
+     class="more-button" />
     </div>
   </div>
 </template>
@@ -24,35 +32,42 @@ export default {
     submission: {
       type: Object,
       required: true
-    }
+    },
+    tempSelected: {
+      type: Boolean,
+      default: false 
+    },
+    unavailable: {
+      type: Boolean,
+      default: false 
+    },
   },
+  mounted() {
+      console.log('Parent chain:', 
+        this.$parent?.$options.name, 
+        this.$parent?.$parent?.$options.name
+      )
+    },
   computed: {
     movieTitle() {
       return this.submission?.movie?.title || 'No name'
     },
     comment() {
-      return this.submission.comment || 'No description'
+      return this.submission?.comment || 'No description'
     },
     truncatedComment() {
       const desc = this.comment
       return desc.length > 150 ? desc.substring(0, 150) + '...' : desc
     },
     author() {
-      if (this.submission.is_anonymous) {
-        return 'Anonymus'
-      }
-      return this.submission.author || 'Anonymus'
+      return this.submission?.author || 'Anonymus'
     },
     formattedDate() {
-      if (!this.submission.created_at) return ''
-      return new Date(this.submission.created_at).toLocaleDateString('en-EN')
-    }
+      if (!this.submission?.created_at) return ''
+      return new Date(this.submission?.created_at).toLocaleDateString('en-EN')
+    },
+        
   },
-    methods: {
-    viewSubmission(id) {
-      this.$router.push(`/submissions/${id}`)
-    }
-  }
 }
 
 </script>
@@ -66,7 +81,6 @@ export default {
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   cursor: pointer;
   height: 13rem;
-  margin:1rem
 }
 
 .movie-suggestion-card:hover {
@@ -86,6 +100,15 @@ export default {
   box-sizing:border-box;
   overflow:hidden;
 }
+
+.highlighted {
+  border: dotted rgb(52, 89, 78) 3px
+}
+
+.unavailable {
+  border: dotted rgb(242, 241, 198) 3px
+}
+
 
 .movie-title {
   font-family: "Blackout Two AM";
@@ -166,7 +189,7 @@ export default {
 
 @media (max-width: 480px) {
   .movie-suggestion-card {
-    padding: 1rem;
+    padding: 1rem 1rem 0rem 1rem;
   }
   
   .movie-title {

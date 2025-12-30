@@ -14,17 +14,21 @@
     />
 
 
-  
-
       <div class="form-section">
         <VotingInput
           v-model="voteData"
           :submissions="submissions"
           :pollInfo="pollInfo"
-          @view-submission="viewSubmission"
           ref="votingInput"
+          @show-dialog="showDialog"
         />
       </div>
+      
+      <MovieDetailCard 
+      ref="dialogRef" 
+      :submission="selectedSubmission"
+      v-if="selectedSubmission"
+      />
 
       <!-- Form Actions -->
       <div class="form-actions">
@@ -49,22 +53,28 @@ import FringeHeader from '@/components/FringeHeader.vue';
 import OfferPopup from '@/components/OfferPopup.vue';
 import VotingInput from '@/components/VotingInput.vue';
 import VoteStatusbtn from '@/components/VoteStatusbtn.vue';
+import MovieDetailCard from '@/components/MovieDetailCard.vue';
+import MovieSubmissionCard from '@/components/MovieSubmissionCard.vue';
 export default {
   name: 'VotingForm',
   components: {
     OfferPopup,
     FringeHeader,
     VotingInput,
-    VoteStatusbtn
+    VoteStatusbtn,
+    MovieDetailCard,
+    MovieSubmissionCard
   },
   data() {
     return {
       submissions: [],
+      submission: null,
       pollInfo: null,
       loading: false,
       error: null,
       voteData: '', // Comma-separated string of IDs
-      isAdmin: false
+      isAdmin: false,
+      selectedSubmission: null
     }
   },
 
@@ -212,10 +222,11 @@ export default {
         this.$refs.votingInput.parseInitialValue('');
       }
     },
-
-
-    viewSubmission(id) {
-      this.$router.push(`/submissions/${id}`)
+    showDialog(submission) {
+      this.selectedSubmission = submission
+      this.$nextTick(() => {
+        this.$refs.dialogRef?.showModal()
+      })
     }
   },
 }
