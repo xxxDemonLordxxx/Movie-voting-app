@@ -2,6 +2,7 @@
    <div class="text">
         <h1 class="calendar-title">EVENT CALENDAR</h1>
    </div> 
+   <div v-if="isAdmin" class="NewEventButton"></div>
    <div class="events-list">
     <EventUnit
       v-for="(event,index) in events" 
@@ -13,10 +14,12 @@
 
 <script>
 import EventUnit from '@/components/EventUnit.vue'
+import NewEventButton from '@/components/NewEventButton.vue'
 export default {
   name: 'Calendar',
   components: {
-    EventUnit
+    EventUnit,
+    NewEventButton
   },
   
   data() {
@@ -24,10 +27,11 @@ export default {
       events: [],
       loading: false,
       error: null,
+      isAdmin: false
     }
   },
   async mounted() {
-    await this.fetchEvents()
+    await this.fetchEvents(), this.checkAdmin();
 
   },
   methods: {
@@ -49,6 +53,10 @@ export default {
           this.loading = false
         }
       },
+      checkAdmin() {
+      const storedAdmin = localStorage.getItem('isAdmin')
+      this.isAdmin = storedAdmin === 'true'
+    },
     viewEvent(id) {
       this.$router.push(`/events/${id}`)
     }

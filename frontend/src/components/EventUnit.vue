@@ -1,7 +1,7 @@
 <template>
     <div class="event-container">
         <div class="header-block">
-            <p>31/06 17:20</p>
+            <p>{{eventDate}} {{eventTime}}</p>
             <p>MAIN CAMPUS</p>
         </div>
         <div class="event-block">
@@ -32,6 +32,17 @@ export default {
     eventDescription() {
       return this.event?.description || 'No description'
     },
+    eventDate() {
+        if (!this.event?.date) return ''
+        return new Date(this.event.date).toLocaleDateString('ru-RU')
+    },
+    eventTime() {
+        if (!this.event?.date) return ''
+        return new Date(this.event?.date).toLocaleTimeString('ru-RU', {
+        hour: '2-digit',
+        minute: '2-digit'
+        })
+    }
   }
 }
 </script>
@@ -106,8 +117,7 @@ h1{
     overflow-wrap: break-word;
     flex-grow: 2;
     text-overflow: ellipsis;
-    overflow:hidden
-
+    overflow:hidden;
 }
 
 @media (min-width: 784px) {

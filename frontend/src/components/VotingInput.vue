@@ -12,7 +12,7 @@
           :value="getDisplayValue(index)"
           :placeholder="`Select ${getPositionLabel(index)} choice...`"
           readonly
-          class="form-textarea"
+          class="form-textarea voting-area"
           :class="{ 'has-selection': selectedSubmissions[index] }"
         />
         <span class="selector-icon">▼</span>
@@ -29,35 +29,37 @@
     </div>
 
     <div v-show="isOpen" class="popup-overlay" @click.self="closePopup">
-        <div class="popup-container" @click.stop>
-            <div class="popup-header">
+      <div class="popup-container" @click.stop>
+        <div class="popup-tools">
+          <div class="popup-header">
             <button @click="closePopup" class="close-btn">×</button>    
             <div class="header-actions">
-            <button 
+              <button 
                 @click="confirmSelection" 
                 :disabled="!tempSelectedSubmission"
                 class="btn primary"
-            >
+              >
                 Select {{ getPositionLabel(currentPositionIndex) }}
-            </button>
+              </button>
             </div>
-        </div>
-    
+          </div>
 
         <!-- Search Filter -->
-        <div class="popup-search">
-          <p class="search-pretty">(</p>
-          <input
-            type="text"
-            v-model="searchQuery"
-            placeholder="Search movies..."
-            class="search-input"
-            ref="searchInput"
-          />
-          <p class="search-pretty">)</p>
-        </div>
+          <div class="popup-search">
+            <p class="search-pretty search-pretty-form">(</p>
+            <input
+              type="text"
+              v-model="searchQuery"
+              :placeholder="`Search from a selection of ${submissionCount} film${submissionCount !== 1 ? 's' : '' }...`"
+              class="form-textarea popup-input"
+              ref="searchInput"
+            >
+            <p class="search-pretty search-pretty-form">)</p>
+          </div>
+      </div>
+        
 
-        <div>
+        <div class="card-body">
           <MovieSubmissionCard
           v-for="submission in filteredSubmissions"
           :key="submission.id"
@@ -66,6 +68,7 @@
           :temp-selected="isTempSelected(submission)"
           :unavailable="isAlreadySelected(submission)"
           @show-dialog="$emit('show-dialog', $event)"
+          class="Card"
           />
         </div>
 
@@ -106,7 +109,7 @@
       </div> -->
           
           <div v-if="availableSubmissions.length === 0" class="no-results">
-            No movies available for this position
+            No films left
           </div>
         </div>
       </div>
@@ -208,7 +211,10 @@ export default {
         .map(sub => sub?.id || '')
         .filter(id => id !== '')
         .join(',');
-    }
+    },
+    submissionCount () {
+      return this.submissions?.length || 0
+    },
   },
   
   watch: {
@@ -364,6 +370,8 @@ export default {
   width: 100%;
 }
 
+
+
 .winner-input-group {
   display: flex;
   align-items: center;
@@ -414,9 +422,10 @@ export default {
   box-sizing: border-box;
 }
 
+
+
 .selector-input-field.has-selection {
-  border-color: #4a90e2;
-  background-color: #f0f7ff;
+  color: rgb(82, 39, 85);
 }
 
 .selector-input-field:focus {
@@ -468,20 +477,39 @@ export default {
 .popup-container {
   background: rgb(24, 23, 25);
   width: 90%;
-  max-width: 700px;
+  max-width: 95vw;
   max-height: 85vh; /* Slightly smaller to ensure fit */
+  overflow-y: scroll;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   animation: popup-fade-in 0.2s ease-out; /* Add animation */
 }
 
-  .movie-suggestion-card {
-    margin-left: -50vw;
-    position: relative;
-    left: 50%;
+.popup-tools {
+  background: rgb(24, 23, 25);
+  position: fixed;
+  width: 89vw;
+  z-index: 1000;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.611);
 }
 
+
+  .movie-suggestion-card {
+    margin-left: -49vw;
+    position: relative;
+    left: 50%;
+    max-width: 95vw;
+}
+
+.card-body{
+  margin-top: 8rem;
+}
+
+.card {
+  margin: 1rem
+}
 @keyframes popup-fade-in {
   from {
     opacity: 0;
@@ -492,11 +520,14 @@ export default {
     transform: translateY(0) scale(1);
   }
 }
+
+
+
 .popup-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding: 1rem;
 }
 
 .popup-header h3 {
@@ -572,23 +603,48 @@ export default {
 }
 
 .popup-search {
-  padding: 0.3rem;
+  padding: 0rem;
   display: flex;
+  background-color: white;
+  margin: 0 1rem 0rem 1rem;
+  line-height: 1.2;
 }
 
 .search-input {
   width: 100%;
   border: 2px solid #dee2e6;
-  font-size: 0.9rem;
+  font-size: 0.6rem;
   box-sizing: border-box;
   transition: border-color 0.2s;
-  margin: 0.5rem 0 0.3rem 0;
+  margin: 0.2rem 0 0.3rem 0;
 }
+.voting-area {
+  text-decoration: rgba(149, 91, 153, 1) wavy underline 0.1rem;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  border: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+}
+
+.popup-input {
+  color: rgba(149, 91, 153, 1);
+}
+.has-selection{
+  text-decoration: none;
+  color: rgb(82, 39, 85);
+}
+
+
 
 .d
 .search-input:focus {
   outline: none;
-  border-color: #4a90e2;
+  border-color: #dee2e6;
   box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
 }
 
@@ -705,6 +761,9 @@ export default {
   padding: 40px 20px;
   text-align: center;
   color: #6c757d;
-  font-style: italic;
+}
+
+.search-pretty-form{
+  align-self: flex-end
 }
 </style>
