@@ -8,23 +8,18 @@
     consider and try to pick something that is 
     really really cool and get a pitch to really really"
     haha="haha"
-    psa2="sell it. click haha if ya ready for democratic experience. TIP -
+    psa2="sell it. click haha if ya ready for democratic experience. 
+    TIP -
     if you want to add something to someone else's pitch just offer the same movie again
-    with your own addition comment"
+    with your own addition comment
+    
+    
+    TIP 2 - tick copy checkbox to share the pitch with out group"
     />
     
     <form @submit.prevent="submitSubmission" class="form">
-      <div class="name-group">
+
         <label for="author">YOUR NAME:</label>
-        <div class="checkbox">
-          <label class="checkbox-label">   
-            <input
-              type="checkbox"
-              v-model="form.isAnonymous"
-              class="checkbox"
-            />ANONYMUS</label>
-        </div>
-      </div>
         <div class="form-group" 
         :class="{ 'disabled-style': form.isAnonymous }"
         >
@@ -35,20 +30,33 @@
           <input
             id="author"
             v-model="form.author"
-            :disabled="form.isAnonymous"
-            placeholder="write your name"
+            :class="{ 'disabled-style': form.isAnonymous }"
+            :placeholder="form.isAnonymous ? 'anonymus for now' : 'write your name'"
             class="form-input"
           />
+
           <p class="search-pretty" 
           :class="{ 'disabled-style': form.isAnonymous }"
           >)</p>
+
+          <button 
+            v-if="!form.isAnonymous"
+            @click="makeAnonymous"
+            class="clear-position-btn"
+          >
+            <img 
+            src='@/assets/anonglaz.svg' 
+            class="anonbtn"
+             />
+          </button>
         </div>
 
+        
 
       <label for="movieTitle">TITLE:</label>
       <div class="form-group">
         <p class="search-pretty">(</p>
-        <TMDB
+        <input
           id="movieTitle"
           v-model="form.movieTitle"
           placeholder="enter the film title"
@@ -74,9 +82,27 @@
       </div>
       
       <div class="form-actions">
-        <button type="submit" :disabled="submitting" class="btn btn-primary">
-          {{ submitting ? 'Sending...' : 'DONE' }}
-        </button>
+        <div class="split-button-container" :class="{ 'copied': isCopied }">
+          <button 
+            type="button"
+            class="copy-btn"
+            :class="{ 'active': isCopied, 'copied': isCopied }"
+            @click="toggleCopy"
+            :disabled="submitting"
+          >
+            <span v-if="!isCopied" class="copy-text">COPY</span>
+            <span v-else class="checkmark">🗸</span>
+          </button>
+
+          <button 
+            type="submit"
+            :disabled="submitting"
+            class="submit-btn"
+            :class="{ 'copied': isCopied }"
+          >
+            {{ submitting ? 'Sending...' : 'DONE' }}
+          </button>
+        </div>
       </div>
     </form>
 
@@ -113,7 +139,9 @@ export default {
         movieDescription: ''
       },
       submitting: false,
-      isAdmin: false
+      isAdmin: false,
+      isCopied: false,
+      autoCopy: false,
     }
   },
   computed: {
@@ -128,6 +156,29 @@ export default {
     } ,
 
   methods: {
+    toggleCopy() {
+      if (!this.isCopied) {
+        // Copy to clipboard
+        const text = `${this.form.movieTitle}\n\npitch:\n${this.form.movieDescription}\n\n`;
+        navigator.clipboard.writeText(text)
+          .then(() => {
+            this.isCopied = true;
+            this.autoCopy = true;
+          })
+          .catch(err => {
+            console.error('Failed to copy: ', err);
+            alert('Failed to copy to clipboard');
+          });
+      } else {
+        // Un-copy (reset)
+        this.isCopied = false;
+        this.autoCopy = false;
+      }
+    },
+     makeAnonymous() {
+      this.form.isAnonymous = true;
+      this.form.author = '';
+    },
     async fetchSubmissions() {
       this.loading = true
       this.error = null
@@ -160,6 +211,10 @@ export default {
       if (!this.form.movieTitle.trim() || !this.form.movieDescription.trim()) {
         alert('PLEASE, FILL ALL')
         return
+      }
+      if (this.autoCopy) {
+        const text = `${this.form.movieTitle}\n\npitch:\n${this.form.movieDescription}\n\n`;
+        navigator.clipboard.writeText(text);
       }
 
       this.submitting = true
@@ -204,6 +259,13 @@ export default {
         isAnonymous: false,
         movieTitle: '',
         movieDescription: ''
+      }
+    }
+  },
+  watch: {
+    'form.author': function(newVal) {
+      if (newVal.trim() !== '') {
+        this.form.isAnonymous = false;
       }
     }
   }
@@ -272,8 +334,29 @@ label {
 
 .form-input:disabled,
 .disabled-style {
-  background-color: #645757;
-  color: #999;
+  background-color: #0c2925;
+  color: rgb(19, 140, 120);
+}
+.clear-position-btn {
+  padding: 0.1rem 0.2rem;
+  background: rgba(149, 91, 153, 1);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  transition: all 0.3s ease;
+}
+
+.clear-position-btn:hover {
+  background: #c0392b;
+}
+
+.anonbtn{
+  height: 1.5rem;
+  color: rgb(82, 39, 85);
+  filter: drop-shadow(0.05rem 0.1rem 0.2rem   rgb(255, 36, 91));
+  animation: popIn 0.3s ease;
 }
 
 .checkbox-label {
@@ -290,31 +373,129 @@ label {
 
 .form-actions {
   display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
+  justify-content: center;
   margin-top: 1.5rem;
 }
-
-
-
-
-.poll-title {
-  color: rgb(166, 111, 170);
-
-}
-
-.page-title {
-  color:rgb(255, 255, 255);
-  text-align: center;
+.split-button-container {
+  display: flex;
+  height: 2rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
 
-
-span {
-  display: inline-block;
-  padding: 5px;
+.copy-btn {
+  flex: 1;
+  background: none;
+  border: 3px dotted #065;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  color: #065f53;
+  
 }
 
+
+.copy-btn.active {
+  flex: 0 0 2rem;
+  color: #f4e9ac;
+  background-color: rgba(149, 91, 153, 1);
+  border: none;
+}
+
+
+
+.copy-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  
+}
+
+.submit-btn {
+  flex: 1;
+  background: #065f53;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background: #06312c;
+}
+
+.submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.submit-btn.copied {
+  flex: calc(1 + 0.5); /* Takes up more space when copy is active */
+}
+
+/* Animation for the checkmark */
+.checkmark {
+  font-size: 1.5rem;
+  animation: popIn 0.3s ease;
+  filter: drop-shadow(0.05rem 0.1rem 0.2rem  rgb(255, 36, 91));
+  font-weight: 600;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0);
+  }
+  70% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Tooltip for copy button */
+.copy-btn {
+  position: relative;
+}
+
+.copy-btn::after {
+  content: 'Click to copy, click again to reset';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  margin-bottom: 8px;
+  z-index: 100;
+}
+
+.copy-btn:hover:not(:disabled):not(.active)::after {
+  opacity: 1;
+}
+
+.copy-btn.active::after {
+  content: 'Click to reset';
+}
+
+.copy-btn.active:hover::after {
+  opacity: 1;
+}
 .prcomment{
   align-self: end;
 }

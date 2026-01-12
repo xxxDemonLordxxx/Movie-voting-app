@@ -32,11 +32,9 @@
 
       <!-- Form Actions -->
       <div class="form-actions">
-        <button @click="submitVote" class="btn">
-          Submit Vote
-        </button>
-        <button @click="clearVote" class="btn">
-          Clear All
+        <div></div>
+        <button @click="submitVote" class="btn voting-btn">
+          submit vote
         </button>
       </div>
     
@@ -214,14 +212,6 @@ export default {
         alert('Error submitting vote. Please try again.');
       }
     },
-    
-    clearVote() {
-      this.voteData = '';
-      // If you need to clear the component's internal state
-      if (this.$refs.votingInput) {
-        this.$refs.votingInput.parseInitialValue('');
-      }
-    },
     showDialog(submission) {
       this.selectedSubmission = submission
       this.$nextTick(() => {
@@ -234,40 +224,7 @@ export default {
 
 
 <style>
-.text{
-color: white;
-font-size: 16px;
-position: center;
-}
 
-.back-button {
-  padding-bottom: 30px;
-  color:#0f6f62;
-}
-
-.page-header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding-top: 2rem;
-}
-.poll-title {
-  color: rgba(149, 91, 153, 1);
-  text-align: center;
-}
-
-.page-title {
-  color: aliceblue;
-  padding-bottom: 1cap;
-}
-.title {
-  text-align: center;
-}
-
-span {
-  display: inline-block;
-  padding: 5px;
-}
 
 .input-group {
   margin-bottom: 1.5rem;
@@ -279,14 +236,7 @@ span {
   line-height: 1.2
 }
 
-.form-input,
-.form-textarea {
-  width: 100%;
-  border: 0;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: rgb(82, 39, 85);
-}
+
 
 .number {
   color: black;
@@ -301,4 +251,30 @@ span {
   padding-left: 0.3rem;
   padding-right: 0.3rem;
 }
+
+.btn {
+  display: inline-block;
+  padding: 0.4rem;
+  background-color: #065f53;
+  color: white;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.btn-clear {
+  background: #6185b7;
+}
+
+.form-actions{
+  display: flex;
+  justify-content: space-between;
+}
+
+.voting-btn{
+  width: -moz-available;
+}
+
 </style>

@@ -1,31 +1,31 @@
 <template>
    <div class="container"> 
       <dialog class="dialog" ref="dialogRef">
-          <form @submit.prevent="SubmitPoll" method="dialog">
+          <form @submit.prevent="SubmitEvent" method="dialog">
               <button  
                   type="button" 
                   aria-label="close"
                   @click="closeDialog"
                   formnovalidate>XXX
               </button>
-              <h1 class="title">Create new poll</h1>
-              <label for="PollTitle" class="input">title:</label>
+              <h1 class="title">Create new event</h1>
+              <label for="EventTitle" class="input">title:</label>
               <input
-                  id="pollTitle"
-                  v-model="form.pollTitle"
-                  placeholder="write the title of the poll"
+                  id="eventTitle"
+                  v-model="form.eventTitle"
+                  placeholder="write the title of the event"
                   class="input form-input admin-input"
                   required
-                  name="pollTitle"
+                  name="eventTitle"
               />
-              <label for="pollDescription" class="input">description:</label>
+              <label for="eventDescription" class="input">description:</label>
               <input
-                  id="pollDescription"
-                  v-model="form.pollDescription"
-                  placeholder="write the description of the poll"
+                  id="eventDescription"
+                  v-model="form.eventDescription"
+                  placeholder="write the description of the event"
                   class="input form-input admin-input"
                   required
-                  name="pollDescription"
+                  name="eventDescription"
               />
               <label for="winners" class="input">winners:</label>
               <input
@@ -36,34 +36,34 @@
                   required
                   name="winners"
               />
-              <label for="pollEnd" class="input">end date:</label>
+              <label for="eventEnd" class="input">end date:</label>
               <input
                   type="datetime-local"
-                  id="pollEnd"
+                  id="eventEnd"
                   name="meeting-time"
                   class="input admin-input"
-                  v-model="form.pollEnd"
+                  v-model="form.eventEnd"
                 />
-              <button class="btn admin" @click="submitPoll">Submit</button>
+              <button class="btn admin" @click="submitEvent">Submit</button>
           </form>
       </dialog>
     </div>
 
     <p>
-        <button class="btn" @click="showDialog">New poll</button>
+        <button class="btn" @click="showDialog">New event</button>
     </p>
 </template>
 
 <script>
 export default {
-    name: 'NewPollButton',
+    name: 'NewEventButton',
     data() {
         return {
             form: {
-                pollTitle: '',
-                pollStart: '',
-                pollEnd: '',
-                pollDescription: '',
+                eventTitle: '',
+                eventStart: '',
+                eventEnd: '',
+                eventDescription: '',
                 winners: ''
             },
             submitting: false
@@ -88,32 +88,32 @@ methods: {
     closeDialog() {
             if (this.dialogRef) {
                 this.dialogRef.close();
-                this.form.pollTitle = ''; // Clear form on close
+                this.form.eventTitle = ''; // Clear form on close
             }
         },
-    async submitPoll() {
-      if (!this.form.pollTitle.trim()) {
+    async submitEvent() {
+      if (!this.form.eventTitle.trim()) {
         alert('PLEASE, FILL')
         return
       }
 
       try {
-        const response = await fetch('http://localhost:8000/polls/new', {
+        const response = await fetch('http://localhost:8000/events/new', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            title: this.form.pollTitle,
+            title: this.form.eventTitle,
             start: new Date().toISOString(), // Current date in API format
-            end: new Date(this.form.pollEnd).toISOString(),
-            description: this.form.pollDescription,
+            end: new Date(this.form.eventEnd).toISOString(),
+            description: this.form.eventDescription,
             winners: this.form.winners
           })
         })
 
         if (response.ok) {
-          alert('POLL CREATED')
+          alert('EVENT CREATED')
           this.resetForm()
           this.closeDialog();
         } else {
@@ -130,8 +130,8 @@ methods: {
     resetForm() {
       this.form = {
         title: '',
-        PollStart: '',
-        PollEnd:'',
+        EventStart: '',
+        EventEnd:'',
       }
     }
   }

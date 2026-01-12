@@ -2,7 +2,7 @@
   <div class="page-header">
     <div class="adminheader">
       <router-link to="/" class="back-button">← BACK</router-link>
-      <div v-if="isAdmin" class="NewPollButton">
+      <div v-if="isAdmin" class="NewEventButton">
         <NewPollButton />
       </div>
     </div>
@@ -123,10 +123,6 @@ position: center;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding-top: 2cap;
-}
-.poll-title {
-  color: rgba(149, 91, 153, 1);
 }
 
 .poll-status {

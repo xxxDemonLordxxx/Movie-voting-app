@@ -1,9 +1,11 @@
 <template>
     <div class="page-header">
-      <router-link to="/polls" class="back-button">← BACK</router-link>
-      <div class="title">
-        <span class="poll-title">{{pollTitle}}</span> 
-        <span class="page-title">POLL</span>
+      <div class="navigator">
+        <router-link to="/polls" class="back-button">← BACK</router-link>
+         <div class="title">
+            <span class="poll-title">{{pollTitle}}</span> 
+            <span class="page-title">poll</span>
+          </div>
       </div>
       <p class="info-text">{{pollDescription}}: 
         {{ pollInfo?.winners }} movie{{ pollInfo?.winners > 1 ? 's' : '' }} to screen, 
@@ -43,3 +45,52 @@ export default {
  }
 }
 </script>
+
+<style>
+  .text{
+color: white;
+font-size: 16px;
+position: center;
+}
+
+.info-text {
+  overflow: visible;
+  word-wrap: break-word;
+}
+.back-button {
+  padding-bottom: 30px;
+  color:#0f6f62;
+}
+
+.navigator {
+  display: inline-flex; 
+  justify-content: space-between; 
+  width: 100%; 
+  align-self: center;
+  padding-bottom: 1rem;
+}
+
+.page-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-top: 1rem;
+
+}
+.poll-title {
+  color: rgba(149, 91, 153, 1);
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.page-title {
+  color: aliceblue;
+  padding-bottom: 1cap;
+    text-transform: uppercase;
+}
+
+span {
+  display: inline-block;
+  padding: 5px;
+}
+</style>

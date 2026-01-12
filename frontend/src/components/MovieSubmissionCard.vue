@@ -10,7 +10,7 @@
       <p class="movie-description">{{ truncatedComment }}</p>
       <div class="suggestion-info">
         <span class="suggester">
-          Offered by: {{ author }}
+          from: {{ author }}
         </span>
         <span class="date">{{ formattedDate }}</span>
       </div>
@@ -60,7 +60,8 @@ export default {
       return desc.length > 150 ? desc.substring(0, 150) + '...' : desc
     },
     author() {
-      return this.submission?.author || 'Anonymus'
+      const auth = this.submission?.author
+      return auth.length > 15 ? auth.substring(0, 15) + '...' : auth || 'Anonymus'
     },
     formattedDate() {
       if (!this.submission?.created_at) return ''
@@ -80,7 +81,7 @@ export default {
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   cursor: pointer;
-  height: 13rem;
+  height: 11.5rem;
 }
 
 .movie-suggestion-card:hover {
@@ -102,7 +103,7 @@ export default {
 }
 
 .highlighted {
-  border: dotted rgb(52, 89, 78) 3px
+  border: dotted rgb(85, 178, 150) 3px
 }
 
 .unavailable {
@@ -140,7 +141,8 @@ export default {
   color: #7f8c8d;
   border-top: dotted 1px;
   border-color: gray;
-  line-height: 1
+  line-height: 1;
+  text-overflow: ellipsis;
 }
 
 .suggester {

@@ -16,9 +16,14 @@
           :key="submission.id || index "
           :submission="submission"
           class="submission"
+          @show-dialog="showDialog"
         />
       </div>
-      
+      <MovieDetailCard 
+      ref="dialogRef" 
+      :submission="selectedSubmission"
+      v-if="selectedSubmission"
+      />
     </div>
 
  
@@ -26,19 +31,23 @@
 
 <script>
 import FringeHeader from '@/components/FringeHeader.vue';
+import MovieDetailCard from '@/components/MovieDetailCard.vue';
 import MovieSubmissionCard from '@/components/MovieSubmissionCard.vue'
 export default {
   name: 'SubmissionsList',
   components: {
     MovieSubmissionCard,
-    FringeHeader
+    FringeHeader,
+    MovieDetailCard
   },
   data() {
     return {
       submissions: [],
+      submission: null,
       pollInfo: null,
       loading: false,
       error: null,
+      selectedSubmission: null
     }
   },
 
@@ -83,8 +92,11 @@ export default {
           this.loading = false
         }
       },
-    viewSubmission(id) {
-      this.$router.push(`/submissions/${id}`)
+    showDialog(submission) {
+      this.selectedSubmission = submission
+      this.$nextTick(() => {
+        this.$refs.dialogRef?.showModal()
+      })
     }
   }
 }

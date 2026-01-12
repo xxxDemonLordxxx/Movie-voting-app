@@ -30,11 +30,13 @@ export default {
       return this.poll?.state_name || 'No description'
     },
     pollEnd() {
-      return this.poll?.end|| 'no end date'
+      if (!this.poll?.end) return ''
+        return new Date(this.poll?.created_at).toLocaleDateString('ru-RU')
     },
     pollStart() {
-      return this.poll?.start || 'no end date'
-    }
+      if (!this.poll?.start) return ''
+        return new Date(this.poll?.start).toLocaleDateString('ru-RU')
+    },
   }
 }
 </script>

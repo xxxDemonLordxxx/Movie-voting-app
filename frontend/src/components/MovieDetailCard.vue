@@ -6,7 +6,8 @@
       type="button" 
       aria-label="close"
       @click="closeDialog"
-    >XXX</button>
+      class="close-btn"
+    >x</button>
 
     
       <div class="movie-detail-card">
@@ -16,7 +17,7 @@
     
     <div class="card-body">
       <div class="description-section">
-        <h3>pitch</h3>
+        <h3>pitch:</h3>
         <p class="movie-description">{{ comment }}</p>
       </div>
       
@@ -27,8 +28,7 @@
         </div>
         
         <div class="meta-item">
-          <strong>date:</strong>
-          <span>{{ formattedDate }}</span>
+          <strong>date:</strong><span>{{ formattedDate }}</span>
         </div>
 
           <pre>{{ JSON.stringify(submission, null, 2) }}</pre>
@@ -96,12 +96,22 @@ export default {
 </script>
 
 <style scoped>
+
 .hidden-content {
   display: none;
 }
 
 .dialog {
   background-color: rgb(24, 23, 25);;
+  width: 95vw;
+  
+  overflow: scroll;
+}
+
+.dialog[open] {
+  display: block;
+  margin: auto;
+  width: 100%;
 }
 
 .movie-detail-card {
@@ -148,7 +158,6 @@ export default {
 
 .submission-meta {
   border-top: 1px solid #ffffff;
-  padding-top: 1.5rem;
 }
 
 .meta-item {
@@ -200,6 +209,21 @@ export default {
   gap: 0.25rem;
 }
 
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #666;
+  cursor: pointer;
+  padding: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
 /* Мобильные стили */
 @media (max-width: 768px) {
   .card-header {
@@ -223,9 +247,6 @@ export default {
     line-height: 1.5;
   }
   
-  .submission-meta {
-    padding-top: 1.25rem;
-  }
   
   .meta-item {
     padding: 0.6rem 0;
