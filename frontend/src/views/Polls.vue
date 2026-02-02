@@ -87,8 +87,6 @@ export default {
       this.isAdmin = storedAdmin === 'true'
     },
         viewSubmissionList(id, stateName) {
-      console.log('stateName parameter:', stateName)
-      
       if (stateName === 'offer') {
         this.$router.push(`/submissions/new/${id}`)
       } else if (stateName === 'vote') {

@@ -72,13 +72,13 @@
 }
 
 h1 {
-  padding-top: 2rem;
-      color: rgba(244, 233, 172, 1);
+  color: white;
+  text-align: center;
 
 }
 
 p {
-  color:white;
+  color: rgba(244, 233, 172, 1);
 }
 /* Мобильные стили */
 @media (max-width: 768px) {

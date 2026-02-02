@@ -244,7 +244,7 @@ export default {
 }
 
 .search-pretty {
-  color: rgba(149, 91, 153, 1);
+  color: #955b99;
   font-size: 1.50rem;
   font-weight: 350;
   font-family:Verdana, Geneva, Tahoma, sans-serif;
