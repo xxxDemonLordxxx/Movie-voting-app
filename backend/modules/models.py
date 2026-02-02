@@ -65,7 +65,7 @@ class Event(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
-    image_url = Column(String, nullable=True)
+    image_id = Column(String, nullable=True)
     date = Column(DateTime(timezone=True))
     event_type_id = Column(Integer, ForeignKey("event_types.id"))
     description = Column(Text, nullable=True)

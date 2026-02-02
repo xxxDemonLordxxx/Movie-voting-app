@@ -7,6 +7,7 @@ services:
       - "8000:8000"
     environment:
       - DATABASE_URL=postgresql://user:password@db:5432/moviedb
+      - MINIO_PUBLIC_ENDPOINT=localhost:9000
     depends_on:
       - db
       - minio
@@ -57,6 +58,7 @@ services:
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_PUBLIC_BUCKETS: "images-bucket"
     volumes:
       - minio_data:/data
     healthcheck:

@@ -156,7 +156,7 @@ class EventTypeResponse(BaseModel):
 
 class EventBase(BaseModel):
     title: str
-    image_url: str
+    image_id: Optional[str]
     date: datetime
     event_type_id: int
     description: Optional[str]
@@ -168,7 +168,8 @@ class EventCreate(EventBase):
 class EventResponse(BaseModel):
     id: int
     title: str
-    image_url: str
+    image_id: Optional[str] = None
+    image_url: Optional[str] = None
     date: datetime
     event_type_id: int
     description: Optional[str]

@@ -229,11 +229,11 @@ def get_movie_data_by_id(db: Session, movie_id: int) -> models.Movie:
 def add_new_event(db: Session, event: schemas.EventCreate) -> models.Event:
     db_event = models.Event(
         title = event.title,
-        image_url = event.image_url, # доделать работу с изображениями
+        image_id = event.image_id, # доделать работу с изображениями
         date = event.date,
         event_type_id = event.event_type_id,
         description = event.description,
-        submission_id = event.submission_id,
+        submission_id = event.submission_id if event.submission_id else None,
         created_at = datetime.now()
     )
     db.add(db_event)
