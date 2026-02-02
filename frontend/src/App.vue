@@ -33,45 +33,48 @@ export default {
 #app {
   font-family: "Cascadia Code", cascadia;
   min-height: 100vh;
+  height:max-content;
   background-color: #151519;
 }
 
 .header {
-  background-color: hsl(330, 100%, 88%);
   padding: 25px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   position: sticky;
   top: 0;
   z-index: 100;
-  filter: drop-shadow(0.05rem 0.1rem 0.2rem  violet)
+  margin-bottom: 2rem;
 }
 
 .nav {
-  max-width: 800px;
+  max-width: 26rem;
   margin: 0 auto;
   display: flex;
   gap: 1rem;
   padding: 0 1rem;
-
+  background: linear-gradient(0deg,rgba(255, 255, 255, 0) 0%, rgba(21, 21, 25, 0.61) 9%, rgba(21, 21, 25, 1) 36%);
 }
 
 .nav-link {
   color: black;
   text-decoration: none;
-  padding: 0.75rem 1rem;
   transition: background-color 0.3s;
   font-size: 1rem;
   text-align: center;
-  flex: 0.5;
   text-decoration: solid;
   font-weight: bolder;
   display: flex;
   flex-direction: column;
+  aspect-ratio: 1 / 1;
+  max-height: 100%;
+  width: 100%;
+  line-height: 1;
+  background-color: #ffc2e0;
+  clip-path: polygon(100% 50%,93.55% 56.26%,97.97% 64.09%,90.02% 68.28%,92.06% 77.03%,83.25% 78.81%,82.74% 87.79%,73.79% 87.02%,70.77% 95.48%,62.4% 92.22%,57.12% 99.49%,50% 94%,42.88% 99.49%,37.6% 92.22%,29.23% 95.48%,26.21% 87.02%,17.26% 87.79%,16.75% 78.81%,7.94% 77.03%,9.98% 68.28%,2.03% 64.09%,6.45% 56.26%,0% 50%,6.45% 43.74%,2.03% 35.91%,9.98% 31.72%,7.94% 22.97%,16.75% 21.19%,17.26% 12.21%,26.21% 12.98%,29.23% 4.52%,37.6% 7.78%,42.88% 0.51%,50% 6%,57.12% 0.51%,62.4% 7.78%,70.77% 4.52%,73.79% 12.98%,82.74% 12.21%,83.25% 21.19%,92.06% 22.97%,90.02% 31.72%,97.97% 35.91%,93.55% 43.74%);
 }
 
 .nav-link:hover,
 .nav-link.router-link-active {
-  background-color: hsl(346, 100%, 83%);
+  background-color: hsl(338, 100%, 82%);
 }
 
 .main {
@@ -84,16 +87,18 @@ export default {
   vertical-align: middle;
   display: inline-block;
   align-self: center;
-  filter: drop-shadow(0.7rem 0.7rem 0.7rem  violet)
+  height: 60%;
+  padding-top: 15%;
+  filter: drop-shadow(0.7rem 0.7rem 0.7rem  rgb(227, 113, 227));
 }
 
 
 /* Мобильные стили */
 @media (max-width: 768px) {
   .header {
-    padding: 0.75rem 0;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding: 0;
+    padding-left: 0rem;
+    padding-right: 0rem;
   }
   
   .nav {
@@ -102,7 +107,6 @@ export default {
   }
   
   .nav-link {
-    padding: 0.6rem 0.2rem;
     font-size: 0.85rem;
     
   }
@@ -114,15 +118,10 @@ export default {
 
 @media (max-width: 480px) {
   .nav {
-    
+    max-width: 80vw;
     gap: 0.25rem;
   }
-  
-  .nav-link {
-    padding: 0.2rem;
-    font-size: 0.8rem;
 
-  }
 }
 
 @media (min-width: 768px) {
