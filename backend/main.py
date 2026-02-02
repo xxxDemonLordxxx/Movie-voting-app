@@ -403,47 +403,30 @@ def get_all_events(db: Session = Depends(get_db)):
         events = crud.get_all_events(db=db)
         if not events:
             raise HTTPException(status_code=404, detail="events not found")
-        return events
+        
+        minio_client = minio_db.get_minio_client()
+        
+        result = []
+        for event in events:
+            event_data = event.__dict__.copy()
+            
+            if event.image_id:
+                image_url = minio_client.get_file_url(
+                    file_id=event.image_id,
+                    folder="events"
+                )
+                event_data["image_url"] = image_url
+            else:
+                event_data["image_url"] = None
+            
+            result.append(schemas.EventResponse(**event_data))
+        
+        return result
+        
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.get(
-    path="/events/current",
-    response_model=List[schemas.EventResponse],
-    status_code=status.HTTP_200_OK,
-    summary="Get current events list (today and future)",
-    responses={},
-    tags=["Events"]
-)
-def get_current_events(db: Session = Depends(get_db)):
-    try:
-        current_events = crud.get_all_events(db=db)
-        if not current_events:
-            raise HTTPException(status_code=404, detail="current_events not found")
-        return current_events
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-
-@app.get(
-    path="/events/{event_id}",
-    response_model=schemas.EventResponse,
-    status_code=status.HTTP_200_OK,
-    summary="Get event data",
-    responses={},
-    tags=["Events"]
-)
-def get_event_data(event_id: int, db: Session = Depends(get_db)):
-    try:
-        event = crud.get_event_data(db=db, event_id=event_id)
-        if not event:
-            raise HTTPException(status_code=404, detail="event not found")
-        return event
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    
 
 @app.post(
     path="/events/new",
@@ -463,78 +446,40 @@ async def create_event(
     db: Session = Depends(get_db)
 ):
     image_id = None
-    try:
-        image_data = await image_file.read()
-    except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Failed to load image: {str(e)}")
     
-    # Получаем клиент MinIO
-    minio_client = minio_db.get_minio_client()
+    if image_file:
+        try:
+            image_data = await image_file.read()
+            
+            minio_client = minio_db.get_minio_client()
+
+            try:
+                image_id = minio_client.upload_file(
+                    file_data=image_data,
+                    filename=image_file.filename,
+                    folder="events"
+                )
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=f"Failed to upload image: {str(e)}")
+                
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Failed to load image: {str(e)}")
+
+    event = schemas.EventCreate(
+        title=title,
+        image_id=image_id,
+        date=date,
+        event_type_id=event_type_id,
+        description=description if description else "",
+        submission_id=submission_id if submission_id else 0
+    )
 
     try:
-        try:
-            image_id = minio_client.upload_file(
-                file_data=image_data,
-                filename=image_file.filename,
-                folder="events"
-            )
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Failed to upload image: {str(e)}")
-
-        event = schemas.EventCreate(
-            title = title,
-            image_id = image_id,
-            date = date,
-            event_type_id = event_type_id,
-            description = description if description else "",
-            submission_id = submission_id if submission_id else 0
-        )
-
         new_event = crud.add_new_event(db=db, event=event)   
         return new_event
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-# -------------------
-
-@app.post("/upload-event/")
-async def upload_event(
-    event_name: str = Form(...),
-    organizer: str = Form(...),
-    image: UploadFile = File(...)
-):
-    """
-    Принимает multipart form data с названием мероприятия, именем организатора и изображением.
-    Сохраняет изображение в MinIO и возвращает его id и длину названия и организатора.
-    """
-    
-    # Читаем файл
-    image_data = await image.read()
-    
-    # Получаем клиент MinIO
-    minio_client = minio_db.get_minio_client()
-    
-    # Загружаем файл в MinIO (в папку events)
-    try:
-        file_id = minio_client.upload_file(
-            file_data=image_data,
-            filename=image.filename,
-            folder="events"
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to upload image: {str(e)}")
-    
-    # Вычисляем длины
-    event_name_length = len(event_name)
-    organizer_length = len(organizer)
-    
-    return {
-        "file_id": file_id,
-        "event_name_length": event_name_length,
-        "organizer_length": organizer_length,
-        "message": "Image uploaded successfully"
-    }
 
 
 

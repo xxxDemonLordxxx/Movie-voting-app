@@ -1,5 +1,6 @@
 import os
 import io
+import json
 from datetime import timedelta
 from minio import Minio
 from minio.error import S3Error
@@ -7,6 +8,7 @@ import uuid
 
 # Конфигурация из переменных окружения
 MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT", "minio:9000")
+MINIO_PUBLIC_ENDPOINT = os.getenv("MINIO_PUBLIC_ENDPOINT", "localhost:9000")
 MINIO_ACCESS_KEY = os.getenv("MINIO_ACCESS_KEY", "minioadmin")
 MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY", "minioadmin")
 MINIO_SECURE = os.getenv("MINIO_SECURE", "False").lower() == "true"
@@ -33,6 +35,27 @@ class MinioClient:
             if not self.client.bucket_exists(self.bucket_name):
                 self.client.make_bucket(self.bucket_name)
             
+            # УСТАНАВЛИВАЕМ ПОЛИТИКУ ДОСТУПА (публичный read-only)
+            public_policy = {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": "*",
+                        "Action": ["s3:GetObject"],
+                        "Resource": [f"arn:aws:s3:::{self.bucket_name}/*"]
+                    }
+                ]
+            }
+            
+            try:
+                self.client.set_bucket_policy(
+                    self.bucket_name,
+                    json.dumps(public_policy)
+                )
+            except Exception as e:
+                print(f"Note: Could not set public policy (might already exist): {e}")
+            
             # Создаем дефолтные папки
             for folder in [EVENTS_FOLDER, SUBMISSIONS_FOLDER]:
                 folder_path = f"{folder}/"
@@ -49,7 +72,7 @@ class MinioClient:
                     
         except S3Error as e:
             print(f"Error initializing MinIO bucket: {e}")
-    
+        
     def upload_file(self, file_data: bytes, filename: str, folder: str) -> str:
         """Загружает файл и возвращает его уникальное имя"""
         # Генерируем уникальное имя файла
@@ -132,10 +155,8 @@ class MinioClient:
         except S3Error:
             return False
     
-    def get_direct_url(self, file_id: str, folder: str) -> str:
-        """Возвращает прямую ссылку на файл"""
-        protocol = "https" if MINIO_SECURE else "http"
-        return f"{protocol}://{MINIO_ENDPOINT}/{self.bucket_name}/{folder}/{file_id}"
+    def get_file_url(self, file_id: str, folder: str) -> str:
+        return f"http://{MINIO_PUBLIC_ENDPOINT}/{self.bucket_name}/{folder}/{file_id}"
     
     def file_exists(self, file_id: str, folder: str) -> bool:
         """Проверяет существует ли файл"""
