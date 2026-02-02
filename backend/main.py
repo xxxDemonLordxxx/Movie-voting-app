@@ -1,9 +1,10 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, File, UploadFile, Form
+from fastapi.responses import Response
 from sqlalchemy.orm import Session
 from typing import Optional, List
 import modules.models as models
 from modules.database import engine, get_db, SessionLocal
-from modules.minio_db import minio_client
+import modules.minio_db as minio_db
 import modules.schemas as schemas
 import modules.crud as crud
 from fastapi.middleware.cors import CORSMiddleware
@@ -32,6 +33,8 @@ def startup_event():
         crud.init_event_types(db)
     finally:
         db.close()
+    
+    minio_db.init_minio("images-bucket")
 
 
 # ---------------------------------------------------- Endpoints ------------------------------------------------------------- #
@@ -187,7 +190,7 @@ def add_ballot(ballot: schemas.BallotCreate, db: Session = Depends(get_db)):
 
 @app.patch( # !!!!!!!!!!!!!!!!!!!!!!
     path="/polls/stop/{poll_id}",
-    response_model=list,
+    response_model=list[schemas.VotingStats],
     status_code=status.HTTP_200_OK,
     summary="Stop voting",
     responses={
@@ -199,8 +202,8 @@ def add_ballot(ballot: schemas.BallotCreate, db: Session = Depends(get_db)):
 )
 def stop_poll(poll_id: int, db: Session = Depends(get_db)):
     try:
-        poll = crud.stop_poll(db=db, poll_id=poll_id)
-        return poll
+        voting_results = crud.stop_poll(db=db, poll_id=poll_id)
+        return voting_results
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
@@ -450,12 +453,89 @@ def get_event_data(event_id: int, db: Session = Depends(get_db)):
     responses={},
     tags=["Events"]
 )
-def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)):
+async def create_event(
+    title: str = Form(...),
+    date: str = Form(...),
+    event_type_id: int = Form(...),
+    description: Optional[str] = Form(None),
+    submission_id: Optional[int] = Form(None),
+    image_file: UploadFile = File(None),  
+    db: Session = Depends(get_db)
+):
+    image_id = None
     try:
+        image_data = await image_file.read()
+    except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Failed to load image: {str(e)}")
+    
+    # Получаем клиент MinIO
+    minio_client = minio_db.get_minio_client()
+
+    try:
+        try:
+            image_id = minio_client.upload_file(
+                file_data=image_data,
+                filename=image_file.filename,
+                folder="events"
+            )
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Failed to upload image: {str(e)}")
+
+        event = schemas.EventCreate(
+            title = title,
+            image_id = image_id,
+            date = date,
+            event_type_id = event_type_id,
+            description = description if description else "",
+            submission_id = submission_id if submission_id else 0
+        )
+
         new_event = crud.add_new_event(db=db, event=event)   
         return new_event
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# -------------------
+
+@app.post("/upload-event/")
+async def upload_event(
+    event_name: str = Form(...),
+    organizer: str = Form(...),
+    image: UploadFile = File(...)
+):
+    """
+    Принимает multipart form data с названием мероприятия, именем организатора и изображением.
+    Сохраняет изображение в MinIO и возвращает его id и длину названия и организатора.
+    """
+    
+    # Читаем файл
+    image_data = await image.read()
+    
+    # Получаем клиент MinIO
+    minio_client = minio_db.get_minio_client()
+    
+    # Загружаем файл в MinIO (в папку events)
+    try:
+        file_id = minio_client.upload_file(
+            file_data=image_data,
+            filename=image.filename,
+            folder="events"
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to upload image: {str(e)}")
+    
+    # Вычисляем длины
+    event_name_length = len(event_name)
+    organizer_length = len(organizer)
+    
+    return {
+        "file_id": file_id,
+        "event_name_length": event_name_length,
+        "organizer_length": organizer_length,
+        "message": "Image uploaded successfully"
+    }
+
 
 
 """ @app.delete( # !!!!!!!!!!!!!!!!!!!!!!
@@ -507,6 +587,109 @@ def get_admin_rights(password, db: Session = Depends(get_db)):
             return "Nope try again or ask your club head"
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+
+# тестовый эндпоинт для загрузки изображений
+
+@app.post("/upload-event/")
+async def upload_event(
+    event_name: str = Form(...),
+    organizer: str = Form(...),
+    image: UploadFile = File(...)
+):
+    """
+    Принимает multipart form data с названием мероприятия, именем организатора и изображением.
+    Сохраняет изображение в MinIO и возвращает его id и длину названия и организатора.
+    """
+    
+    # Читаем файл
+    image_data = await image.read()
+    
+    # Получаем клиент MinIO
+    minio_client = minio_db.get_minio_client()
+    
+    # Загружаем файл в MinIO (в папку events)
+    try:
+        file_id = minio_client.upload_file(
+            file_data=image_data,
+            filename=image.filename,
+            folder="events"
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to upload image: {str(e)}")
+    
+    # Вычисляем длины
+    event_name_length = len(event_name)
+    organizer_length = len(organizer)
+    
+    return {
+        "file_id": file_id,
+        "event_name_length": event_name_length,
+        "organizer_length": organizer_length,
+        "message": "Image uploaded successfully"
+    }
+
+
+@app.get("/get-image/{file_id}")
+async def get_image(file_id: str):
+    """
+    Возвращает изображение по его ID.
+    """
+    
+    # Получаем клиент MinIO
+    minio_client = minio_db.get_minio_client()
+    
+    # Проверяем существует ли файл
+    if not minio_client.file_exists(file_id, folder="events"):
+        raise HTTPException(status_code=404, detail="Image not found")
+    
+    try:
+        # Получаем данные файла
+        image_data = minio_client.get_file_data(file_id, folder="events")
+        
+        # Получаем URL для определения content type
+        # В реальном приложении лучше хранить content type в БД
+        # Здесь используем прямое определение из расширения файла
+        if '.' in file_id:
+            ext = file_id.split('.')[-1].lower()
+        else:
+            ext = 'bin'
+        
+        # Определяем content type
+        content_type = "application/octet-stream"
+        if ext in ['jpg', 'jpeg']:
+            content_type = 'image/jpeg'
+        elif ext == 'png':
+            content_type = 'image/png'
+        elif ext == 'gif':
+            content_type = 'image/gif'
+        elif ext == 'webp':
+            content_type = 'image/webp'
+        elif ext == 'svg':
+            content_type = 'image/svg+xml'
+        
+        # Возвращаем изображение
+        return Response(
+            content=image_data,
+            media_type=content_type,
+            headers={"Content-Disposition": f"inline; filename={file_id}"}
+        )
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to retrieve image: {str(e)}")
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
