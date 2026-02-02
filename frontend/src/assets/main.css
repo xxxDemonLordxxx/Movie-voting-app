@@ -1,7 +1,6 @@
 @import './base.css';
 
 #app {
-  max-width: 36rem;
   margin: auto auto;
   padding: 1rem;
   font-weight: normal;
@@ -28,6 +27,13 @@ a,
   }
 
   #app {
-    display:block
+    display:block;
+    min-width: 100vw
+  }
+}
+
+@media (max-width: 784px) {
+  #app {
+    max-width: 36rem
   }
 }

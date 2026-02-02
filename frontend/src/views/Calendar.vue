@@ -2,14 +2,18 @@
    <div class="text">
         <h1 class="calendar-title">EVENT CALENDAR</h1>
    </div> 
-   <div v-if="isAdmin" class="NewEventButton"></div>
+   <div v-if="isAdmin" class="NewEventButton">
+        <NewEventButton />
+    </div>
    <div class="events-list">
     <EventUnit
-      v-for="(event,index) in events" 
-            :key="event.id || index "
-            :event="event"
+      v-for="event in events" 
+      :key="event.id"
+      :event="event"
+      @open-event="showEvent(event.id)"
     />
     </div>
+
 </template>
 
 <script>
@@ -19,7 +23,8 @@ export default {
   name: 'Calendar',
   components: {
     EventUnit,
-    NewEventButton
+    NewEventButton,
+
   },
   
   data() {
@@ -27,7 +32,8 @@ export default {
       events: [],
       loading: false,
       error: null,
-      isAdmin: false
+      isAdmin: false,
+      event:null
     }
   },
   async mounted() {
@@ -42,7 +48,7 @@ export default {
         const response = await fetch(`http://localhost:8000/events/`)
         if (response.ok) {
           this.events = await response.json()  // Get the full response
-            console.log('Loaded event info:', this.events)
+            console.log('Loaded event info')
           } else {
             throw new Error(`HTTP error! status: ${response.status}`)
           }
@@ -57,8 +63,8 @@ export default {
       const storedAdmin = localStorage.getItem('isAdmin')
       this.isAdmin = storedAdmin === 'true'
     },
-    viewEvent(id) {
-      this.$router.push(`/events/${id}`)
+    showEvent(id) {
+      this.$router.push(`/event/${id}`)
     }
   }
 }
@@ -71,9 +77,12 @@ export default {
 }
 
 .events-list {
-  padding-top: 1rem;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100vw;
+  position: absolute;
+  left: 0;
 }
 
 

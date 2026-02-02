@@ -3,6 +3,7 @@ import HomePage from '@/views/HomePage.vue'
 import SubmissionForm from '@/views/SubmissionForm.vue'
 import SubmissionDetail from '@/views/SubmissionDetail.vue'
 import Calendar from '@/views/Calendar.vue'
+import EventDetailCard from '@/views/EventDetailCard.vue'
 import AboutUs from '@/views/AboutUs.vue'
 import VotingForm from '@/views/VotingForm.vue'
 import Polls from '@/views/Polls.vue'
@@ -14,11 +15,12 @@ const routes = [
   { path: '/submissions/new/:id', name: 'submit', component: SubmissionForm },
   { path: '/submissions/:id', name: 'submission', component: SubmissionDetail },
   { path: '/calendar', name: 'calendar', component: Calendar},
+  { path: '/event/:id', name: 'event', component: EventDetailCard},
   { path: '/about_us', name: 'about-us', component: AboutUs},
   { path: '/voting/:id', name: 'voting', component: VotingForm},
   { path: '/polls', name: 'polls', component: Polls},
   { path: '/polls/:id', name: 'submissions-list', component: SubmissionsList},
-  { path: '/login', name: 'admin-login', component: AdminLogin} 
+  { path: '/login', name: 'admin-login', component: AdminLogin},
 ]
 
 const router = createRouter({

@@ -35,7 +35,7 @@
             class="form-input"
           />
 
-          <p class="search-pretty" 
+          <p class="search-pretty pretty-anon" 
           :class="{ 'disabled-style': form.isAnonymous }"
           >)</p>
 
@@ -49,6 +49,7 @@
             class="anonbtn"
              />
           </button>
+          
         </div>
 
         
@@ -339,7 +340,7 @@ label {
 }
 .clear-position-btn {
   padding: 0.1rem 0.2rem;
-  background: rgba(149, 91, 153, 1);
+  background: none;
   color: white;
   border: none;
   cursor: pointer;
@@ -348,14 +349,12 @@ label {
   transition: all 0.3s ease;
 }
 
-.clear-position-btn:hover {
-  background: #c0392b;
-}
+
 
 .anonbtn{
+  margin-bottom: -0.2rem;
   height: 1.5rem;
-  color: rgb(82, 39, 85);
-  filter: drop-shadow(0.05rem 0.1rem 0.2rem   rgb(255, 36, 91));
+  color: #522755;
   animation: popIn 0.3s ease;
 }
 
@@ -388,7 +387,7 @@ label {
 .copy-btn {
   flex: 1;
   background: none;
-  border: 3px dotted #065;
+  border: 3px dotted #006655;
   cursor: pointer;
   font-weight: 600;
   font-size: 14px;
@@ -405,7 +404,7 @@ label {
 
 .copy-btn.active {
   flex: 0 0 2rem;
-  color: #f4e9ac;
+  color: #065;
   background-color: rgba(149, 91, 153, 1);
   border: none;
 }
@@ -500,6 +499,9 @@ label {
   align-self: end;
 }
 
+.pretty-anon{
+  margin-right: -0.3rem;
+}
 
 
 /* Мобильные стили */

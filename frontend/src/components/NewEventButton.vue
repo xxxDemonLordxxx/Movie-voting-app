@@ -27,19 +27,19 @@
                   required
                   name="eventDescription"
               />
-              <label for="winners" class="input">winners:</label>
+              <label for="poster" class="input">poster:</label>
               <input
-                  id="winners"
-                  v-model="form.winners"
-                  placeholder="write the number of winners"
+                  id="image"
+                  v-on="form.image"
+                  placeholder="add poster"
                   class="input form-input admin-input"
-                  required
-                  name="winners"
+                  type="file"
+                  name="poster"
               />
               <label for="eventEnd" class="input">end date:</label>
               <input
                   type="datetime-local"
-                  id="eventEnd"
+                  id="eventDate"
                   name="meeting-time"
                   class="input admin-input"
                   v-model="form.eventEnd"
@@ -61,10 +61,9 @@ export default {
         return {
             form: {
                 eventTitle: '',
-                eventStart: '',
-                eventEnd: '',
+                eventDate: '',
                 eventDescription: '',
-                winners: ''
+                image: '',
             },
             submitting: false
         }
@@ -105,10 +104,10 @@ methods: {
           },
           body: JSON.stringify({
             title: this.form.eventTitle,
-            start: new Date().toISOString(), // Current date in API format
-            end: new Date(this.form.eventEnd).toISOString(),
+            date: "2026-02-02T14:17:47.745Z",
             description: this.form.eventDescription,
-            winners: this.form.winners
+            image: (this.form.image, 'utf-8'),
+            event_type_id: "1"
           })
         })
 

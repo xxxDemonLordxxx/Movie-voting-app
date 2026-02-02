@@ -1,17 +1,22 @@
 <template>
     <div class="event-container">
+        <div class="buffer"></div>
         <div class="header-block">
             <p>{{eventDate}} {{eventTime}}</p>
             <p>MAIN CAMPUS</p>
         </div>
-        <div class="event-block">
+        <div class="event-block event-text">
             <h3 class="event-title">{{ eventTitle }}</h3>
             <p class="description">{{ eventDescription }}</p>
 
         </div>
-        <div class="event-block">
-            <img src='@/assets/more_button.png' @click="viewSubmission(submission.id)" class="more-button" />
+        <div class="event-block more-event">
+            <img 
+            src='@/assets/more_button.png' 
+            @click="$emit('open-event', event)" 
+            class="more-button" />
         </div>
+        <div class="buffer"></div>
     </div>
 
 </template>
@@ -73,7 +78,7 @@ export default {
     border-color: rgb(199, 107, 208);;
     border-width: 0rem;
     border-style: dotted;
-
+    
 }
 
 .event-block{
@@ -81,10 +86,16 @@ export default {
     display: flex;
     flex-direction: row;
     color: white;
-    border-color: gray;
+    border-color: rgb(116, 110, 140);
     border-width: 0.1rem;
     border-style: dotted;
     
+
+}
+
+.event-text{
+    flex-grow: 5;
+    justify-content: space-between;
 
 }
 
@@ -115,20 +126,40 @@ h1{
 .event-title {
     font-family: "Blackout Two AM";
     overflow-wrap: break-word;
-    flex-grow: 2;
     text-overflow: ellipsis;
     overflow:hidden;
 }
-
-@media (min-width: 784px) {
-    .event-container {
-        right:50%;
-        margin-left:-31rem;
-    }
-    .header-block{
-        padding-left: 5rem;
-    }
+.more-event{
+    width: 1.8rem
 }
 
-    
+.buffer{
+    border-color: rgb(59, 53, 82);
+    border-width: 0.1rem;
+    border-style: dotted;
+    width: 30rem;
+    flex-grow: 5;
+}
+
+@media (max-width: 784px) {
+.header-block{
+    max-width: 20%;
+    font-size: 0.75rem
+}
+.more-event{
+    width: 8%
+}
+}
+
+@media (max-width: 480px) {
+ .buffer {
+    display: none;
+ }
+}   
+
+@media (min-width: 785px) {
+ .event-text {
+    width: 30rem;
+ }
+}  
 </style>
