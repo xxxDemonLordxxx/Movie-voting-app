@@ -482,7 +482,7 @@ async def create_event(
 
 
 @app.get( 
-    path="/events/{submission_id}",
+    path="/events/{event_id}",
     response_model=schemas.EventResponse,
     status_code=status.HTTP_200_OK,
     summary="See event data",
