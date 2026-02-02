@@ -481,6 +481,44 @@ async def create_event(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.get( 
+    path="/events/{submission_id}",
+    response_model=schemas.EventResponse,
+    status_code=status.HTTP_200_OK,
+    summary="See event data",
+    responses={},
+    tags=["Events"]
+)
+def get_event(event_id: int, db: Session = Depends(get_db)):
+    try:
+        event = crud.get_event_data_by_id(db=db, event_id=event_id)
+        if not event:
+            raise HTTPException(status_code=404, detail="Event not found")
+        
+
+        minio_client = minio_db.get_minio_client()
+        
+        event_data = event.__dict__.copy()
+        
+        if event.image_id:
+            image_url = minio_client.get_file_url(
+                file_id=event.image_id,
+                folder="events"
+            )
+            event_data["image_url"] = image_url
+        else:
+            event_data["image_url"] = None
+        
+        event_info = schemas.EventResponse(**event_data)
+        return event_info
+    
+       
+    except HTTPException:
+        raise
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
 
 
 """ @app.delete( # !!!!!!!!!!!!!!!!!!!!!!

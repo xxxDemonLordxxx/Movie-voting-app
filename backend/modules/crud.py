@@ -249,7 +249,7 @@ def get_current_events(db: Session) -> List[models.Event]:
     now = datetime.now()
     return db.query(models.Event).filter(models.Event.date >= now).all()
 
-def get_event_data(db: Session, event_id: int) -> models.Event:
+def get_event_data_by_id(db: Session, event_id: int) -> models.Event:
     return db.query(models.Event).filter(models.Event.id == event_id).first()
 
 
