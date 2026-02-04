@@ -42,7 +42,7 @@ export default {
   position: sticky;
   top: 0;
   z-index: 100;
-  margin-bottom: 2rem;
+  padding-bottom: 2rem;
 }
 
 .nav {

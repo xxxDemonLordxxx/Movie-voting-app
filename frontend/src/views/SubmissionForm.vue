@@ -242,7 +242,8 @@ export default {
         if (response.ok) {
           alert('FILM SUBMITTED')
           this.resetForm()
-          this.$router.push(`/polls/${this.$route.params.id}`)
+          this.$router.push(`/polls/${this.$route.params.id}`);
+          setTimeout(function(){window.location.reload();}, 20)
         } else {
           throw new Error('SENDING ERROR')
         }
