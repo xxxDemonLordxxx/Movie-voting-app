@@ -6,7 +6,9 @@
                   type="button" 
                   aria-label="close"
                   @click="closeDialog"
-                  formnovalidate>XXX
+                  formnovalidate
+                  class="btn"
+                  >XXX
               </button>
               <h1 class="title">Create new poll</h1>
               <label for="PollTitle" class="input">title:</label>
@@ -116,6 +118,7 @@ methods: {
           alert('POLL CREATED')
           this.resetForm()
           this.closeDialog();
+          window.location.reload();
         } else {
           throw new Error('SENDING ERROR')
         }
@@ -145,11 +148,12 @@ methods: {
   background-color: rgba(244, 233, 172, 1);
   color: rgb(45, 35, 35);
   text-decoration: none;
-  border: none;
+  border: 3px rgb(45, 35, 35) solid;
   cursor: pointer;
   font-size: 16px;
   transition: background-color 0.3s;
   margin-top: 0.5rem;
+  float: right;
 }
 
 .admin:hover{
@@ -172,7 +176,8 @@ methods: {
 .dialog[open] {
   display: block;
   margin: auto;
-  width: 80%;
+  width: 63%;
+  overflow: hidden;
 }
 
 .dialog::backdrop {
@@ -181,5 +186,6 @@ methods: {
 
 .input {
   margin: 0.5rem;
+  padding: 0.3rem;
 }
 </style>

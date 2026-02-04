@@ -6,7 +6,8 @@
                   type="button" 
                   aria-label="close"
                   @click="closeDialog"
-                  formnovalidate>XXX
+                  formnovalidate
+                  class="btn">XXX
               </button>
               <h1 class="title">Create new event</h1>
               <label for="EventTitle" class="input">title:</label>
@@ -64,6 +65,9 @@ export default {
                 eventDate: '',
                 eventDescription: '',
                 image: '',
+            },
+            image: {
+              object:true
             },
             submitting: false
         }
@@ -149,6 +153,7 @@ methods: {
   font-size: 16px;
   transition: background-color 0.3s;
   margin-top: 0.5rem;
+  float: right;
 }
 
 .admin:hover{
@@ -171,7 +176,8 @@ methods: {
 .dialog[open] {
   display: block;
   margin: auto;
-  width: 80%;
+  width: 63%;
+  overflow: hidden;
 }
 
 .dialog::backdrop {
@@ -179,6 +185,7 @@ methods: {
 }
 
 .input {
-  margin: 0.5rem;
+  margin: 0.2rem;
+  padding: 0.3rem;
 }
 </style>
