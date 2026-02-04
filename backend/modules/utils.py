@@ -1,6 +1,26 @@
 import pyrankvote
 from pyrankvote import Candidate, Ballot
 import itertools
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
+
+def get_tuesday_dates(n: int):
+    now = datetime.now()
+    next_month = (now.replace(day=1) + relativedelta(months=1))
+    
+    result = []
+    
+    date = next_month
+    while date.weekday() != 1:
+        date += timedelta(days=1)
+    
+    for i in range(n):
+        if i < n:
+            result.append((date + timedelta(weeks=i)).isoformat())
+        else:
+            result.append(now.isoformat())
+    
+    return result
 
 
 def commit_voting(ballots_list: list, winners_count: int = 1):
@@ -21,9 +41,11 @@ def commit_voting(ballots_list: list, winners_count: int = 1):
 
     election_results = []
     for candidate in election_result.rounds[-1].candidate_results:
-        result = {'submission_id': int(candidate.candidate.name),
+        result = {
+            'submission_id': int(candidate.candidate.name),
             "number_of_votes" : round(candidate.number_of_votes, 2),
-            "status" : candidate.status}
+            "status" : candidate.status
+            }
         election_results.append(result)
 
     return election_results

@@ -158,6 +158,7 @@ class EventBase(BaseModel):
     title: str
     image_id: Optional[str]
     date: datetime
+    location: str
     event_type_id: int
     description: Optional[str]
     submission_id: Optional[int]
@@ -171,6 +172,7 @@ class EventResponse(BaseModel):
     image_id: Optional[str] = None
     image_url: Optional[str] = None
     date: datetime
+    location: str
     event_type_id: int
     description: Optional[str]
     submission_id: Optional[int]

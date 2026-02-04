@@ -7,6 +7,7 @@ from modules.database import engine, get_db, SessionLocal
 import modules.minio_db as minio_db
 import modules.schemas as schemas
 import modules.crud as crud
+import modules.utils as utils
 from fastapi.middleware.cors import CORSMiddleware
 
 models.Base.metadata.create_all(bind=engine)
@@ -212,16 +213,37 @@ def stop_poll(poll_id: int, db: Session = Depends(get_db)):
 
 @app.post( # !!!!!!!!!!!!!!!!!!!!!!
     path="/polls/confirm/{poll_id}",
-    response_model=str,
+    response_model=list[schemas.EventCreate],
     status_code=status.HTTP_200_OK,
-    summary="Confirm poll results and add movie to calendar",
+    summary="Confirm poll results and add movies to calendar",
     responses={},
     tags=["Poll results"]
 )
-def confirm_poll_results(db: Session = Depends(get_db)):
+def confirm_poll_results(poll_id: int, db: Session = Depends(get_db)):
     try:
-        polls = db.query(models.Poll).all()
-        return ""
+        poll = crud.get_poll_data(db=db, poll_id=poll_id)
+        poll_results = crud.get_poll_results(db=db, poll_id=poll.id)
+
+        poll_winners = [submission for submission in poll_results if submission.status == 'Elected']
+
+        tuesday_dates = utils.get_tuesday_dates(len(poll_winners))
+        events_fill_data = []
+
+        for index, winner in enumerate(poll_winners):
+
+            event = schemas.EventCreate(
+                title= f"Watching '{winner.submission.movie.title}'",
+                image_id=winner.submission.image_url,
+                date=tuesday_dates[index],
+                event_type_id=1,
+                location="",
+                description= f"Submitted by {winner.submission.author} who says: '{winner.submission. comment}'" if winner.submission.comment else "",
+                submission_id=winner.submission.id if winner.submission.id else 0
+            )
+
+            events_fill_data.append(event)
+
+        return events_fill_data
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -440,6 +462,7 @@ async def create_event(
     title: str = Form(...),
     date: str = Form(...),
     event_type_id: int = Form(...),
+    location: str = Form(...),
     description: Optional[str] = Form(None),
     submission_id: Optional[int] = Form(None),
     image_file: UploadFile = File(None),  
@@ -470,6 +493,7 @@ async def create_event(
         image_id=image_id,
         date=date,
         event_type_id=event_type_id,
+        location=location,
         description=description if description else "",
         submission_id=submission_id if submission_id else 0
     )
