@@ -113,12 +113,13 @@ def start_poll(db: Session, poll_id: int) -> models.Poll:
     return db.query(models.Poll).filter(models.Poll.id == poll_id).options(selectinload(models.Poll.state)).first()
 
 
-def stop_poll(db: Session, poll_id: int) -> list[schemas.VotingStats]: 
+def get_poll_results(db: Session, poll_id: int):
     poll = db.query(models.Poll).filter(models.Poll.id == poll_id).first()
+
     if not poll:
         raise ValueError("Poll not found")
 
-    if poll.state_id != 2:
+    if poll.state_id < 2:
         raise ValueError(f"Poll is not in votable state. Current state_id: {poll.state_id}")
 
     try:
@@ -158,6 +159,29 @@ def stop_poll(db: Session, poll_id: int) -> list[schemas.VotingStats]:
                     status = result['status']
                 )
             )
+
+
+        return full_election_results
+    
+    except ValueError as e:
+        db.rollback()
+        raise e
+        
+    except Exception as e:
+        db.rollback()
+        raise ValueError(f"Error processing poll results: {str(e)}")
+
+def stop_poll(db: Session, poll_id: int) -> list[schemas.VotingStats]: 
+    poll = db.query(models.Poll).filter(models.Poll.id == poll_id).first()
+    if not poll:
+        raise ValueError("Poll not found")
+
+    if poll.state_id != 2:
+        raise ValueError(f"Poll is not in votable state. Current state_id: {poll.state_id}")
+
+    try:
+
+        full_election_results = get_poll_results(db=db, poll_id=poll_id)
 
         poll.state_id = 3
         db.commit()
@@ -229,7 +253,7 @@ def get_movie_data_by_id(db: Session, movie_id: int) -> models.Movie:
 def add_new_event(db: Session, event: schemas.EventCreate) -> models.Event:
     db_event = models.Event(
         title = event.title,
-        image_id = event.image_id, # доделать работу с изображениями
+        image_id = event.image_id,
         date = event.date,
         event_type_id = event.event_type_id,
         description = event.description,
