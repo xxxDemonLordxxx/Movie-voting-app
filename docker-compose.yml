@@ -1,32 +1,43 @@
 version: '3.8'
 
 services:
-  backend:
-    build: ./backend
+  nginx:
+    image: nginx:alpine
     ports:
-      - "8000:8000"
-    environment:
-      - DATABASE_URL=postgresql://user:password@db:5432/moviedb
-      - MINIO_PUBLIC_ENDPOINT=localhost:9000
-    depends_on:
-      - db
-      - minio
+      - "80:80"
+      - "443:443"
     volumes:
-      - ./backend:/app
-
-  frontend:
-    build: ./frontend
-    ports:
-      - "3000:3000"
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+      - ./frontend/dist:/usr/share/nginx/html  # Vue build output
       - ./frontend:/app
-      - /app/node_modules
     depends_on:
       - backend
-    stdin_open: true
-    tty: true 
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    expose:
+      - "8000"
+    environment:
+      - DATABASE_URL=postgresql://user:password@db:5432/moviedb
+      - MINIO_ENDPOINT=minio:9000
+    depends_on:
+      db:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=/api  # For Vite/Vue 3
+    # No ports needed - served by nginx
+    # No volumes for dev mount - build in Docker
+    depends_on:
+      - backend
 
   db:
     image: postgres:14.20-trixie
@@ -34,8 +45,11 @@ services:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=moviedb
-    ports:
-      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d moviedb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - postgres_data:/var/lib/postgresql/data
   
@@ -45,27 +59,27 @@ services:
       - PGADMIN_DEFAULT_EMAIL=admin@admin.com
       - PGADMIN_DEFAULT_PASSWORD=admin
     ports:
-      - "8080:80"
+      - "8080:80"  # Keep for admin access
     depends_on:
       - db
 
   minio:
     image: minio/minio
     command: server /data --console-address ":9001"
-    ports:
-      - "9000:9000"
-      - "9001:9001"
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
-      MINIO_PUBLIC_BUCKETS: "images-bucket"
-    volumes:
-      - minio_data:/data
+    ports:
+      - "9000:9000"  # For external access if needed
+      - "9001:9001"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s
       timeout: 20s
       retries: 3
+    volumes:
+      - minio_data:/data
+
 volumes:
   postgres_data:
   minio_data:
