@@ -101,7 +101,7 @@ methods: {
       }
 
       try {
-        const response = await fetch('http://backend:8000/events/new', {
+        const response = await fetch('http://observational.website/events/new', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

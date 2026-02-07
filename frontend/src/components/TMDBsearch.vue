@@ -9,7 +9,7 @@ const showDropdown = ref(false)
 let debounceTimer
 const searchMovies = async () => {
   try {
-    const url = `http://backend:8000/films/search/${encodeURIComponent(query.value)}`
+    const url = `http://observational.website/films/search/${encodeURIComponent(query.value)}`
     console.log('Fetching URL:', url)  // Debug
     
     const res = await fetch(url)

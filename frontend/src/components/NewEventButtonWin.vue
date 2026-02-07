@@ -84,7 +84,7 @@ methods: {
             if (this.dialogRef) {
                 this.dialogRef.showModal();
                 try {
-        const response = await fetch(`http://backend:8000/polls/confirm/${parseInt(this.$route.params.id)}`, {
+        const response = await fetch(`http://observational.website/polls/confirm/${parseInt(this.$route.params.id)}`, {
         method: 'PATCH',  // Changed from POST to PATCH
         headers: {
           'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ methods: {
       }
 
       try {
-        const response = await fetch('http://backend:8000/events/new', {
+        const response = await fetch('http://observational.website/events/new', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

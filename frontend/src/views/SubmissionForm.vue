@@ -184,7 +184,7 @@ export default {
       this.loading = true
       this.error = null
       try {
-        const response = await fetch(`http://backend:8000/polls/${this.pollId}`)
+        const response = await fetch(`http://observational.website/polls/${this.pollId}`)
         if (response.ok) {
           const data = await response.json()  // Get the full response
           
@@ -221,7 +221,7 @@ export default {
       this.submitting = true
       
       try {
-        const response = await fetch('http://backend:8000/submissions/new', {
+        const response = await fetch('http://observational.website/submissions/new', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
