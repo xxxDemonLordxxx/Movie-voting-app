@@ -9,7 +9,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/ssl:/etc/nginx/ssl
-      - ./frontend/dist:/usr/share/nginx/html  # Vue build output
+      - ./frontend/dist:/var/www/html  # Vue build output
       - ./frontend:/app
     depends_on:
       - backend
