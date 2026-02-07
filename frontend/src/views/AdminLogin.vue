@@ -23,7 +23,7 @@ const error = ref('')
 
 const handleLogin = async () => {
   try {
-    const response = await fetch(`http://localhost:8000/admin/${password.value}`, {
+    const response = await fetch(`http://backend:8000/admin/${password.value}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -28,15 +28,6 @@
                   required
                   name="eventDescription"
               />
-              <label for="poster" class="input">poster:</label>
-              <input
-                  id="image"
-                  v-on="form.image"
-                  placeholder="add poster"
-                  class="input form-input admin-input"
-                  type="file"
-                  name="poster"
-              />
               <label for="eventEnd" class="input">end date:</label>
               <input
                   type="datetime-local"
@@ -51,13 +42,14 @@
     </div>
 
     <p>
-        <button class="btn" @click="showDialog">New event</button>
+        <button class="btn" @click="confirm">Confirm</button>
+        <button class="btn admin" @click="showDialog">New event</button>
     </p>
 </template>
 
 <script>
 export default {
-    name: 'NewEventButton',
+name: 'NewEventButton',
     data() {
         return {
             form: {
@@ -81,19 +73,36 @@ export default {
       }
       
     },
-
 methods: {
-    showDialog() {
-            if (this.dialogRef) {
-                this.dialogRef.showModal();
-            }
-        },
     closeDialog() {
             if (this.dialogRef) {
                 this.dialogRef.close();
                 this.form.eventTitle = ''; // Clear form on close
             }
         },
+    async showConfirmDialog() {
+            if (this.dialogRef) {
+                this.dialogRef.showModal();
+                try {
+        const response = await fetch(`http://backend:8000/polls/confirm/${parseInt(this.$route.params.id)}`, {
+        method: 'PATCH',  // Changed from POST to PATCH
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // Remove the body since poll_id is in the URL
+      })
+        if (response.ok) {
+          alert('Poll status changed')
+        } else {
+          throw new Error('SENDING ERROR')
+        }
+      } catch (error) {
+        console.error('Error:', error)
+        alert('SENDING ERROR')
+      } 
+    }
+    }
+    },
     async submitEvent() {
       if (!this.form.eventTitle.trim()) {
         alert('PLEASE, FILL')
@@ -138,7 +147,6 @@ methods: {
       }
     }
   }
-}
 </script>
 
 <style>

@@ -126,7 +126,7 @@ export default {
       this.loading = true
       this.error = null
       try {
-        const response = await fetch(`http://localhost:8000/polls/${this.pollId}`)
+        const response = await fetch(`http://backend:8000/polls/${this.pollId}`)
         if (response.ok) {
           const data = await response.json()  // Get the full response
           
@@ -191,7 +191,7 @@ export default {
       
       try {
         // Replace with your actual API endpoint
-        const response = await fetch('http://localhost:8000/polls/vote', {
+        const response = await fetch('http://backend:8000/polls/vote', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

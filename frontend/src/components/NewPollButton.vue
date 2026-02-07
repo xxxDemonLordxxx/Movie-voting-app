@@ -100,7 +100,7 @@ methods: {
       }
 
       try {
-        const response = await fetch('http://localhost:8000/polls/new', {
+        const response = await fetch('http://backend:8000/polls/new', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
