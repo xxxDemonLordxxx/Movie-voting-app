@@ -34,7 +34,7 @@
       <div class="form-actions">
         <div></div>
         <button @click="submitVote" class="btn voting-btn">
-          submit vote
+          SUBMIT VOTE
         </button>
       </div>
     

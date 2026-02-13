@@ -19,19 +19,19 @@
                   required
                   name="eventTitle"
               />
-              <label for="eventDescription" class="input">description:</label>
+              <label for="eventType" class="input">type:</label>
               <input
-                  id="eventDescription"
-                  v-model="form.eventDescription"
-                  placeholder="write the description of the event"
+                  id="eventType"
+                  v-model="form.eventType"
+                  placeholder="write the type of the event"
                   class="input form-input admin-input"
                   required
-                  name="eventDescription"
+                  name="eventType"
               />
               <label for="poster" class="input">poster:</label>
               <input
-                  id="image"
-                  v-on="form.image"
+                  id="posterImage"
+                  v-on:change="form.posterImage"
                   placeholder="add poster"
                   class="input form-input admin-input"
                   type="file"
@@ -43,7 +43,7 @@
                   id="eventDate"
                   name="meeting-time"
                   class="input admin-input"
-                  v-model="form.eventEnd"
+                  v-model="form.eventDate"
                 />
               <button class="btn admin" @click="submitEvent">Submit</button>
           </form>
@@ -63,13 +63,13 @@ export default {
             form: {
                 eventTitle: '',
                 eventDate: '',
-                eventDescription: '',
+                eventType: '',
                 image: '',
             },
             image: {
               object:true
             },
-            submitting: false
+            submitting: false,
         }
     },
     
@@ -95,24 +95,27 @@ methods: {
             }
         },
     async submitEvent() {
+        let formData = new FormData();
+        const date = new Date(this.form?.eventDate).toISOString();
+        if (posterImage.files.length > 0) {
+        stri  
+        formData.append('image_file', posterImage.files[0]);
+        };
+        formData.append('title', this.form?.eventTitle);
+        formData.append('date', date);
+        formData.append('event_type_id', this.form?.eventType);
+        
+
       if (!this.form.eventTitle.trim()) {
         alert('PLEASE, FILL')
         return
       }
 
       try {
+        
         const response = await fetch('http://localhost:8000/events/new', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            title: this.form.eventTitle,
-            date: "2026-02-02T14:17:47.745Z",
-            description: this.form.eventDescription,
-            image: (this.form.image, 'utf-8'),
-            event_type_id: "1"
-          })
+          body: formData
         })
 
         if (response.ok) {
@@ -122,6 +125,7 @@ methods: {
         } else {
           throw new Error('SENDING ERROR')
         }
+        
       } catch (error) {
         console.error('Error:', error)
         alert('SENDING ERROR при отправке предложения')
