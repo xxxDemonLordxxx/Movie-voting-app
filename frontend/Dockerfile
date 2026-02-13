@@ -8,8 +8,6 @@ RUN npm install
 COPY . .
 COPY ./src/assets .
 
-COPY ./public/navigationicons .
-
 
 RUN npm run build
 
