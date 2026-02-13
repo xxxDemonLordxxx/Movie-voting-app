@@ -3,11 +3,11 @@
     <header class="header">
       <nav class="nav">
         <router-link to="/" class="nav-link">
-          <img class="nav-image" src='/public/navigationicons/home.ico'/>HOME</router-link>
+          <img class="nav-image" src='@/assets/navigationicons/home.ico'/>HOME</router-link>
         <router-link to="/calendar" class="nav-link">
-          <img class="nav-image" src='/public/navigationicons/calendar.ico'/>CALENDAR</router-link>
+          <img class="nav-image" src='@/assets/navigationicons/calendar.ico'/>CALENDAR</router-link>
         <router-link to="/about_us" class="nav-link">
-          <img class="nav-image" src='/public/navigationicons/us.ico'/>ABOUT US
+          <img class="nav-image" src='@/assets/navigationicons/us.ico'/>ABOUT US
             </router-link>          
       </nav>
     </header>
