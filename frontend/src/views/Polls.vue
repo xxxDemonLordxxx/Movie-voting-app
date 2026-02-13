@@ -68,7 +68,7 @@ export default {
       this.loading = true
       this.error = null
       try {
-        const response = await fetch('http://observational.website/polls')
+        const response = await fetch('https://observational.website/polls')
         if (response.ok) {
           this.polls = await response.json()
           console.log('Loaded polls:', this.polls) // Для отладки

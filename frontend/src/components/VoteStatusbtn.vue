@@ -24,7 +24,7 @@ export default {
 methods: {
     async changePollStatus() {
       try {
-        const response = await fetch(`http://observational.website/polls/${this.statusChange}/${this.pollId}`, {
+        const response = await fetch(`https://observational.website/polls/${this.statusChange}/${this.pollId}`, {
         method: 'PATCH',  // Changed from POST to PATCH
         headers: {
           'Content-Type': 'application/json',

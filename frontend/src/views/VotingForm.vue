@@ -126,7 +126,7 @@ export default {
       this.loading = true
       this.error = null
       try {
-        const response = await fetch(`http://observational.website/polls/${this.pollId}`)
+        const response = await fetch(`https://observational.website/polls/${this.pollId}`)
         if (response.ok) {
           const data = await response.json()  // Get the full response
           
@@ -137,7 +137,7 @@ export default {
             console.log('Loaded poll info:', this.pollInfo)
             console.log('Loaded submissions:', this.submissions)
           } else {
-            throw new Error(`HTTP error! status: ${response.status}`)
+            throw new Error(`HTTPS error! status: ${response.status}`)
           }
         } catch (error) {
           console.error('Error loading submissions:', error)
@@ -191,7 +191,7 @@ export default {
       
       try {
         // Replace with your actual API endpoint
-        const response = await fetch('http://observational.website/polls/vote', {
+        const response = await fetch('https://observational.website/polls/vote', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

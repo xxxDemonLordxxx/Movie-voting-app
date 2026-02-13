@@ -100,7 +100,7 @@ methods: {
       }
 
       try {
-        const response = await fetch('http://observational.website/polls/new', {
+        const response = await fetch('https://observational.website/polls/new', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

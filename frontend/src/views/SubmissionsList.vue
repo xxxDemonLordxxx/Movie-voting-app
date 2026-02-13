@@ -86,7 +86,7 @@ export default {
             console.log('Loaded poll info:', this.pollInfo)
             console.log('Loaded submissions:', this.submissions)
           } else {
-            throw new Error(`HTTP error! status: ${response.status}`)
+            throw new Error(`HTTPS error! status: ${response.status}`)
           }
         } catch (error) {
           console.error('Error loading submissions:', error)
