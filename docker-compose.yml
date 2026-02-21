@@ -31,9 +31,6 @@ services:
       minio:
         condition: service_healthy
 
-  frontend:
-    volumes:
-      - ./frontend/dist:/var/www/html
 
   db:
     image: postgres:14.20-trixie
