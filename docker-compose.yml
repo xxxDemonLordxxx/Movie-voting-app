@@ -20,7 +20,8 @@ services:
       - "8000"
     environment:
       - DATABASE_URL=postgresql://user:password@db:5432/moviedb
-      - MINIO_ENDPOINT=https://minio.observational.website
+      - MINIO_PUBLIC_ENDPOINT=minio.observational.website
+      - MINIO_ENDPOINT=minio:9000
       - MINIO_PORT=9000
       - MINIO_ACCESS_KEY=minioadmin
       - MINIO_SECRET_KEY=minioadmin
