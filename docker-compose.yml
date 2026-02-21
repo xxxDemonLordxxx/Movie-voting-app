@@ -10,10 +10,11 @@ services:
       - /etc/nginx/sites-available/default:/etc/nginx/conf.d/default.conf
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - ./frontend/dist:/var/www/html  # Vue build output
-      - ./frontend:/app
     depends_on:
       - backend
     restart: unless-stopped
+    networks:
+      - app-network
 
   backend:
     build: ./backend
@@ -21,12 +22,18 @@ services:
       - "8000"
     environment:
       - DATABASE_URL=postgresql://user:password@db:5432/moviedb
-      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ENDPOINT=https://minio.observational.website
+      - MINIO_PORT=9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_BUCKET=your-bucket
     depends_on:
       db:
         condition: service_healthy
       minio:
         condition: service_healthy
+    networks:
+      - app-network
 
   frontend:
     build: 
@@ -52,6 +59,8 @@ services:
       retries: 5
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
   
   pgadmin:
     image: dpage/pgadmin4
@@ -62,6 +71,8 @@ services:
       - "8080:80"  # Keep for admin access
     depends_on:
       - db
+    networks:
+      - app-network
 
   minio:
     image: minio/minio
@@ -69,6 +80,8 @@ services:
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_BROWSER_REDIRECT_URL: https://minio-console.observational.website
+      MINIO_SERVER_URL: https://minio.observational.website
     ports:
       - "9000:9000"  # For external access if needed
       - "9001:9001"
@@ -79,6 +92,8 @@ services:
       retries: 3
     volumes:
       - minio_data:/data
+    networks:
+      - app-network
 
 volumes:
   postgres_data:
