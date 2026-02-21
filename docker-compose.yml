@@ -32,13 +32,8 @@ services:
         condition: service_healthy
 
   frontend:
-    build: 
-      context: ./frontend
-      dockerfile: Dockerfile
     volumes:
       - ./frontend/dist:/var/www/html
-    depends_on:
-      - backend
 
   db:
     image: postgres:14.20-trixie
