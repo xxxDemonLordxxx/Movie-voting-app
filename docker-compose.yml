@@ -35,10 +35,8 @@ services:
     build: 
       context: ./frontend
       dockerfile: Dockerfile
-      args:
-        - VITE_API_URL=/api  # For Vite/Vue 3
-    # No ports needed - served by nginx
-    # No volumes for dev mount - build in Docker
+      volumes:
+      - ./frontend/dist:/var/www/html
     depends_on:
       - backend
 
