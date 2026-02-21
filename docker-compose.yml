@@ -13,8 +13,6 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
-    networks:
-      - app-network
 
   backend:
     build: ./backend
@@ -32,8 +30,6 @@ services:
         condition: service_healthy
       minio:
         condition: service_healthy
-    networks:
-      - app-network
 
   frontend:
     build: 
@@ -59,8 +55,6 @@ services:
       retries: 5
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    networks:
-      - app-network
   
   pgadmin:
     image: dpage/pgadmin4
@@ -71,8 +65,6 @@ services:
       - "8080:80"  # Keep for admin access
     depends_on:
       - db
-    networks:
-      - app-network
 
   minio:
     image: minio/minio
@@ -92,8 +84,6 @@ services:
       retries: 3
     volumes:
       - minio_data:/data
-    networks:
-      - app-network
 
 volumes:
   postgres_data:
