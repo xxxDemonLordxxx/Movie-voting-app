@@ -75,7 +75,7 @@ export default {
       this.loading = true
       this.error = null
       try {
-        const response = await fetch(`http://observational.website/polls/${this.pollId}`)
+        const response = await fetch(`https://observational.website/api/polls/${this.pollId}`)
         if (response.ok) {
           const data = await response.json()  // Get the full response
           
