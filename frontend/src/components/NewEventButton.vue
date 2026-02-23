@@ -46,13 +46,13 @@
                   type="file"
                   name="poster"
               />
-              <label for="eventEnd" class="input">date:</label>
+              <label for="eventDate" class="input">date:</label>
               <input
                   type="datetime-local"
                   id="eventDate"
                   name="meeting-time"
                   class="input admin-input"
-                  v-model="form.eventEnd"
+                  v-model="form.eventDate"
                 />
               <button class="btn admin" @click="submitEvent">Submit</button>
           </form>
