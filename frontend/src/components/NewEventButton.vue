@@ -117,7 +117,7 @@ methods: {
         formData.append('event_type_id', this.form?.eventType);
 
       try {
-        const response = await fetch('https://observational.website/api/events/new', {
+        const response = await fetch('${import.meta.env.vite_api_url}/events/new', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

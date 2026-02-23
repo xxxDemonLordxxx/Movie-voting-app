@@ -100,7 +100,7 @@ methods: {
       }
 
       try {
-        const response = await fetch('https://observational.website/api/polls/new', {
+        const response = await fetch('${import.meta.env.vite_api_url}/polls/new', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
