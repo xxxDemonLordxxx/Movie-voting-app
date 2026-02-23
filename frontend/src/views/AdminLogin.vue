@@ -23,7 +23,7 @@ const error = ref('')
 
 const handleLogin = async () => {
   try {
-    const response = await fetch(`http://localhost:8000/admin/${password.value}`, {
+    const response = await fetch(`${import.meta.env.vite_api_url}/admin/${password.value}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

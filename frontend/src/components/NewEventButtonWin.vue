@@ -1,72 +1,65 @@
 <template>
    <div class="container"> 
       <dialog class="dialog" ref="dialogRef">
-          <form @submit.prevent="SubmitPoll" method="dialog">
+          <form @submit.prevent="SubmitEvent" method="dialog">
               <button  
                   type="button" 
                   aria-label="close"
                   @click="closeDialog"
                   formnovalidate
-                  class="btn"
-                  >XXX
+                  class="btn">XXX
               </button>
-              <h1 class="title">Create new poll</h1>
-              <label for="PollTitle" class="input">title:</label>
+              <h1 class="title">Create new event</h1>
+              <label for="EventTitle" class="input">title:</label>
               <input
-                  id="pollTitle"
-                  v-model="form.pollTitle"
-                  placeholder="write the title of the poll"
+                  id="eventTitle"
+                  v-model="form.eventTitle"
+                  placeholder="write the title of the event"
                   class="input form-input admin-input"
                   required
-                  name="pollTitle"
+                  name="eventTitle"
               />
-              <label for="pollDescription" class="input">description:</label>
+              <label for="eventDescription" class="input">description:</label>
               <input
-                  id="pollDescription"
-                  v-model="form.pollDescription"
-                  placeholder="write the description of the poll"
+                  id="eventDescription"
+                  v-model="form.eventDescription"
+                  placeholder="write the description of the event"
                   class="input form-input admin-input"
                   required
-                  name="pollDescription"
+                  name="eventDescription"
               />
-              <label for="winners" class="input">winners:</label>
-              <input
-                  id="winners"
-                  v-model="form.winners"
-                  placeholder="write the number of winners"
-                  class="input form-input admin-input"
-                  required
-                  name="winners"
-              />
-              <label for="pollEnd" class="input">end date:</label>
+              <label for="eventEnd" class="input">end date:</label>
               <input
                   type="datetime-local"
-                  id="pollEnd"
+                  id="eventDate"
                   name="meeting-time"
                   class="input admin-input"
-                  v-model="form.pollEnd"
+                  v-model="form.eventEnd"
                 />
-              <button class="btn admin" @click="submitPoll">Submit</button>
+              <button class="btn admin" @click="submitEvent">Submit</button>
           </form>
       </dialog>
     </div>
 
     <p>
-        <button class="btn" @click="showDialog">New poll</button>
+        <button class="btn" @click="confirm">Confirm</button>
+        <button class="btn admin" @click="showDialog">New event</button>
     </p>
 </template>
 
 <script>
 export default {
-    name: 'NewPollButton',
+name: 'NewEventButton',
     data() {
         return {
             form: {
-                pollTitle: '',
-                pollStart: '',
-                pollEnd: '',
-                pollDescription: '',
-                winners: ''
+                eventTitle: '',
+                eventDate: '',
+                eventDescription: '',
+                image: '',
+            },
+            image: {
+              object:true
             },
             submitting: false
         }
@@ -80,45 +73,61 @@ export default {
       }
       
     },
-
 methods: {
-    showDialog() {
-            if (this.dialogRef) {
-                this.dialogRef.showModal();
-            }
-        },
     closeDialog() {
             if (this.dialogRef) {
                 this.dialogRef.close();
-                this.form.pollTitle = ''; // Clear form on close
+                this.form.eventTitle = ''; // Clear form on close
             }
         },
-    async submitPoll() {
-      if (!this.form.pollTitle.trim()) {
+    async showConfirmDialog() {
+            if (this.dialogRef) {
+                this.dialogRef.showModal();
+                try {
+        const response = await fetch(`${import.meta.env.vite_api_url}/polls/confirm/${parseInt(this.$route.params.id)}`, {
+        method: 'PATCH',  // Changed from POST to PATCH
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // Remove the body since poll_id is in the URL
+      })
+        if (response.ok) {
+          alert('Poll status changed')
+        } else {
+          throw new Error('SENDING ERROR')
+        }
+      } catch (error) {
+        console.error('Error:', error)
+        alert('SENDING ERROR')
+      } 
+    }
+    }
+    },
+    async submitEvent() {
+      if (!this.form.eventTitle.trim()) {
         alert('PLEASE, FILL')
         return
       }
 
       try {
-        const response = await fetch('${import.meta.env.vite_api_url}/polls/new', {
+        const response = await fetch('${import.meta.env.vite_api_url}/events/new', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            title: this.form.pollTitle,
-            start: new Date().toISOString(), // Current date in API format
-            end: new Date(this.form.pollEnd).toISOString(),
-            description: this.form.pollDescription,
-            winners: this.form.winners
+            title: this.form.eventTitle,
+            date: "2026-02-02T14:17:47.745Z",
+            description: this.form.eventDescription,
+            image: (this.form.image, 'utf-8'),
+            event_type_id: "1"
           })
         })
 
         if (response.ok) {
-          alert('POLL CREATED')
+          alert('EVENT CREATED')
           this.resetForm()
           this.closeDialog();
-          window.location.reload();
         } else {
           throw new Error('SENDING ERROR')
         }
@@ -133,12 +142,11 @@ methods: {
     resetForm() {
       this.form = {
         title: '',
-        PollStart: '',
-        PollEnd:'',
+        EventStart: '',
+        EventEnd:'',
       }
     }
   }
-}
 </script>
 
 <style>
@@ -148,7 +156,7 @@ methods: {
   background-color: rgba(244, 233, 172, 1);
   color: rgb(45, 35, 35);
   text-decoration: none;
-  border: 3px rgb(45, 35, 35) solid;
+  border: none;
   cursor: pointer;
   font-size: 16px;
   transition: background-color 0.3s;
@@ -163,6 +171,11 @@ methods: {
 .admin-input{
   background-color: rgb(209, 209, 209); 
   margin: 0.2rem;
+}
+
+.text{
+  margin: 10px;
+  font-size: 22px;
 }
 
 .dialog {
@@ -180,7 +193,7 @@ methods: {
 }
 
 .input {
-  margin: 0.5rem;
+  margin: 0.2rem;
   padding: 0.3rem;
 }
 </style>

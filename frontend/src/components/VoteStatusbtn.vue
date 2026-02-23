@@ -24,7 +24,7 @@ export default {
 methods: {
     async changePollStatus() {
       try {
-        const response = await fetch(`http://localhost:8000/polls/${this.statusChange}/${this.pollId}`, {
+        const response = await fetch(`${import.meta.env.vite_api_url}/polls/${this.statusChange}/${this.pollId}`, {
         method: 'PATCH',  // Changed from POST to PATCH
         headers: {
           'Content-Type': 'application/json',

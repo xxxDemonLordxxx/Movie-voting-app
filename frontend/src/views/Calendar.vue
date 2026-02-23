@@ -45,12 +45,12 @@ export default {
       this.loading = true
       this.error = null
       try {
-        const response = await fetch(`http://localhost:8000/events/`)
+        const response = await fetch(`${import.meta.env.vite_api_url}/events/`)
         if (response.ok) {
           this.events = await response.json()  // Get the full response
             console.log('Loaded event info')
           } else {
-            throw new Error(`HTTP error! status: ${response.status}`)
+            throw new Error(`HTTPS error! status: ${response.status}`)
           }
         } catch (error) {
           console.error('Error loading events:', error)

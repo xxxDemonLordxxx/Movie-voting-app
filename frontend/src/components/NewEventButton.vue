@@ -28,22 +28,31 @@
                   required
                   name="eventDescription"
               />
+              <label for="eventLocation" class="input">location:</label>
+              <input
+                  id="eventLocation"
+                  v-model="form.eventLocationn"
+                  placeholder="write the location of the event"
+                  class="input form-input admin-input"
+                  required
+                  name="eventLocation"
+              />
               <label for="poster" class="input">poster:</label>
               <input
-                  id="image"
-                  v-on="form.image"
+                  id="posterImage"
+                  v-on:change="form.posterImage"
                   placeholder="add poster"
                   class="input form-input admin-input"
                   type="file"
                   name="poster"
               />
-              <label for="eventEnd" class="input">end date:</label>
+              <label for="eventDate" class="input">date:</label>
               <input
                   type="datetime-local"
                   id="eventDate"
                   name="meeting-time"
                   class="input admin-input"
-                  v-model="form.eventEnd"
+                  v-model="form.eventDate"
                 />
               <button class="btn admin" @click="submitEvent">Submit</button>
           </form>
@@ -64,6 +73,7 @@ export default {
                 eventTitle: '',
                 eventDate: '',
                 eventDescription: '',
+                eventLocation: '',
                 image: '',
             },
             image: {
@@ -99,20 +109,20 @@ methods: {
         alert('PLEASE, FILL')
         return
       }
+              let formData = new FormData();
+        const date = new Date(this.form?.eventDate).toISOString();
+        formData.append('title', this.form?.eventTitle);
+        formData.append('date', date);
+        formData.append('location', this.form?.eventLocation);
+        formData.append('event_type_id', this.form?.eventType);
 
       try {
-        const response = await fetch('http://localhost:8000/events/new', {
+        const response = await fetch('${import.meta.env.vite_api_url}/events/new', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            title: this.form.eventTitle,
-            date: "2026-02-02T14:17:47.745Z",
-            description: this.form.eventDescription,
-            image: (this.form.image, 'utf-8'),
-            event_type_id: "1"
-          })
+          body: formData
         })
 
         if (response.ok) {

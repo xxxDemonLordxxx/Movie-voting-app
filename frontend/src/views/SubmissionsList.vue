@@ -1,6 +1,7 @@
 <template> 
     
   <FringeHeader v-if="pollInfo" :pollInfo="pollInfo" :submissions="submissions"/>
+  <NewEventButtonWin></NewEventButtonWin>
   <div class="submissions-section">
       <div v-if="loading" class="loading">LOADING...</div>
       <div v-else-if="error" class="error">
@@ -33,12 +34,14 @@
 import FringeHeader from '@/components/FringeHeader.vue';
 import MovieDetailCard from '@/components/MovieDetailCard.vue';
 import MovieSubmissionCard from '@/components/MovieSubmissionCard.vue'
+import NewEventButtonWin from '@/components/NewEventButtonWin.vue';
 export default {
   name: 'SubmissionsList',
   components: {
     MovieSubmissionCard,
     FringeHeader,
-    MovieDetailCard
+    MovieDetailCard,
+    NewEventButtonWin
   },
   data() {
     return {
@@ -72,7 +75,7 @@ export default {
       this.loading = true
       this.error = null
       try {
-        const response = await fetch(`http://localhost:8000/polls/${this.pollId}`)
+        const response = await fetch(`${import.meta.env.vite_api_url}/polls/${this.pollId}`)
         if (response.ok) {
           const data = await response.json()  // Get the full response
           
@@ -83,7 +86,7 @@ export default {
             console.log('Loaded poll info:', this.pollInfo)
             console.log('Loaded submissions:', this.submissions)
           } else {
-            throw new Error(`HTTP error! status: ${response.status}`)
+            throw new Error(`HTTPS error! status: ${response.status}`)
           }
         } catch (error) {
           console.error('Error loading submissions:', error)

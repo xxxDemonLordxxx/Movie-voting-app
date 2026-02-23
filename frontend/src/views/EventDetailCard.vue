@@ -1,4 +1,7 @@
 <template>
+  <div class="back-button">
+        <button @click="$router.go(-1)" class="btn btn-secondary">← BACK TO THE LIST</button>
+      </div>
   <div class="container">
       <div class="movie-detail-card">
         <div class="card-header">
@@ -45,36 +48,31 @@ export default {
       dialogElement: null
     }
   },
-  mounted() {
-    this.dialog = this.$refs.dialog  // Get reference
+  data() {
+    return {
+      event: null,
+      loading: false
+    }
+  },
+  async mounted() {
+    await this.fetchEventDetail()
   },
   methods: {
-    showModal() {
-      this.$refs.dialog?.showModal() 
-    },
-    closeDialog() {
-            if (this.dialog) {
-                this.dialog?.close();
-            }
-        },
-      },
-computed: {
-    eventTitle() {
-      return this.event?.title || 'No name'
-    },
-    eventDescription() {
-      return this.event?.description || 'No description'
-    },
-    eventDate() {
-        if (!this.event?.date) return ''
-        return new Date(this.event.date).toLocaleDateString('ru-RU')
-    },
-    eventTime() {
-        if (!this.event?.date) return ''
-        return new Date(this.event?.date).toLocaleTimeString('ru-RU', {
-        hour: '2-digit',
-        minute: '2-digit'
-        })
+    async fetchEventDetail() {
+      this.loading = true
+      try {
+        const response = await fetch(`${import.meta.env.vite_api_url}/events/${this.$route.params.id}`)
+        if (response.ok) {
+          this.event = await response.json()
+        } else if (response.status === 404) {
+          this.event = null
+        }
+      } catch (error) {
+        console.error('Error:', error)
+        alert('Ошибка при загрузке данных о предложении')
+      } finally {
+        this.loading = false
+      }
     }
   }
 }
