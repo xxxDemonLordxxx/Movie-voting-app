@@ -122,7 +122,6 @@ methods: {
             event_type_id: "1",
             location: this.form.eventLocation,
             description: this.form.eventDescription,
-            image: (this.form.image, 'utf-8'),
             
           })
         })
