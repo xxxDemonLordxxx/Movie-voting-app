@@ -39,8 +39,8 @@
               />
               <label for="poster" class="input">poster:</label>
               <input
-                  id="image"
-                  v-on="form.image"
+                  id="posterImage"
+                  v-on:change="form.posterImage"
                   placeholder="add poster"
                   class="input form-input admin-input"
                   type="file"
@@ -111,10 +111,6 @@ methods: {
       }
               let formData = new FormData();
         const date = new Date(this.form?.eventDate).toISOString();
-        if (posterImage.files.length > 0) {
-        stri  
-        formData.append('image_file', posterImage.files[0]);
-        };
         formData.append('title', this.form?.eventTitle);
         formData.append('date', date);
         formData.append('location', this.form?.eventLocation);
