@@ -165,11 +165,6 @@ methods: {
   margin: 0.2rem;
 }
 
-.text{
-  margin: 10px;
-  font-size: 22px;
-}
-
 .dialog {
   display: none
 }

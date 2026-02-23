@@ -28,6 +28,15 @@
                   required
                   name="eventDescription"
               />
+              <label for="eventLocation" class="input">location:</label>
+              <input
+                  id="eventLocation"
+                  v-model="form.eventLocationn"
+                  placeholder="write the location of the event"
+                  class="input form-input admin-input"
+                  required
+                  name="eventLocation"
+              />
               <label for="poster" class="input">poster:</label>
               <input
                   id="image"
@@ -37,7 +46,7 @@
                   type="file"
                   name="poster"
               />
-              <label for="eventEnd" class="input">end date:</label>
+              <label for="eventEnd" class="input">date:</label>
               <input
                   type="datetime-local"
                   id="eventDate"
@@ -64,6 +73,7 @@ export default {
                 eventTitle: '',
                 eventDate: '',
                 eventDescription: '',
+                eventLocation: '',
                 image: '',
             },
             image: {
@@ -109,9 +119,11 @@ methods: {
           body: JSON.stringify({
             title: this.form.eventTitle,
             date: "2026-02-02T14:17:47.745Z",
+            event_type_id: "1",
+            location: this.form.eventLocation,
             description: this.form.eventDescription,
             image: (this.form.image, 'utf-8'),
-            event_type_id: "1"
+            
           })
         })
 
