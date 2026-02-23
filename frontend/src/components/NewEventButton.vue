@@ -109,6 +109,16 @@ methods: {
         alert('PLEASE, FILL')
         return
       }
+              let formData = new FormData();
+        const date = new Date(this.form?.eventDate).toISOString();
+        if (posterImage.files.length > 0) {
+        stri  
+        formData.append('image_file', posterImage.files[0]);
+        };
+        formData.append('title', this.form?.eventTitle);
+        formData.append('date', date);
+        formData.append('location', this.form?.eventLocation);
+        formData.append('event_type_id', this.form?.eventType);
 
       try {
         const response = await fetch('https://observational.website/api/events/new', {
@@ -116,14 +126,7 @@ methods: {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            title: this.form.eventTitle,
-            date: "2026-02-02T14:17:47.745Z",
-            event_type_id: "1",
-            location: this.form.eventLocation,
-            description: this.form.eventDescription,
-            
-          })
+          body: formData
         })
 
         if (response.ok) {
