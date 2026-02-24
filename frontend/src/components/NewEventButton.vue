@@ -117,7 +117,7 @@ methods: {
         formData.append('event_type_id', this.form?.eventType);
 
       try {
-        const response = await fetch('/events/new', {
+        const response = await fetch('api/events/new', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

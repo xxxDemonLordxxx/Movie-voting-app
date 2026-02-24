@@ -100,7 +100,7 @@ methods: {
       }
 
       try {
-        const response = await fetch('/polls/new', {
+        const response = await fetch('api/polls/new', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

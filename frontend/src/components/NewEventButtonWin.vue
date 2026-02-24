@@ -110,7 +110,7 @@ methods: {
       }
 
       try {
-        const response = await fetch('/events/new', {
+        const response = await fetch('api/events/new', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

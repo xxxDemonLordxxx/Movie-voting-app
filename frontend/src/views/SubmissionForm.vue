@@ -176,7 +176,7 @@ export default {
       this.loading = true
       this.error = null
       try {
-        const response = await fetch(`/polls/${this.pollId}`)
+        const response = await fetch(`api/polls/${this.pollId}`)
         if (response.ok) {
           const data = await response.json()  // Get the full response
           
@@ -213,7 +213,7 @@ export default {
       this.submitting = true
       
       try {
-        const response = await fetch('/submissions/new', {
+        const response = await fetch('api/submissions/new', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

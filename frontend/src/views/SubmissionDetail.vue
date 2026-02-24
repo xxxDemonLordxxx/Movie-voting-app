@@ -33,7 +33,7 @@ export default {
     async fetchSubmissionDetail() {
       this.loading = true
       try {
-        const response = await fetch(`/submissions/${this.$route.params.id}`)
+        const response = await fetch(`api/submissions/${this.$route.params.id}`)
         if (response.ok) {
           this.submission = await response.json()
         } else if (response.status === 404) {
