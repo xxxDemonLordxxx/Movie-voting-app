@@ -2,19 +2,11 @@
   <FringeHeader v-if="pollInfo" :pollInfo="pollInfo" :submissions="submissions" />
 
     <OfferPopup 
-    psa="in da club, we appreciate enthusiasm, 
-    so so that you can vote and mayhaps get your movie 
-    in da club. its not that deep but please do 
-    consider and try to pick something that is 
-    really really cool and get a pitch to really really"
-    haha="haha"
-    psa2="sell it. click haha if ya ready for democratic experience. 
-    TIP -
-    if you want to add something to someone else's pitch just offer the same movie again
-    with your own addition comment
-    
-    
-    TIP 2 - tick copy checkbox to share the pitch with out group"
+    psa="After filling in your"
+    haha=" offer "
+    psa2="tick copy checkbox to share the pitch with our group.
+    Click offer if ya ready for democratic experience. 
+    "
     />
     
     <form @submit.prevent="submitSubmission" class="form">
@@ -276,7 +268,10 @@ export default {
 </script>
 
 <style scoped>
-
+.form{
+  max-width: 35rem;
+  margin: auto;
+}
 
 .submission-form h1 {
   text-align: center;
@@ -375,6 +370,10 @@ label {
   display: flex;
   justify-content: center;
   margin-top: 1.5rem;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 15rem;
+  margin-left: auto;
 }
 .split-button-container {
   display: flex;
@@ -532,6 +531,8 @@ label {
   
   .form-actions {
     gap: 0.75rem;
+    max-width: none;
+    margin-left: 0;
   }
 }
 
@@ -548,6 +549,8 @@ label {
   .form-actions {
     flex-direction: column;
     gap: 0.5rem;
+    max-width: none;
+    margin-left: 0;
   }
   
   .btn {

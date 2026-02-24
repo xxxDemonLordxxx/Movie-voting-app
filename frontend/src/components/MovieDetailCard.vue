@@ -31,7 +31,6 @@
           <strong>date:</strong><span>{{ formattedDate }}</span>
         </div>
 
-          <pre>{{ JSON.stringify(submission, null, 2) }}</pre>
         </div>
 
       

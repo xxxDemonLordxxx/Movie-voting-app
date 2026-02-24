@@ -79,15 +79,9 @@ export default {
   flex-direction: row;
   box-sizing:border-box;
   padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  cursor: pointer;
   height: 11.5rem;
 }
 
-.movie-suggestion-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-}
 
 .card-content{
   display: flex;
