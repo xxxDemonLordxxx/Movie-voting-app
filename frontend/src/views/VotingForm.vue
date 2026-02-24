@@ -126,7 +126,7 @@ export default {
       this.loading = true
       this.error = null
       try {
-        const response = await fetch(`${import.meta.env.vite_api_url}/polls/${this.pollId}`)
+        const response = await fetch(`/polls/${this.pollId}`)
         if (response.ok) {
           const data = await response.json()  // Get the full response
           
@@ -191,7 +191,7 @@ export default {
       
       try {
         // Replace with your actual API endpoint
-        const response = await fetch('${import.meta.env.vite_api_url}/polls/vote', {
+        const response = await fetch('/polls/vote', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

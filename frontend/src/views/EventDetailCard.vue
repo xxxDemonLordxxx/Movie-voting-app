@@ -61,7 +61,7 @@ export default {
     async fetchEventDetail() {
       this.loading = true
       try {
-        const response = await fetch(`${import.meta.env.vite_api_url}/events/${this.$route.params.id}`)
+        const response = await fetch(`/events/${this.$route.params.id}`)
         if (response.ok) {
           this.event = await response.json()
         } else if (response.status === 404) {
