@@ -44,7 +44,7 @@ const selectMovie = (movie) => {
   query.value = movie.title
   closeDropdown()
   // Fetch full movie data
-  fetch(`api/movies/${movie.id}`)
+  fetch(`https://observational.website/api/movies/${movie.id}`)
     .then(res => res.json())
     .then(data => console.log('Selected movie:', data))
 }

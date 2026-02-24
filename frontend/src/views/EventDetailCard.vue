@@ -61,7 +61,7 @@ export default {
     async fetchEventDetail() {
       this.loading = true
       try {
-        const response = await fetch(`api/events/${this.$route.params.id}`)
+        const response = await fetch(`https://observational.website/api/events/${this.$route.params.id}`)
         if (response.ok) {
           this.event = await response.json()
         } else if (response.status === 404) {

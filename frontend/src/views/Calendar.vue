@@ -45,7 +45,7 @@ export default {
       this.loading = true
       this.error = null
       try {
-        const response = await fetch(`api/events/`)
+        const response = await fetch(`https://observational.website/api/events/`)
         if (response.ok) {
           this.events = await response.json()  // Get the full response
             console.log('Loaded event info')

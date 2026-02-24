@@ -23,7 +23,7 @@ const error = ref('')
 
 const handleLogin = async () => {
   try {
-    const response = await fetch(`api/admin/${password.value}`, {
+    const response = await fetch(`https://observational.website/api/admin/${password.value}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
